@@ -18,13 +18,14 @@
   <meta property="og:locale" content="tr_TR">
   <meta property="og:locale:alternate" content="en_US">
 
-  <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Crect width='64' height='64' rx='14' fill='%23123447'/%3E%3Cpath d='M14 46a18 18 0 0 1 36 0' fill='none' stroke='%23e0703a' stroke-width='5'/%3E%3Cpath d='M10 50h44' stroke='%23f4ede2' stroke-width='4'/%3E%3C/svg%3E">
+  <link rel="icon" type="image/png" href="img/kardias/logo-64.png">
+  <link rel="apple-touch-icon" href="img/kardias/logo.png">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link rel="preconnect" href="https://images.unsplash.com">
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:ital,opsz,wght@0,9..144,400;0,9..144,600;1,9..144,400;1,9..144,500&display=swap" rel="stylesheet">
-  <link rel="preload" as="image" href="img/cunda/liman-1920.jpg" imagesrcset="img/cunda/liman-960.jpg 960w, img/cunda/liman-1920.jpg 1920w" imagesizes="100vw" fetchpriority="high">
+  <link rel="preload" as="image" data-img="heroImage" href="img/cunda/liman-1920.jpg" imagesrcset="img/cunda/liman-960.jpg 960w, img/cunda/liman-1920.jpg 1920w" imagesizes="100vw" fetchpriority="high">
   <link rel="stylesheet" href="css/style.css">
 
   <script type="application/ld+json">
@@ -63,8 +64,8 @@
     <span class="nav__progress" id="navProgress" aria-hidden="true"></span>
     <div class="nav__inner container">
       <a class="logo" href="#top" aria-label="Kardias Cunda">
-        <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 30a12 12 0 0 1 24 0" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M4 33h32M9 37h22" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="30" r="4" fill="var(--sunset)"/></svg>
-        <span class="logo__text">Kardias<small>Cunda</small></span>
+        <img class="logo__img" data-img="logo" src="img/kardias/logo-144.png" width="60" height="60" alt="">
+        <span class="logo__text">Kardias<small data-i18n="brand.sub">Otel &amp; Restoran</small></span>
       </a>
 
       <nav class="nav__menu" id="navMenu" aria-label="Ana menü">
@@ -73,11 +74,12 @@
         <a href="#etkinlikler" data-i18n="nav.events">Etkinlikler</a>
         <a href="#galeri" data-i18n="nav.gallery">Galeri</a>
         <a href="#konaklama" data-i18n="nav.stay">Konaklama</a>
-        <a href="#iletisim" data-i18n="nav.contact">İletişim</a>
-        <a href="#rezervasyon" class="btn btn--sunset btn--sm nav__cta" data-i18n="cta.book">Masa Ayırt</a>
+        <a href="#yorumlar" data-i18n="nav.reviews">Yorumlar</a>
+        <a href="#iletisim" data-i18n="nav.location">Konum</a>
+        <a href="#rezervasyon" class="btn btn--sunset btn--sm nav__cta" data-i18n="cta.book">Rezervasyon</a>
         <div class="nav__extra">
-          <a href="tel:+902663271965" class="nav__extra-link"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-bind="phoneDisplay">0266 327 19 65</span></a>
-          <span class="nav__extra-link"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span><span data-i18n="c.daily">Her gün</span> <span data-bind="hours">14:00 – 00:00</span></span></span>
+          <a href="tel:+902663271965" class="nav__extra-link js-tel"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-bind="phoneDisplay">0266 327 19 65</span></a>
+          <span class="nav__extra-link"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg><span data-i18n="c.hoursv">Her gün 14:00 – 00:00</span></span>
           <p class="nav__extra-note">Kalispera · Cunda</p>
         </div>
       </nav>
@@ -94,7 +96,7 @@
   <main id="main">
     <!-- 2. HERO -->
     <section class="hero wave wave--cream" id="top">
-      <img class="hero__bg" data-img="hero" src="img/cunda/liman-1920.jpg"
+      <img class="hero__bg" data-img="heroImage" src="img/cunda/liman-1920.jpg"
            srcset="img/cunda/liman-960.jpg 960w, img/cunda/liman-1920.jpg 1920w"
            sizes="100vw" width="1920" height="1285" alt="Cunda limanı: tepede yel değirmeni, ortada Taksiyarhis Kilisesi, önde tekneler" fetchpriority="high">
       <div class="hero__shade"></div>
@@ -104,7 +106,7 @@
           <h1 class="hero__title" data-i18n="hero.title">Limana bakan terasta <em>gün batımı</em> sofrası</h1>
           <p class="hero__lead" data-i18n="hero.lead">Taş fırından çıtır pizzalar, ev yapımı makarnalar ve Ege mezeleri. Cunda'nın en güzel manzarasıyla.</p>
           <div class="hero__actions">
-            <a href="#rezervasyon" class="btn btn--sunset" data-i18n="cta.book">Masa Ayırt</a>
+            <a href="#rezervasyon" class="btn btn--sunset" data-i18n="cta.book">Rezervasyon</a>
             <a href="#menu" class="btn btn--ghost" data-i18n="cta.menu">Menüyü Gör</a>
           </div>
         </div>
@@ -133,7 +135,7 @@
             <span class="infobar__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
             <span class="infobar__text">
               <small data-i18n="info.hours">Her gün</small>
-              <strong data-bind="hours">14:00 – 00:00</strong>
+              <strong data-bind="hoursRange">14:00 – 00:00</strong>
               <span class="status" id="openStatus"></span>
             </span>
           </li>
@@ -142,7 +144,7 @@
             <span class="infobar__text">
               <small data-i18n="info.where">Konum</small>
               <strong data-i18n="info.wherev">Cunda tepesi, meydanın üstü</strong>
-              <a href="https://www.google.com/maps/dir/?api=1&destination=Kardias+Cunda+Mithatpa%C5%9Fa+Ayval%C4%B1k" data-maps="dir" target="_blank" rel="noopener" class="infobar__link" data-i18n="info.dir">Yol tarifi →</a>
+              <a href="https://www.google.com/maps/dir/?api=1&destination=Kardias+Cunda+Mithatpa%C5%9Fa+Ayval%C4%B1k" target="_blank" rel="noopener" class="infobar__link js-dir" data-i18n="info.dir">Yol tarifi →</a>
             </span>
           </li>
           <li class="infobar__item">
@@ -150,15 +152,15 @@
             <span class="infobar__text">
               <small data-i18n="info.book">Rezervasyon</small>
               <strong data-i18n="info.bookv">WhatsApp ile 1 dakikada</strong>
-              <a href="#rezervasyon" class="infobar__link" data-i18n="info.bookcta">Masa ayırt →</a>
+              <a href="#rezervasyon" class="infobar__link" data-i18n="info.bookcta">Rezervasyon yap →</a>
             </span>
           </li>
           <li class="infobar__item">
             <span class="infobar__icon"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg></span>
             <span class="infobar__text">
               <small data-i18n="info.call">Telefon</small>
-              <strong><span data-bind="phoneDisplay">0266 327 19 65</span></strong>
-              <a href="tel:+902663271965" class="infobar__link" data-i18n="info.callcta">Hemen ara →</a>
+              <strong data-bind="phoneDisplay">0266 327 19 65</strong>
+              <a href="tel:+902663271965" class="infobar__link js-tel" data-i18n="info.callcta">Hemen ara →</a>
             </span>
           </li>
         </ul>
@@ -193,10 +195,10 @@
         </div>
         <figure class="story__media reveal">
           <div class="arch">
-            <img data-img="story" src="img/cunda/tas-ev.jpg" loading="lazy" decoding="async" alt="Cunda'da mavi kepenkli eski bir taş Rum evi" width="1200" height="900">
+            <img data-img="storyImage" src="img/cunda/tas-ev.jpg" loading="lazy" decoding="async" alt="Cunda'da mavi kepenkli eski bir taş Rum evi" width="1200" height="900">
           </div>
-          <img class="story__inset" data-img="storyInset" data-parallax="0.08" src="img/cunda/gullu-sokak.jpg" loading="lazy" decoding="async" alt="Cunda'da güllerle bezeli bir sokak" width="1200" height="900">
-          <figcaption class="story__badge"><strong>1890</strong><span data-i18n="story.badge">taş ev</span></figcaption>
+          <img class="story__inset" data-parallax="0.08" data-img="storyInset" src="img/cunda/gullu-sokak.jpg" loading="lazy" decoding="async" alt="Cunda'da güllerle bezeli bir sokak" width="1200" height="900">
+          <figcaption class="story__badge"><strong data-bind="storyYear">1890</strong><span data-i18n="story.badge">taş ev</span></figcaption>
         </figure>
       </div>
     </section>
@@ -226,7 +228,7 @@
 
         <p class="allergen">
           <svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"/><path d="M12 11v6M12 7.5v.5" stroke="currentColor" stroke-width="2" stroke-linecap="round"/></svg>
-          <span data-i18n="menu.allergen">Alerjen bilgisi için personelimize danışın. Fiyatlara KDV dahildir.</span>
+          <span><span data-i18n="menu.allergen">Alerjen bilgisi için personelimize danışın.</span> <span id="vatNote" data-i18n="menu.vat" hidden>Fiyatlara KDV dahildir.</span></span>
         </p>
 
         <aside class="setmenu reveal" id="setMenu" aria-labelledby="setMenuTitle">
@@ -245,91 +247,17 @@
       </div>
     </section>
 
-    <!-- 5. GECE: BİR KARDİAS AKŞAMI + ETKİNLİKLER -->
-    <section class="section section--navy evening wave wave--stone has-garland" id="aksam" aria-labelledby="eveningTitle">
+    <!-- 5. ETKİNLİKLER -->
+    <section class="section section--navy evening wave wave--stone has-garland" id="etkinlikler" aria-labelledby="eventsTitle">
       <div class="garland" id="garland" aria-hidden="true"></div>
       <div class="container">
         <header class="section__head reveal">
-          <p class="eyebrow eyebrow--light" data-i18n="eve.eyebrow">Bir Kardias akşamı</p>
-          <h2 class="h2" id="eveningTitle" data-i18n="eve.title">Güneş batarken <em>sofra</em> kurulur</h2>
-          <p class="section__lead" data-i18n="eve.lead">Saatler her gün Cunda'nın gerçek gün batımına göre hesaplanır.</p>
-        </header>
-        <ol class="timeline">
-          <li class="timeline__step reveal">
-            <span class="timeline__time" data-eve="arrive">--:--</span>
-            <span class="timeline__dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 3h10l-1 8a4 4 0 0 1-8 0zM12 15v5M8 21h8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></svg></span>
-            <h3 data-i18n="eve.1.t">Terasa varış</h3>
-            <p data-i18n="eve.1.d">İlk kadeh rakı ya da roze, yanında Ayvalık zeytinleri.</p>
-          </li>
-          <li class="timeline__step timeline__step--sun reveal">
-            <span class="timeline__time" data-eve="sunset">--:--</span>
-            <span class="timeline__dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 6V4M5.6 9.6 4.2 8.2M18.4 9.6l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg></span>
-            <h3 data-i18n="eve.2.t">Gün batımı</h3>
-            <p data-i18n="eve.2.d">Güneş denize inerken soğuk mezeler ve Girit ezmesi sofrada.</p>
-          </li>
-          <li class="timeline__step reveal">
-            <span class="timeline__time" data-eve="oven">--:--</span>
-            <span class="timeline__dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V11a7 7 0 0 1 14 0v9M9 20v-4a3 3 0 0 1 6 0v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg></span>
-            <h3 data-i18n="eve.3.t">Taş fırın saati</h3>
-            <p data-i18n="eve.3.d">Çıtır pizzalar, ev yapımı makarnalar ve günün balığı.</p>
-          </li>
-          <li class="timeline__step reveal">
-            <span class="timeline__time">22:00</span>
-            <span class="timeline__dot"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 14.5A8 8 0 0 1 9.5 4 8 8 0 1 0 20 14.5z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"/></svg></span>
-            <h3 data-i18n="eve.4.t">Gece ışıkları</h3>
-            <p data-i18n="eve.4.d">Süs ışıkları yanar; sakızlı dondurma ve Türk kahvesi.</p>
-          </li>
-        </ol>
-      </div>
-
-      <!-- 6. ETKİNLİKLER (gece bölümünün devamı) -->
-      <div class="chapter-part" id="etkinlikler">
-      <div class="container"><div class="divider divider--light" aria-hidden="true"><span></span><svg viewBox="0 0 220 120"><use href="#i-branch"/></svg><span></span></div></div>
-      <div class="container">
-        <header class="section__head reveal">
           <p class="eyebrow eyebrow--light" data-i18n="events.eyebrow">Etkinlikler</p>
-          <h2 class="h2" data-i18n="events.title">Terasta <em>özel</em> akşamlar</h2>
+          <h2 class="h2" id="eventsTitle" data-i18n="events.title">Terasta <em>özel</em> akşamlar</h2>
           <p class="section__lead" data-i18n="events.lead">Müzik, şarap ve kutlamalar için Cunda'nın en romantik sahnesi.</p>
         </header>
-        <div class="events" id="eventsList">
-          <article class="event reveal">
-            <div class="event__media"><img src="https://images.unsplash.com/photo-1514933651103-005eec06c04b?w=700&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="" width="700" height="460"></div>
-            <div class="event__body">
-              <span class="event__when" data-i18n="ev.1.when">Cuma &amp; Cumartesi · 21:00</span>
-              <h3 data-i18n="ev.1.t">Canlı Müzik Geceleri</h3>
-              <p data-i18n="ev.1.d">Akustik, caz ve Ege ezgileri; yıldızların altında, rakı kadehleri eşliğinde.</p>
-              <button type="button" class="btn btn--outline-light btn--sm js-info" data-i18n="cta.info">Bilgi Al</button>
-            </div>
-          </article>
-          <article class="event reveal">
-            <div class="event__media"><img src="https://images.unsplash.com/photo-1510812431401-41d2bd2722f3?w=700&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="" width="700" height="460"></div>
-            <div class="event__body">
-              <span class="event__when" data-i18n="ev.2.when">Her ay · Çarşamba</span>
-              <h3 data-i18n="ev.2.t">Şarap Tadımı Akşamları</h3>
-              <p data-i18n="ev.2.d">Urla, Bozcaada ve Şirince bağlarından şaraplar, şefin eşleştirme tabaklarıyla.</p>
-              <button type="button" class="btn btn--outline-light btn--sm js-info" data-i18n="cta.info">Bilgi Al</button>
-            </div>
-          </article>
-          <article class="event reveal">
-            <div class="event__media"><img src="https://images.unsplash.com/photo-1488477181946-6428a0291777?w=700&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="" width="700" height="460"></div>
-            <div class="event__body">
-              <span class="event__when" data-i18n="ev.3.when">Doğum günü · Evlilik teklifi · Nişan</span>
-              <h3 data-i18n="ev.3.t">Özel Gün Organizasyonları</h3>
-              <p data-i18n="ev.3.d">Çiçekler, mumlar, pasta ve size özel bir köşe; gerisini biz düşünürüz.</p>
-              <button type="button" class="btn btn--outline-light btn--sm js-info" data-i18n="cta.info">Bilgi Al</button>
-            </div>
-          </article>
-          <article class="event reveal">
-            <div class="event__media"><img src="https://images.unsplash.com/photo-1528605248644-14dd04022da1?w=700&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="" width="700" height="460"></div>
-            <div class="event__body">
-              <span class="event__when" data-i18n="ev.4.when">10 – 60 kişi</span>
-              <h3 data-i18n="ev.4.t">Grup Yemekleri</h3>
-              <p data-i18n="ev.4.d">Şirket yemekleri, mezuniyetler ve kalabalık sofralar için özel menüler.</p>
-              <button type="button" class="btn btn--outline-light btn--sm js-info" data-i18n="cta.info">Bilgi Al</button>
-            </div>
-          </article>
-        </div>
-      </div>
+        <!-- Etkinlik kartları yönetim panelinden gelir (js/main.js çizer) -->
+        <div class="events" id="events"></div>
       </div>
     </section>
 
@@ -356,8 +284,8 @@
       <div class="container"><div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 220 120"><use href="#i-branch"/></svg><span></span></div></div>
       <div class="container stay">
         <div class="stay__media reveal">
-          <img class="stay__img stay__img--main" data-img="stay" src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="Butik otel odası" width="900" height="675">
-          <img class="stay__img stay__img--small" data-img="staySmall" data-parallax="0.08" src="img/cunda/tas-konak.jpg" loading="lazy" decoding="async" alt="Cunda'da taş bir konak" width="700" height="466">
+          <img class="stay__img stay__img--main" data-img="stayImage" src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="Butik otel odası" width="900" height="675">
+          <img class="stay__img stay__img--small" data-parallax="0.08" data-img="stayInset" src="img/cunda/tas-konak.jpg" loading="lazy" decoding="async" alt="Cunda'da taş bir konak" width="700" height="466">
         </div>
         <div class="stay__text reveal">
           <p class="eyebrow" data-i18n="stay.eyebrow">Konaklama</p>
@@ -369,8 +297,70 @@
             <li data-i18n="stay.l3">Klima, ücretsiz Wi-Fi, özel banyo</li>
             <li data-i18n="stay.l4">Meydana ve sahile yürüme mesafesi</li>
           </ul>
-          <a href="#" class="btn btn--navy js-room" data-i18n="cta.room">Oda Rezervasyonu</a>
+          <a href="#odarezervasyon" class="btn btn--navy js-room" data-i18n="cta.room">Oda Rezervasyonu</a>
         </div>
+      </div>
+      <!-- Odalar ve konaklama rezervasyonu aynı alanda: oda kartları yönetim panelinden gelir (js/main.js çizer),
+           karttaki "Bu odayı seç" yandaki formda odayı seçer -->
+      <div class="container stay-book" id="stayBook">
+        <div class="stay-book__rooms" id="roomsWrap" hidden>
+          <h3 class="rooms__title" data-i18n="rooms.title">Odalarımız</h3>
+          <div class="rooms__grid" id="rooms"></div>
+        </div>
+        <aside class="stay-book__aside" id="odarezervasyon">
+          <form class="form stay-form reveal" id="stayForm" novalidate>
+            <p class="form__title" data-i18n="sf.title">Konaklama Rezervasyonu</p>
+            <p class="stay-form__lead" data-i18n="sf.lead">Odanızı ve tarihlerinizi seçin; ekibimiz müsaitliği kontrol edip size dönüş yapsın.</p>
+            <label class="field" data-room-field>
+              <span data-i18n="f.room">Oda</span>
+              <select name="room"></select>
+            </label>
+            <div class="form__row form__row--dates">
+              <label class="field">
+                <span data-i18n="f.checkin">Giriş tarihi</span>
+                <input name="checkin" type="date" required>
+              </label>
+              <label class="field">
+                <span data-i18n="f.checkout">Çıkış tarihi</span>
+                <input name="checkout" type="date" required>
+              </label>
+            </div>
+            <div class="form__row form__row--dates">
+              <label class="field">
+                <span data-i18n="f.guests">Kişi sayısı</span>
+                <select name="guests" data-guests required></select>
+              </label>
+              <p class="stay-form__nights" id="stayNights" aria-live="polite"></p>
+            </div>
+            <fieldset class="field field--radio">
+              <legend data-i18n="f.breakfast">Kahvaltı</legend>
+              <label><input type="checkbox" name="breakfast" checked> <span data-i18n="f.breakfastv">Terasta serpme Ege kahvaltısı istiyorum</span></label>
+            </fieldset>
+            <div class="form__row">
+              <label class="field">
+                <span data-i18n="f.name">Ad Soyad</span>
+                <input name="name" type="text" autocomplete="name" required>
+              </label>
+              <label class="field">
+                <span data-i18n="f.phone">Telefon</span>
+                <input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx" required>
+              </label>
+            </div>
+            <label class="field">
+              <span data-i18n="f.note">Özel istek</span>
+              <textarea name="note" rows="2" placeholder="Geç giriş, bebek yatağı, alerjiler…" data-i18n-placeholder="sf.noteph"></textarea>
+            </label>
+            <label class="hp" aria-hidden="true">Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
+            <p class="form__error" role="alert" hidden></p>
+            <p class="form__ok" role="status" hidden></p>
+            <button type="submit" class="btn btn--sunset btn--block">
+              <svg class="js-wa-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+              <span class="js-submit-wa" data-i18n="f.submit">WhatsApp ile Gönder</span>
+              <span class="js-submit-plain" data-i18n="f.submitPlain" hidden>Rezervasyon Talebi Gönder</span>
+            </button>
+            <p class="form__hint" data-i18n="f.hint">Rezervasyonunuz, ekibimizin onayından sonra kesinleşir.</p>
+          </form>
+        </aside>
       </div>
     </section>
 
@@ -383,12 +373,12 @@
             <p class="eyebrow" data-i18n="rev.eyebrow">Misafirlerimiz</p>
             <h2 class="h2" data-i18n="rev.title">Ne <em>diyorlar?</em></h2>
           </div>
-          <div class="rating">
+          <div class="rating" id="ratingBox">
             <span class="rating__score" data-bind="ratingScore">4.7</span>
             <span class="stars" id="ratingStars" aria-label="5 üzerinden 4.7"><span style="--r:4.7"></span></span>
-            <span class="rating__count" data-bind="ratingCount">Google'da 1.200+ yorum</span>
-            <a class="rating__link" href="https://www.google.com/maps/search/?api=1&query=Kardias+Cunda+Ayval%C4%B1k" target="_blank" rel="noopener" data-i18n="rev.cta">Google'da değerlendir →</a>
-            <span class="rating__sample" data-i18n="rev.sample">Örnek içerik: puan ve yorumlar, yayından önce gerçek Google yorumlarıyla değiştirilecek.</span>
+            <span class="rating__count" data-i18n="rev.count">Google'da 1.200+ yorum</span>
+            <a class="rating__link js-gmaps" href="https://www.google.com/maps/search/?api=1&query=Kardias+Cunda+Ayval%C4%B1k" target="_blank" rel="noopener" data-i18n="rev.cta">Google'da değerlendir →</a>
+            <span class="rating__sample" id="ratingSample" data-i18n="rev.sample">Örnek içerik: puan ve yorumlar, yayından önce gerçek Google yorumlarıyla değiştirilecek.</span>
           </div>
         </header>
         <div class="testi reveal">
@@ -410,15 +400,15 @@
       <div class="container reserve">
         <div class="reserve__info reveal">
           <p class="eyebrow eyebrow--light" data-i18n="res.eyebrow">Rezervasyon</p>
-          <h2 class="h2" data-i18n="res.title">Gün batımında <em>masanız</em> hazır olsun</h2>
-          <p data-i18n="res.p">Teras masalarımız özellikle yaz akşamlarında erken doluyor. Formu doldurun, talebiniz WhatsApp üzerinden hazır mesaj olarak bize ulaşsın.</p>
+          <h2 class="h2" data-i18n="res.title">Sokakta, terasta ya da odanızda <em>yeriniz</em> hazır olsun</h2>
+          <p data-i18n="res.p">Sokak masası, teras masası ya da konaklama: seçin, formu doldurun, talebiniz WhatsApp üzerinden hazır mesaj olarak bize ulaşsın. Teras masalarımız yaz akşamlarında erken doluyor.</p>
           <ol class="steps">
-            <li data-i18n="res.s1">Formu doldurun</li>
+            <li data-i18n="res.s1">Rezervasyon türünü seçip formu doldurun</li>
             <li data-i18n="res.s2">WhatsApp'ta hazır mesajı gönderin</li>
-            <li data-i18n="res.s3">Ekibimiz masanızı onaylasın</li>
+            <li data-i18n="res.s3">Ekibimiz rezervasyonunuzu onaylasın</li>
           </ol>
           <div class="reserve__contacts">
-            <a href="tel:+902663271965" class="contact-pill">
+            <a href="tel:+902663271965" class="contact-pill js-tel">
               <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
               <span><small data-i18n="res.call">Bizi arayın</small><span data-bind="phoneDisplay">0266 327 19 65</span></span>
             </a>
@@ -430,7 +420,14 @@
         </div>
 
         <form class="form reveal" id="reserveForm" novalidate>
-          <p class="form__title" data-i18n="f.title">Masa rezervasyonu</p>
+          <p class="form__title" data-i18n="f.title">Rezervasyon</p>
+          <fieldset class="field field--radio rtype">
+            <legend data-i18n="f.type">Rezervasyon türü</legend>
+            <label><input type="radio" name="rtype" value="sokak" checked> <span data-i18n="f.street">Sokak</span></label>
+            <label><input type="radio" name="rtype" value="teras"> <span data-i18n="f.terraceOpt">Teras</span></label>
+          </fieldset>
+          <!-- Konaklama rezervasyonu, odaların yanındaki formdan yapılır -->
+          <p class="form__stay-link" id="stayLink"><span data-i18n="f.stayLink">Konaklama mı planlıyorsunuz?</span> <a href="#odarezervasyon" data-i18n="f.stayLinkCta">Odalarımızı görün ve oda ayırtın →</a></p>
           <div class="form__row">
             <label class="field">
               <span data-i18n="f.name">Ad Soyad</span>
@@ -441,6 +438,7 @@
               <input name="phone" type="tel" autocomplete="tel" inputmode="tel" placeholder="05xx xxx xx xx" required>
             </label>
           </div>
+          <!-- Sokak / teras masası -->
           <div class="form__row form__row--3">
             <label class="field">
               <span data-i18n="f.date">Tarih</span>
@@ -452,22 +450,21 @@
             </label>
             <label class="field">
               <span data-i18n="f.guests">Kişi sayısı</span>
-              <select name="guests" required></select>
+              <select name="guests" data-guests required></select>
             </label>
           </div>
-          <fieldset class="field field--radio">
-            <legend data-i18n="f.terrace">Teras tercihi</legend>
-            <label><input type="radio" name="terrace" value="yes" checked> <span data-i18n="f.yes">Evet, teras olsun</span></label>
-            <label><input type="radio" name="terrace" value="no"> <span data-i18n="f.no">Fark etmez / içeride</span></label>
-          </fieldset>
           <label class="field">
             <span data-i18n="f.note">Özel istek</span>
             <textarea name="note" rows="3" placeholder="Doğum günü, alerjiler, bebek sandalyesi…" data-i18n-placeholder="f.noteph"></textarea>
           </label>
+          <!-- Botlar için görünmez tuzak alanı: insanlar görmez, doldurulursa talep reddedilir -->
+          <label class="hp" aria-hidden="true">Web sitesi <input type="text" name="website" tabindex="-1" autocomplete="off"></label>
           <p class="form__error" id="formError" role="alert" hidden></p>
+          <p class="form__ok" id="formOk" role="status" hidden></p>
           <button type="submit" class="btn btn--sunset btn--block">
-            <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
-            <span data-i18n="f.submit">WhatsApp ile Gönder</span>
+            <svg class="js-wa-icon" viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
+            <span class="js-submit-wa" data-i18n="f.submit">WhatsApp ile Gönder</span>
+            <span class="js-submit-plain" data-i18n="f.submitPlain" hidden>Rezervasyon Talebi Gönder</span>
           </button>
           <p class="form__hint" data-i18n="f.hint">Rezervasyonunuz, ekibimizin onayından sonra kesinleşir.</p>
         </form>
@@ -482,12 +479,13 @@
           <p class="eyebrow" data-i18n="c.eyebrow">İletişim &amp; Konum</p>
           <h2 class="h2" data-i18n="c.title">Cunda'nın tepesinde, <em>meydanın hemen üstünde</em></h2>
           <dl class="contact__list">
-            <div><dt data-i18n="c.addr">Adres</dt><dd data-bind="address">Mithatpaşa Mah., 20082 Sokak No:4, Cunda, 10405 Ayvalık / Balıkesir</dd></div>
-            <div><dt data-i18n="c.phone">Telefon</dt><dd><a href="tel:+902663271965"><span data-bind="phoneDisplay">0266 327 19 65</span></a></dd></div>
-            <div><dt data-i18n="c.hours">Çalışma saatleri</dt><dd><span data-i18n="c.daily">Her gün</span> <span data-bind="hours">14:00 – 00:00</span></dd></div>
+            <div><dt data-i18n="c.addr">Adres</dt><dd data-bind="addressFull">Mithatpaşa Mah., 20082 Sokak No:4, Cunda, 10405 Ayvalık / Balıkesir</dd></div>
+            <div><dt data-i18n="c.phone">Telefon</dt><dd><a href="tel:+902663271965" class="js-tel" data-bind="phoneDisplay">0266 327 19 65</a></dd></div>
+            <div id="emailRow" hidden><dt data-i18n="c.email">E-posta</dt><dd><a href="#" id="emailLink"></a></dd></div>
+            <div><dt data-i18n="c.hours">Çalışma saatleri</dt><dd data-i18n="c.hoursv">Her gün 14:00 – 00:00</dd></div>
           </dl>
           <div class="contact__actions">
-            <a class="btn btn--sunset" data-maps="dir" href="https://www.google.com/maps/dir/?api=1&destination=Kardias+Cunda+Mithatpa%C5%9Fa+Ayval%C4%B1k" target="_blank" rel="noopener" data-i18n="c.dir">Yol Tarifi Al</a>
+            <a class="btn btn--sunset js-dir" href="https://www.google.com/maps/dir/?api=1&destination=Kardias+Cunda+Mithatpa%C5%9Fa+Ayval%C4%B1k" target="_blank" rel="noopener" data-i18n="c.dir">Yol Tarifi Al</a>
             <a class="btn btn--outline-light js-insta" href="#" target="_blank" rel="noopener">
               <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-ig"/></svg>
               <span data-i18n="c.ig">Instagram'da takip et</span>
@@ -495,7 +493,7 @@
           </div>
         </div>
         <div class="map reveal">
-          <iframe data-maps="embed" title="Kardias Cunda harita" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
+          <iframe id="mapFrame" title="Kardias Cunda harita" loading="lazy" referrerpolicy="no-referrer-when-downgrade"
             src="https://www.google.com/maps?q=Kardias+Cunda,+Mithatpa%C5%9Fa,+Ayval%C4%B1k&z=16&output=embed"></iframe>
         </div>
       </div>
@@ -511,14 +509,14 @@
     <div class="container footer__grid">
       <div class="footer__brand">
         <a class="logo logo--light" href="#top" aria-label="Kardias Cunda">
-          <svg class="logo__mark" viewBox="0 0 40 40" aria-hidden="true"><path d="M8 30a12 12 0 0 1 24 0" fill="none" stroke="currentColor" stroke-width="2.4"/><path d="M4 33h32M9 37h22" stroke="currentColor" stroke-width="2"/><circle cx="20" cy="30" r="4" fill="var(--sunset)"/></svg>
-          <span class="logo__text">Kardias<small>Cunda</small></span>
+          <img class="logo__img logo__img--footer" data-img="logo" src="img/kardias/logo.png" width="128" height="128" loading="lazy" alt="Kardias — Butik Otel &amp; Restoran">
         </a>
         <p class="footer__slogan" data-i18n="foot.slogan">Limana bakan terasta, Ege'nin en uzun akşamları.</p>
-        <div class="social">
+        <!-- Sosyal medya bağlantıları yönetim panelinden gelir (boş olanlar gösterilmez) -->
+        <div class="social" id="social">
           <a href="#" class="js-insta" target="_blank" rel="noopener" aria-label="Instagram"><svg viewBox="0 0 24 24"><use href="#i-ig"/></svg></a>
           <a href="#" class="js-wa" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><use href="#i-wa"/></svg></a>
-          <a href="https://www.google.com/maps/search/?api=1&query=Kardias+Cunda+Ayval%C4%B1k" target="_blank" rel="noopener" aria-label="Google Maps"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></a>
+          <a href="https://www.google.com/maps/search/?api=1&query=Kardias+Cunda+Ayval%C4%B1k" class="js-gmaps" target="_blank" rel="noopener" aria-label="Google Maps"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></a>
         </div>
       </div>
       <nav class="footer__links" aria-label="Hızlı linkler">
@@ -528,34 +526,26 @@
         <a href="#etkinlikler" data-i18n="nav.events">Etkinlikler</a>
         <a href="#galeri" data-i18n="nav.gallery">Galeri</a>
         <a href="#konaklama" data-i18n="nav.stay">Konaklama</a>
-        <a href="#rezervasyon" data-i18n="cta.book">Masa Ayırt</a>
+        <a href="#yorumlar" data-i18n="nav.reviews">Yorumlar</a>
+        <a href="#rezervasyon" data-i18n="cta.book">Rezervasyon</a>
       </nav>
       <div class="footer__contact">
         <h4 data-i18n="nav.contact">İletişim</h4>
-        <p data-bind="address">Mithatpaşa Mah., 20082 Sokak No:4<br>Cunda, 10405 Ayvalık / Balıkesir</p>
-        <p><a href="tel:+902663271965"><span data-bind="phoneDisplay">0266 327 19 65</span></a></p>
-        <p><span data-i18n="c.daily">Her gün</span> <span data-bind="hours">14:00 – 00:00</span></p>
+        <p><span data-bind="addressStreet">Mithatpaşa Mah., 20082 Sokak No:4</span><br><span data-bind="addressCity">Cunda, 10405 Ayvalık / Balıkesir</span></p>
+        <p><a href="tel:+902663271965" class="js-tel" data-bind="phoneDisplay">0266 327 19 65</a></p>
+        <p data-i18n="c.hoursv">Her gün 14:00 – 00:00</p>
       </div>
     </div>
     <div class="footer__mark" aria-hidden="true">Kardias</div>
     <div class="container footer__bottom">
       <p>© <span id="year"></span> Kardias Cunda. <span data-i18n="foot.rights">Tüm hakları saklıdır.</span></p>
-      <p class="footer__kalimera">Kalispera · <span data-i18n="foot.hello">İyi akşamlar</span> <a class="footer__admin" href="admin.html" rel="nofollow">· <span data-i18n="foot.admin">Yönetim</span></a></p>
+      <p class="footer__kalimera">Kalispera · <span data-i18n="foot.hello">İyi akşamlar</span> <a class="footer__admin" id="adminLink" href="admin/" rel="nofollow">· <span data-i18n="foot.admin">Yönetim</span></a></p>
     </div>
     <div class="container">
       <details class="credits">
         <summary data-i18n="foot.credits">Fotoğraf künyesi</summary>
         <p data-i18n="foot.creditsnote">Cunda fotoğrafları Wikimedia Commons'tan, belirtilen lisanslarla kullanılmıştır. Yemek ve içecek görselleri Unsplash'tandır.</p>
-        <ul>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3ACunda_adas%C4%B1%2CAyval%C4%B1k_-_panoramio_%281%29.jpg" target="_blank" rel="noopener">Cunda adası,Ayvalık - panoramio (1).jpg</a> — HALUK COMERTEL · CC BY 3.0</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3ACunda_houses_2020_%282%29.jpg" target="_blank" rel="noopener">Cunda houses 2020 (2).jpg</a> — Antoloji · CC BY-SA 4.0</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3AA_street_from_Cunda_Island.JPG" target="_blank" rel="noopener">A street from Cunda Island.JPG</a> — The cat · Public domain</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3AAlibey_Adasi%2C_Ayval%C4%B1k%2C_Turkey_%28Unsplash%29.jpg" target="_blank" rel="noopener">Alibey Adasi, Ayvalık, Turkey (Unsplash).jpg</a> — Arda Çetin ardacetin · CC0</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3ACunda2006.JPG" target="_blank" rel="noopener">Cunda2006.JPG</a> — Original uploader was Towsonu2003 at tr.wikipedia · CC BY-SA 2.5</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3ACunda_Adas%C4%B1_01.jpg" target="_blank" rel="noopener">Cunda Adası 01.jpg</a> — Ferit BAYCUMAN · CC BY-SA 4.0</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3AAbandoned_Old_Church.jpg" target="_blank" rel="noopener">Abandoned Old Church.jpg</a> — BilgeSaygin · CC BY-SA 4.0</li>
-          <li><a href="https://commons.wikimedia.org/wiki/File%3AMoshos_Otel_%289649207733%29.jpg" target="_blank" rel="noopener">Moshos Otel (9649207733).jpg</a> — Omer Unlu from Ankara, Turkey · CC BY 2.0</li>
-        </ul>
+        <ul id="credits"></ul>
       </details>
     </div>
   </footer>
@@ -564,12 +554,12 @@
   <a href="#rezervasyon" class="float-book" id="floatBook">
     <svg class="float-book__sun" viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M6 18a6 6 0 0 1 12 0M12 6V4M5.6 9.6 4.2 8.2M18.4 9.6l1.4-1.4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"/></svg>
     <span class="float-book__txt"><small id="floatSunLabel">Bugün gün batımı</small><strong id="floatSunTime">--:--</strong></span>
-    <span class="float-book__cta" data-i18n="cta.book">Masa Ayırt</span>
+    <span class="float-book__cta" data-i18n="cta.book">Rezervasyon</span>
   </a>
 
   <!-- Mobil sabit butonlar -->
   <div class="mobile-bar" aria-label="Hızlı iletişim">
-    <a href="tel:+902663271965"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="mb.call">Ara</span></a>
+    <a href="tel:+902663271965" class="js-tel"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg><span data-i18n="mb.call">Ara</span></a>
     <a href="#" class="js-wa mobile-bar__wa"><svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>WhatsApp</a>
   </div>
 
@@ -594,7 +584,7 @@
   <div class="lightbox" id="lightbox" role="dialog" aria-modal="true" aria-label="Görsel" hidden>
     <button type="button" class="lightbox__close" aria-label="Kapat">×</button>
     <button type="button" class="lightbox__arrow lightbox__arrow--prev" aria-label="Önceki">‹</button>
-    <figure><img alt=""><figcaption></figcaption></figure>
+    <figure><img alt=""><video controls playsinline preload="metadata" hidden></video><figcaption></figcaption></figure>
     <button type="button" class="lightbox__arrow lightbox__arrow--next" aria-label="Sonraki">›</button>
   </div>
 
@@ -604,6 +594,11 @@
     <symbol id="i-wa" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2a8.2 8.2 0 0 1-4.2-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8s-.4-.1-.6.1-.7.8-.8 1-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.3-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5a1 1 0 0 0-.7.3 3 3 0 0 0-.9 2.2 5.2 5.2 0 0 0 1.1 2.7 11.8 11.8 0 0 0 4.5 4c1.7.7 2.3.8 3.2.6a2.7 2.7 0 0 0 1.8-1.2 2.2 2.2 0 0 0 .1-1.3c0-.1-.2-.2-.5-.3z"/></symbol>
     <symbol id="i-ig" viewBox="0 0 24 24"><path fill="none" stroke="currentColor" stroke-width="2" d="M7 3h10a4 4 0 0 1 4 4v10a4 4 0 0 1-4 4H7a4 4 0 0 1-4-4V7a4 4 0 0 1 4-4z"/><circle cx="12" cy="12" r="4" fill="none" stroke="currentColor" stroke-width="2"/><circle cx="17.5" cy="6.5" r="1.2" fill="currentColor"/></symbol>
     <symbol id="i-pin" viewBox="0 0 24 24"><path fill="currentColor" d="M12 2a7 7 0 0 0-7 7c0 5.2 7 13 7 13s7-7.8 7-13a7 7 0 0 0-7-7zm0 9.5A2.5 2.5 0 1 1 12 6.5a2.5 2.5 0 0 1 0 5z"/></symbol>
+    <symbol id="i-fb" viewBox="0 0 24 24"><path fill="currentColor" d="M13.5 21v-7.5h2.5l.4-3H13.5V8.6c0-.9.3-1.5 1.5-1.5h1.6V4.4A21 21 0 0 0 14.3 4.3c-2.3 0-3.8 1.4-3.8 3.9v2.3H8v3h2.5V21z"/></symbol>
+    <symbol id="i-tt" viewBox="0 0 24 24"><path fill="currentColor" d="M16.6 3c.3 2.2 1.6 3.6 3.9 3.8v2.6a6.8 6.8 0 0 1-3.8-1.2v6.1A5.7 5.7 0 1 1 11 8.6v2.7a3 3 0 1 0 2.1 2.9V3z"/></symbol>
+    <symbol id="i-yt" viewBox="0 0 24 24"><path fill="currentColor" d="M21.6 7.2a2.5 2.5 0 0 0-1.8-1.8C18.2 5 12 5 12 5s-6.2 0-7.8.4A2.5 2.5 0 0 0 2.4 7.2 26 26 0 0 0 2 12a26 26 0 0 0 .4 4.8 2.5 2.5 0 0 0 1.8 1.8C5.8 19 12 19 12 19s6.2 0 7.8-.4a2.5 2.5 0 0 0 1.8-1.8A26 26 0 0 0 22 12a26 26 0 0 0-.4-4.8zM10 15V9l5.2 3z"/></symbol>
+    <symbol id="i-ta" viewBox="0 0 24 24"><g fill="none" stroke="currentColor" stroke-width="1.8"><circle cx="7" cy="13" r="3.2"/><circle cx="17" cy="13" r="3.2"/><path d="M2 8.5h20M7 8.5C8.5 6.6 10.2 6 12 6s3.5.6 5 2.5M12 6v3.5"/></g><circle cx="7" cy="13" r="1.1" fill="currentColor"/><circle cx="17" cy="13" r="1.1" fill="currentColor"/></symbol>
+    <symbol id="i-play" viewBox="0 0 24 24"><path fill="currentColor" d="M8 5.5v13l11-6.5z"/></symbol>
     <symbol id="i-leaf" viewBox="0 0 24 24"><path d="M5 19C5 10 11 4 20 4c0 9-6 15-15 15zM5 19l8-8" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/></symbol>
     <!-- Zeytin dalı süsü -->
     <symbol id="i-branch" viewBox="0 0 220 120">

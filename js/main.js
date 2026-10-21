@@ -1,40 +1,39 @@
-/* Kardias Cunda — site davranışları */
-(async () => {
+/* Kardias Cunda — site davranışları.
+   Tüm içerik (menü, galeri, yorumlar, etkinlikler, odalar, iletişim bilgileri, metinler) yönetim panelinden gelir:
+   sunucu bu veriyi sayfaya <script id="site-data"> olarak gömer; yoksa /api/site adresinden, sunucu da yoksa
+   (GitHub Pages önizlemesi) "npm run export-static" ile üretilen data/site.json dosyasından alınır. */
+(() => {
   "use strict";
 
-  /* ============ İÇERİK ============
-     Telefon, saatler, galeri, etkinlikler, yorumlar ve metin düzeltmeleri data/site.json'dadır
-     (yönetim paneli: admin.html). Dosya okunamazsa aşağıdaki temel ayarlarla çalışır. */
-  const FALLBACK = {
-    contact: { phone: "+902663271965", phoneDisplay: "0266 327 19 65", whatsapp: "902663271965", instagram: "", address: "", mapsQuery: "" },
-    hours: { open: "14:00", close: "00:00" }, images: {}, rating: null, texts: {}, gallery: [], events: null, reviews: []
-  };
-  let SITE = FALLBACK;
-  try {
-    const r = await fetch("data/site.json", { cache: "no-cache" });
-    if (r.ok) { const d = await r.json(); SITE = { ...FALLBACK, ...d, contact: { ...FALLBACK.contact, ...(d.contact || {}) }, hours: { ...FALLBACK.hours, ...(d.hours || {}) } }; }
-  } catch (e) { /* site.json okunamadı: temel ayarlarla devam */ }
+  const dataEl = document.getElementById("site-data");
+  const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  if (dataEl) boot(JSON.parse(dataEl.textContent), false);
+  else {
+    getJson("api/site")
+      .then(d => [d, false], () => getJson("data/site.json").then(d => [d, true]))
+      .then(([d, isStatic]) => boot(d, isStatic))
+      .catch(() => {
+        const app = document.getElementById("menuApp");
+        if (app) app.innerHTML = `<p class="menu-empty">${window.I18N.ui.tr.menuError}</p>`;
+      });
+  }
 
-  const hourOf = v => parseInt(String(v || "0").split(":")[0], 10) || 0;
-  const OPEN_H = hourOf(SITE.hours.open);
-  const CLOSE_H = hourOf(SITE.hours.close) || 24;   // 00:00 = gece yarısı
+// isStatic: sunucu yok (GitHub Pages önizlemesi) — yönetim paneli bağlantısı gizlenir
+function boot(SITE, isStatic) {
+  /* ============ AYARLAR — yönetim panelinden ============ */
+  const S = SITE.settings || {};
   const CONFIG = {
-    phone: SITE.contact.phone,
-    whatsapp: SITE.contact.whatsapp,
-    instagram: SITE.contact.instagram,
-    menuUrl: "data/menu.json",
-    openHour: OPEN_H,
-    lastBookingHour: Math.min(23, (CLOSE_H > OPEN_H ? CLOSE_H : 24) - 1)
+    phone: S.phone,
+    whatsapp: S.whatsapp,             // WhatsApp hattı (ülke koduyla, + ve boşluk olmadan)
+    instagram: S.instagram,
+    openTime: S.openTime || "14:00", closeTime: S.closeTime || "00:00",
+    firstBooking: S.firstBooking || "14:00", lastBooking: S.lastBooking || "23:00",   // rezervasyon saat seçenekleri
+    sendWhatsapp: S.sendWhatsapp !== false
   };
   const GALLERY = SITE.gallery || [];
   const REVIEWS = SITE.reviews || [];
-
-  // Panelden gizlenen bölümler: bölüm görünmez olur, ona giden bağlantılar kaldırılır
-  (SITE.hiddenSections || []).forEach(id => {
-    const sec = document.getElementById(id);
-    if (sec) sec.style.display = "none";
-    document.querySelectorAll(`a[href="#${id}"]`).forEach(a => a.remove());
-  });
+  const ROOMS = SITE.rooms || [];
+  const TEXTS = SITE.texts || {};
 
   /* ============ Yardımcılar ============ */
   const $ = (s, el = document) => el.querySelector(s);
@@ -55,12 +54,26 @@
   const waLink = text => `https://wa.me/${CONFIG.whatsapp}?text=${encodeURIComponent(text)}`;
   const openWa = text => window.open(waLink(text), "_blank", "noopener");
 
-  /* ============ Dil ============ */
-  Object.entries(SITE.texts || {}).forEach(([key, v]) => {
-    if (!v) return;
-    if (v.tr) $$(`[data-i18n="${key}"]`).forEach(el => { el.innerHTML = v.tr; });
-    if (v.en) window.I18N.en[key] = v.en;
+  // Panel → Bölümleri göster / gizle: kapatılan bölüm görünmez olur, ona giden bağlantılar kaldırılır
+  const SECTION_IDS = { showStory: "hikaye", showMenu: "menu", showEvents: "etkinlikler", showGallery: "galeri", showStay: "konaklama",
+    showReviews: "yorumlar", showReservation: "rezervasyon", showContact: "iletisim" };
+  Object.entries(SECTION_IDS).forEach(([key, id]) => {
+    if (S[key] !== false) return;
+    document.getElementById(id).hidden = true;
+    $$(`a[href="#${id}"]`).forEach(a => a.remove());
   });
+  $("#adminLink").hidden = !!isStatic;
+
+  /* ============ Dil ============ */
+  // Panelde düzenlenen metinler: Türkçesi sayfaya, İngilizcesi çeviri sözlüğüne yazılır
+  const decodeHtml = s => { const x = document.createElement("textarea"); x.innerHTML = s; return x.value; };
+  $$("[data-i18n]").forEach(el => { const v = TEXTS[el.dataset.i18n]; if (v) el.innerHTML = v.tr; });
+  $$("[data-i18n-placeholder]").forEach(el => { const v = TEXTS[el.dataset.i18nPlaceholder]; if (v) el.placeholder = decodeHtml(v.tr); });
+  Object.entries(TEXTS).forEach(([k, v]) => {
+    if (v.en) window.I18N.en[k] = $(`[data-i18n-placeholder="${k}"]`) ? decodeHtml(v.en) : v.en;
+    else delete window.I18N.en[k];
+  });
+
   const trCache = new Map();
   $$("[data-i18n]").forEach(el => trCache.set(el, el.innerHTML));
   $$("[data-i18n-placeholder]").forEach(el => el.dataset.trPlaceholder = el.placeholder);
@@ -87,73 +100,13 @@
     renderMenu();
     renderSetMenu();
     renderGallery();
+    renderEvents();
+    renderRooms();
+    renderNotice();
     fillGuestOptions();
     updateLiveInfo();
     renderRibbons();
-    applySite();
   }));
-
-
-  /* ============ site.json → sayfa ============ */
-  const hoursText = `${SITE.hours.open} – ${SITE.hours.close}`;
-  function applySite() {
-    const c = SITE.contact;
-    $$('[data-bind="phoneDisplay"]').forEach(el => { el.textContent = c.phoneDisplay; });
-    $$('a[href^="tel:"]').forEach(a => { a.href = "tel:" + c.phone; });
-    if (c.address) $$('[data-bind="address"]').forEach(el => { el.textContent = c.address; });
-    $$('[data-bind="hours"]').forEach(el => { el.textContent = hoursText; });
-    if (c.mapsQuery) {
-      const q = encodeURIComponent(c.mapsQuery);
-      $$('[data-maps="dir"]').forEach(a => { a.href = `https://www.google.com/maps/dir/?api=1&destination=${q}`; });
-      $$('[data-maps="embed"]').forEach(f => { const src = `https://www.google.com/maps?q=${q}&z=16&output=embed`; if (f.getAttribute("src") !== src) f.src = src; });
-    }
-    Object.entries(SITE.images || {}).forEach(([key, src]) => {
-      $$(`[data-img="${key}"]`).forEach(el => {
-        if (el.getAttribute("src") === src || el.dataset.cur === src) return;
-        el.dataset.cur = src;
-        el.removeAttribute("srcset");
-        el.src = /^photo-/.test(src) ? img(src, key === "hero" ? 1920 : 1000) : src;
-      });
-    });
-    const r = SITE.rating;
-    if (r) {
-      $$('[data-bind="ratingScore"]').forEach(el => { el.textContent = r.score; });
-      $$('[data-bind="ratingCount"]').forEach(el => { el.textContent = t(r.count); });
-      const st = $("#ratingStars");
-      if (st) { st.firstElementChild.style.setProperty("--r", r.score); st.setAttribute("aria-label", `5 / ${r.score}`); }
-      $$(".rating__sample").forEach(el => { el.hidden = r.showSampleNote === false; });
-    }
-    renderNotice();
-    renderEvents();
-  }
-
-  // Duyuru: giriş bölümünün üstünde küçük bir şerit (ör. "Bu akşam canlı müzik")
-  function renderNotice() {
-    const an = SITE.announcement, copy = $(".hero__copy");
-    let el = $("#siteNotice");
-    if (!an || !an.on || !t(an.text) || !copy) { if (el) el.remove(); return; }
-    if (!el) {
-      el = document.createElement(an.link ? "a" : "p");
-      el.id = "siteNotice"; el.className = "notice";
-      if (an.link) { el.href = an.link; if (/^https?:/.test(an.link)) { el.target = "_blank"; el.rel = "noopener"; } }
-      copy.prepend(el);
-    }
-    el.textContent = t(an.text);
-  }
-
-  function renderEvents() {
-    const box = $("#eventsList");
-    if (!box || !Array.isArray(SITE.events)) return;
-    box.innerHTML = SITE.events.map(ev => `<article class="event reveal is-visible">
-        ${ev.image ? `<div class="event__media"><img src="${/^photo-/.test(ev.image) ? img(ev.image, 700) + "&h=460" : esc(ev.image)}" loading="lazy" decoding="async" alt="" width="700" height="460"></div>` : ""}
-        <div class="event__body">
-          <span class="event__when">${esc(t(ev.when))}</span>
-          <h3>${esc(t(ev.title))}</h3>
-          <p>${esc(t(ev.desc))}</p>
-          <button type="button" class="btn btn--outline-light btn--sm js-info">${esc(ui().info)}</button>
-        </div>
-      </article>`).join("");
-  }
 
   /* ============ Navigasyon ============ */
   const progress = $("#navProgress");
@@ -209,22 +162,25 @@
   });
 
   /* ============ Menü ============
-     Sayfada: Mutfak / Bar kategori kartları, şefin seçkisi ve arama sonuçları.
+     Sayfada: Mutfak / Bar kategori kartları ve arama sonuçları.
      Bir kategoriye dokununca sağdan kayan panel (drawer) açılır; adres #menu/<id> olur,
      tarayıcının geri tuşu paneli kapatır. */
-  let MENU = null;
+  const MENU = SITE.menu;
   const state = { q: "", diets: new Set() };
   const DIET_FILTERS = ["vejetaryen", "vegan", "glutensiz", "acili"];
   const app = $("#menuApp"), searchEl = $("#menuSearch");
   const drawer = $("#menuDrawer"), drawerPanel = $(".drawer__panel", drawer), drawerContent = $("#drawerContent");
 
   const priceFmt = n => new Intl.NumberFormat("tr-TR").format(n) + " " + (MENU.currency || "₺");
+  // Panel → Menü ayarları → "Fiyatları göster" kapalıysa sitede hiçbir fiyat gösterilmez (fiyatlar silinmez)
+  const showPrices = () => MENU.showPrices !== false;
   const catById = id => MENU.categories.find(c => c.id === id);
   const sectionOf = c => MENU.sections.find(s => s.id === c.section) || MENU.sections[0];
   const catsIn = s => MENU.categories.filter(c => c.section === s.id);
   const countLabel = n => `${n} ${n === 1 ? ui().item : ui().items}`;
 
   function shortPrice(it) {
+    if (!showPrices()) return "";
     if (it.priceText) return t(it.priceText);
     if (it.prices) return ui().from(priceFmt(Math.min(...it.prices.map(p => p.price))));
     return it.price != null ? priceFmt(it.price) : "";
@@ -232,13 +188,13 @@
 
   // Ürün kartı: solda fotoğraf, sağda ad / açıklama / fiyat / etiketler
   function itemHTML(it, cat) {
-    const tags = (it.tags || []).map(tg => `<span class="tag tag--${tg}">${esc(ui().tags[tg] || tg)}</span>`).join("");
-    const single = it.prices ? "" : it.priceText ? esc(t(it.priceText)) : it.price != null ? priceFmt(it.price) : "";
-    const prices = it.prices
+    const tags = (it.soldOut ? `<span class="tag tag--out">${esc(ui().soldOut)}</span>` : "") +
+      (it.tags || []).map(tg => `<span class="tag tag--${tg}">${esc(ui().tags[tg] || tg)}</span>`).join("");
+    const single = it.prices || !showPrices() ? "" : it.priceText ? esc(t(it.priceText)) : it.price != null ? priceFmt(it.price) : "";
+    const prices = it.prices && showPrices()
       ? `<div class="item__prices">${it.prices.map(p => `<span class="item__pchip">${esc(t(p.label))}<b>${priceFmt(p.price)}</b></span>`).join("")}</div>`
       : "";
     const pic = it.image || cat.image;
-    const out = it.soldOut ? `<span class="tag tag--out">${esc(ui().soldOut)}</span>` : "";
     return `<article class="item${it.soldOut ? " is-out" : ""}" data-item="${cat.id}:${cat.items.indexOf(it)}" tabindex="0" role="button" aria-haspopup="dialog" aria-label="${esc(t(it.name))}">
       <div class="item__media">
         <img src="${img(pic, 220)}&h=220" srcset="${img(pic, 220)}&h=220 1x, ${img(pic, 440)}&h=440 2x" width="110" height="110" loading="lazy" decoding="async" alt="${esc(t(it.name))}">
@@ -252,7 +208,7 @@
         ${it.meta ? `<p class="item__meta">${esc(it.meta)}</p>` : ""}
         ${it.desc ? `<p class="item__desc">${esc(t(it.desc))}</p>` : ""}
         ${prices}
-        ${tags || out ? `<div class="tags">${out}${tags}</div>` : ""}
+        ${tags ? `<div class="tags">${tags}</div>` : ""}
       </div>
     </article>`;
   }
@@ -281,7 +237,7 @@
       ${DIET_FILTERS.map(d => `<button type="button" class="chip" data-diet="${d}" aria-pressed="${state.diets.has(d)}">${esc(ui().tags[d])}</button>`).join("")}
     </div>`;
 
-  /* --- Sayfadaki ana görünüm: bölümler, kategori kartları, şefin seçkisi --- */
+  /* --- Sayfadaki ana görünüm: bölümler ve kategori kartları --- */
   function homeHTML() {
     let n = 0;
     const sections = MENU.sections.map((s, si) => {
@@ -310,28 +266,7 @@
       </section>`;
     }).join("");
 
-    const picks = MENU.categories.flatMap(c => c.items.filter(it => (it.tags || []).includes("sef")).map(it => ({ it, c })));
-    const picksHTML = picks.length ? `
-      <section class="picks" aria-labelledby="picksTitle">
-        <header class="picks__head">
-          <h3 id="picksTitle"><span aria-hidden="true">✦</span> ${esc(ui().chefPicks)}</h3>
-          <p>${esc(ui().chefPicksLead)}</p>
-        </header>
-        <div class="picks__track">
-          ${picks.map(({ it, c }) => `
-            <a class="pick" href="#menu/${c.id}">
-              <span class="pick__img"><img src="${img(it.image || c.image, 560)}&h=380" width="560" height="380" loading="lazy" decoding="async" alt=""></span>
-              <span class="pick__body">
-                <span class="pick__cat">${esc(t(c.name))}</span>
-                <span class="pick__name">${esc(t(it.name))}</span>
-                ${it.desc ? `<span class="pick__desc">${esc(t(it.desc))}</span>` : ""}
-                <span class="pick__price">${esc(shortPrice(it))}</span>
-              </span>
-            </a>`).join("")}
-        </div>
-      </section>` : "";
-
-    return `<div class="mhome">${sections}${picksHTML}</div>`;
+    return `<div class="mhome">${sections}</div>`;
   }
 
   /* --- Arama sonuçları (sayfada) --- */
@@ -369,13 +304,17 @@
   }
 
   function renderSetMenu() {
-    if (!MENU || !MENU.setMenu) return;
+    if (!MENU) return;
+    $("#vatNote").hidden = !showPrices();
+    if (!MENU.setMenu) return;
     const s = MENU.setMenu, box = $("#setMenu");
     $("#setMenuTitle").textContent = t(s.title);
     $(".setmenu__desc", box).textContent = t(s.desc);
-    $(".setmenu__list", box).innerHTML = s.items.map(i => `<li>${esc(t(i))}</li>`).join("");
-    $(".setmenu__amount", box).textContent = priceFmt(s.price);
-    $(".setmenu__per", box).textContent = t(s.per);
+    $(".setmenu__desc", box).hidden = !s.desc;
+    $(".setmenu__list", box).innerHTML = (s.items || []).map(i => `<li>${esc(t(i))}</li>`).join("");
+    const priced = showPrices() && s.price != null;
+    $(".setmenu__amount", box).textContent = priced ? priceFmt(s.price) : "";
+    $(".setmenu__per", box).textContent = priced ? t(s.per) : "";
   }
 
   /* --- Yan panel (drawer) --- */
@@ -414,7 +353,7 @@
         <div class="dbody">
           ${hasDiet ? dietChipsHTML() : ""}
           ${items.length ? itemsHTML(items, c) : `<p class="menu-empty">${esc(ui().noDiet)}</p>`}
-          <p class="dnote">${esc(ui().allergen)}</p>
+          <p class="dnote">${esc(ui().allergen)}${showPrices() ? " " + esc(ui().vat) : ""}</p>
           <nav class="dpager" aria-label="${esc(ui().categories)}">
             ${prev ? `<a class="dpager__link" href="#menu/${prev.id}" data-swap><small>← ${esc(ui().prev)}</small><span>${esc(t(prev.name))}</span></a>` : "<span></span>"}
             ${next ? `<a class="dpager__link dpager__link--next" href="#menu/${next.id}" data-swap><small>${esc(ui().next)} →</small><span>${esc(t(next.name))}</span></a>` : "<span></span>"}
@@ -480,9 +419,9 @@
 
   function sheetHTML(cat, it) {
     const pic = it.image || cat.image;
-    const tags = (it.soldOut ? `<span class="tag tag--out">${esc(ui().soldOut)}</span>` : "")
-      + (it.tags || []).map(tg => `<span class="tag tag--${tg}">${esc(ui().tags[tg] || tg)}</span>`).join("");
-    const priceBlock = it.prices
+    const tags = (it.tags || []).map(tg => `<span class="tag tag--${tg}">${esc(ui().tags[tg] || tg)}</span>`).join("");
+    const priceBlock = !showPrices() ? ""
+      : it.prices
       ? `<div class="sheet__prices">${it.prices.map(p => `<div class="sheet__pr"><span>${esc(t(p.label))}</span><b>${priceFmt(p.price)}</b></div>`).join("")}</div>`
       : `<p class="sheet__price">${esc(shortPrice(it))}</p>`;
     const pc = cat.pair && catById(cat.pair);
@@ -566,7 +505,7 @@
       e.preventDefault();
       closeSheet();
       if (drawerCat) requestCloseDrawer();
-      setTimeout(() => $("#rezervasyon").scrollIntoView({ behavior: "smooth" }), drawerCat ? 450 : 50);
+      setTimeout(() => $("#rezervasyon").scrollIntoView(), drawerCat ? 450 : 50);
     }
   });
   sheet.addEventListener("keydown", e => {
@@ -611,7 +550,7 @@
     if (e.target.closest("[data-drawer-book]")) {
       e.preventDefault();
       requestCloseDrawer();
-      setTimeout(() => $("#rezervasyon").scrollIntoView({ behavior: "smooth" }), 450);
+      setTimeout(() => $("#rezervasyon").scrollIntoView(), 450);
     }
   });
 
@@ -651,42 +590,56 @@
     if (e.key === "Escape") { searchEl.value = ""; state.q = ""; renderMenu(); }
   });
 
-  fetch(CONFIG.menuUrl, { cache: "no-cache" })
-    .then(r => { if (!r.ok) throw new Error(r.status); return r.json(); })
-    .then(data => {
-      MENU = data;
-      // Panelde "gizli" işaretlenen kategori, ürün ve fiks menü sitede görünmez
-      MENU.categories = MENU.categories.filter(c => !c.hidden).map(c => ({ ...c, items: c.items.filter(it => !it.hidden) }));
-      if (MENU.setMenu && MENU.setMenu.hidden) MENU.setMenu = null;
-      renderSetMenu();
-      renderMenu();
-      route(false);
-    })
-    .catch(() => { app.innerHTML = `<p class="menu-empty">${esc(ui().menuError)}</p>`; });
+  renderSetMenu();
+  renderMenu();
+  route(false);
 
-  /* ============ Galeri + Lightbox ============ */
-  const galleryEl = $("#gallery"), lb = $("#lightbox"), lbImg = $("img", lb), lbCap = $("figcaption", lb);
-  let lbIndex = 0, lastFocus = null;
+  /* ============ Galeri + Lightbox (fotoğraf ve video) ============ */
+  const galleryEl = $("#gallery"), lb = $("#lightbox"), lbImg = $("img", lb), lbVideo = $("video", lb), lbCap = $("figcaption", lb);
+  let lbIndex = 0, lastFocus = null, lbList = [];
+  const ratioOf = g => { const m = /^(\d+):(\d+)$/.exec(g.ratio || ""); return m ? [+m[1], +m[2]] : [4, 3]; };
 
   function renderGallery() {
+    $("#galeri").hidden = !GALLERY.length || S.showGallery === false;
     galleryEl.innerHTML = GALLERY.map((g, i) => {
-      const w = 600, h = Math.round(w * g.h / g.w);
-      return `<button type="button" class="masonry__item reveal" data-index="${i}" data-caption="${esc(g[lang])}" aria-label="${esc(g[lang])}">
-        <img src="${img(g.src, w)}&h=${h}" srcset="${img(g.src, 400)}&h=${Math.round(400 * g.h / g.w)} 400w, ${img(g.src, w)}&h=${h} 600w"
-             sizes="(max-width: 640px) 100vw, 33vw" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${esc(g[lang])}">
+      const cap = t(g.caption) || "";
+      const [rw, rh] = ratioOf(g), w = 600, h = Math.round(w * rh / rw);
+      const media = g.kind === "video"
+        ? `<video src="${esc(g.src)}#t=0.1"${g.poster ? ` poster="${esc(img(g.poster, w))}"` : ""} muted playsinline preload="metadata" width="${w}" height="${h}"></video>
+           <span class="masonry__play" aria-hidden="true"><svg viewBox="0 0 24 24"><use href="#i-play"/></svg></span>`
+        : `<img src="${img(g.src, w)}&h=${h}" srcset="${img(g.src, 400)}&h=${Math.round(400 * rh / rw)} 400w, ${img(g.src, w)}&h=${h} 600w"
+             sizes="(max-width: 640px) 100vw, 33vw" width="${w}" height="${h}" loading="lazy" decoding="async" alt="${esc(cap)}">`;
+      const label = g.kind === "video" ? ui().playVideo + (cap ? ": " + cap : "") : cap;
+      return `<button type="button" class="masonry__item reveal${g.kind === "video" ? " masonry__item--video" : ""}" data-index="${i}" data-caption="${esc(cap)}" aria-label="${esc(label)}">
+        ${media}
       </button>`;
     }).join("");
     observeReveal(galleryEl);
   }
 
   function showLightbox(i) {
-    lbIndex = (i + GALLERY.length) % GALLERY.length;
-    const g = GALLERY[lbIndex];
-    lbImg.src = img(g.src, 1600);
-    lbImg.alt = g[lang];
-    lbCap.textContent = g[lang];
+    lbIndex = (i + lbList.length) % lbList.length;
+    const g = lbList[lbIndex], cap = t(g.caption) || "";
+    const video = g.kind === "video";
+    lbVideo.pause();
+    lbImg.hidden = video;
+    lbVideo.hidden = !video;
+    if (video) {
+      lbImg.removeAttribute("src");
+      lbVideo.poster = g.poster ? img(g.poster, 1600) : "";
+      lbVideo.src = g.src;
+      lbVideo.play().catch(() => { /* otomatik oynatma engellendi: kullanıcı oynatır */ });
+    } else {
+      lbVideo.removeAttribute("src");
+      lbVideo.load();
+      lbImg.src = img(g.src, 1600);
+      lbImg.alt = cap;
+    }
+    lbCap.textContent = cap;
+    $$(".lightbox__arrow", lb).forEach(a => { a.hidden = lbList.length < 2; });
   }
-  function openLightbox(i) {
+  function openLightbox(list, i) {
+    lbList = list;
     lastFocus = document.activeElement;
     showLightbox(i);
     lb.hidden = false;
@@ -695,12 +648,13 @@
   }
   function closeLightbox() {
     lb.hidden = true;
+    lbVideo.pause();
     document.body.style.overflow = "";
     if (lastFocus) lastFocus.focus();
   }
   galleryEl.addEventListener("click", e => {
     const b = e.target.closest(".masonry__item");
-    if (b) openLightbox(+b.dataset.index);
+    if (b) openLightbox(GALLERY, +b.dataset.index);
   });
   $(".lightbox__close", lb).addEventListener("click", closeLightbox);
   $(".lightbox__arrow--prev", lb).addEventListener("click", () => showLightbox(lbIndex - 1));
@@ -721,10 +675,67 @@
     touchX = null;
   });
 
+  /* ============ Duyuru şeridi (panel → Duyuru şeridi) ============ */
+  function renderNotice() {
+    let el = $("#siteNotice");
+    const text = S.noticeOn ? t(S.noticeText) : "";
+    if (!text) { if (el) el.remove(); return; }
+    if (!el) {
+      el = document.createElement(S.noticeLink ? "a" : "p");
+      el.id = "siteNotice";
+      el.className = "notice";
+      if (S.noticeLink) {
+        el.href = S.noticeLink;
+        if (/^https?:/.test(S.noticeLink)) { el.target = "_blank"; el.rel = "noopener"; }
+      }
+      $(".hero__copy").prepend(el);
+    }
+    el.textContent = text;
+  }
+
+  /* ============ Etkinlikler ============ */
+  function renderEvents() {
+    const el = $("#events"), list = SITE.events || [];
+    $("#etkinlikler").hidden = !list.length || S.showEvents === false;
+    el.innerHTML = list.map(ev => `<article class="event reveal">
+        <div class="event__media"><img src="${img(ev.image, 700)}" loading="lazy" decoding="async" alt="" width="700" height="460"></div>
+        <div class="event__body">
+          ${ev.when ? `<span class="event__when">${esc(t(ev.when))}</span>` : ""}
+          <h3>${esc(t(ev.title))}</h3>
+          ${ev.desc ? `<p>${esc(t(ev.desc))}</p>` : "<p></p>"}
+          <button type="button" class="btn btn--outline-light btn--sm js-info">${esc(ui().info)}</button>
+        </div>
+      </article>`).join("");
+    observeReveal(el);
+  }
+
+  /* ============ Fotoğraf künyesi ============ */
+  function renderCredits() {
+    const list = SITE.credits || [];
+    $(".credits").hidden = !list.length;
+    $("#credits").innerHTML = list.map(c => {
+      const by = [c.author, c.license].filter(Boolean).join(" · ");
+      return `<li>${c.url ? `<a href="${esc(c.url)}" target="_blank" rel="noopener">${esc(c.title)}</a>` : esc(c.title)}${by ? " — " + esc(by) : ""}</li>`;
+    }).join("");
+  }
+
   /* ============ Yorumlar: tek büyük alıntı, kişi seçici, otomatik ilerleme ============ */
   const revStage = $("#reviews"), revPeople = $("#revPeople"), revBar = $("#revBar"), testi = $(".testi");
   let revIndex = 0, revTimer = null;
   const REV_MS = 7000;
+
+  // Puan kutusu (panel → Yorum puanı)
+  const score = Number(S.ratingScore);
+  $("#ratingBox").hidden = S.showRating === false || !Number.isFinite(score);
+  $("#ratingSample").hidden = !S.showSampleNote;
+  if (Number.isFinite(score)) {
+    $(".rating__score").textContent = String(score);
+    $("#ratingStars").setAttribute("aria-label", `5 üzerinden ${score}`);
+    $("#ratingStars > span").style.setProperty("--r", score);
+  }
+  testi.hidden = !REVIEWS.length;
+  if (!REVIEWS.length && $("#ratingBox").hidden) $("#yorumlar").hidden = true;
+  if (REVIEWS.length) {
   revPeople.innerHTML = REVIEWS.map((r, i) =>
     `<button type="button" class="testi__person" data-rev="${i}" aria-label="${esc(r.name)}" aria-pressed="false">${esc(r.name[0])}</button>`).join("");
 
@@ -757,80 +768,298 @@
     touchRevX = null;
   });
   revBar.style.setProperty("--dur", REV_MS + "ms");
+  }
 
-  /* ============ Rezervasyon formu ============ */
-  const form = $("#reserveForm"), formError = $("#formError");
-  const dateInput = form.elements.date, timeSel = form.elements.time, guestSel = form.elements.guests;
+  /* ============ Rezervasyon ============
+     İki form: Rezervasyon bölümünde masa formu (sokak / teras), Konaklama bölümünde odaların yanındaki konaklama formu.
+     Talep önce veritabanına kaydedilir (panel → Rezervasyonlar); ayara göre WhatsApp mesajı da açılır. */
+  const form = $("#reserveForm"), stayForm = $("#stayForm");
+  const TYPE_ON = { sokak: S.typeStreet !== false, teras: S.typeTerrace !== false, konaklama: S.typeStay !== false };
+  $$('input[name="rtype"]', form).forEach(r => { r.closest("label").hidden = !TYPE_ON[r.value]; });
+  form.hidden = !TYPE_ON.sokak && !TYPE_ON.teras;
+  $("#odarezervasyon").hidden = $("#stayLink").hidden = !TYPE_ON.konaklama;
+  const dateInput = form.elements.date, timeSel = form.elements.time;
+  const checkin = stayForm.elements.checkin, checkout = stayForm.elements.checkout;
 
   const today = new Date();
   const iso = d => `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, "0")}-${String(d.getDate()).padStart(2, "0")}`;
-  dateInput.min = iso(today);
-  dateInput.value = iso(today);
+  const tomorrowIso = iso(new Date(today.getTime() + 864e5));
+  dateInput.min = checkin.min = iso(today);
+  dateInput.value = checkin.value = iso(today);
+  checkout.min = checkout.value = tomorrowIso;
+  checkin.addEventListener("change", () => {
+    const next = iso(new Date(new Date(checkin.value + "T00:00").getTime() + 864e5));
+    checkout.min = next;
+    if (checkout.value < next) checkout.value = next;
+    updateStay();
+  });
+  checkout.addEventListener("change", () => updateStay());
 
-  for (let h = CONFIG.openHour; h <= CONFIG.lastBookingHour; h++) {
-    ["00", "30"].forEach(m => {
-      if (h === CONFIG.lastBookingHour && m === "30") return;
-      const v = `${String(h).padStart(2, "0")}:${m}`;
-      timeSel.add(new Option(v, v, false, v === "19:30"));
-    });
+  const rtype = () => form.elements.rtype.value;
+  function setRtype(v) {
+    if (!TYPE_ON[v]) return;
+    form.elements.rtype.value = v;
+    $(".form__error", form).hidden = true;
+  }
+  if (!TYPE_ON[rtype()]) setRtype(TYPE_ON.sokak ? "sokak" : "teras");
+
+  // Saat seçenekleri: panel → Çalışma saatleri → ilk / son rezervasyon saati, yarım saat arayla
+  const toMin = s => { const [h, m] = String(s).split(":").map(Number); return h * 60 + (m || 0); };
+  const fromMin = n => `${String(Math.floor(n / 60) % 24).padStart(2, "0")}:${String(n % 60).padStart(2, "0")}`;
+  const slots = [];
+  for (let m = toMin(CONFIG.firstBooking); m <= toMin(CONFIG.lastBooking); m += 30) slots.push(fromMin(m));
+  slots.forEach(v => timeSel.add(new Option(v, v, false, v === (slots.includes("19:30") ? "19:30" : slots[0]))));
+
+  // Kişi sayısı: seçilen odanın kapasitesini aşamaz
+  const GUESTS = [..."123456789".split(""), "10", "10+"];
+  const guestNum = g => (g === "10+" ? 11 : Number(g));
+  const roomById = id => ROOMS.find(r => String(r.id) === String(id));
+  const selectedRoom = () => roomById(stayForm.elements.room.value);
+  function fillGuests(sel, max) {
+    const current = sel.value || "2";
+    const opts = max ? GUESTS.filter(n => guestNum(n) <= max) : GUESTS;
+    const pick = opts.includes(current) ? current : opts[opts.length - 1];
+    sel.innerHTML = "";
+    opts.forEach(n => sel.add(new Option(ui().guests(n), n, false, n === pick)));
+  }
+  function fillRoomOptions() {
+    const sel = stayForm.elements.room, current = sel.value;
+    sel.innerHTML = "";
+    sel.add(new Option(ui().anyRoom, ""));
+    ROOMS.forEach(r => sel.add(new Option(t(r.name) + (r.capacity ? " · " + ui().roomCap(r.capacity) : ""), String(r.id), false, String(r.id) === current)));
+    $("[data-room-field]", stayForm).hidden = !ROOMS.length;
   }
   function fillGuestOptions() {
-    const current = guestSel.value || "2";
-    guestSel.innerHTML = "";
-    [..."123456789".split(""), "10", "10+"].forEach(n => guestSel.add(new Option(ui().guests(n), n, false, n === current)));
+    fillGuests(form.elements.guests);
+    fillRoomOptions();
+    fillGuests(stayForm.elements.guests, (selectedRoom() || {}).capacity);
+    updateStay();
   }
-  fillGuestOptions();
 
-  form.addEventListener("submit", e => {
-    e.preventDefault();
-    const f = form.elements;
-    const required = [f.name, f.phone, f.date, f.time, f.guests];
+  // Seçili odayı kartlarda işaretle; gece sayısını (ve fiyatlar açıksa toplamı) göster
+  const nightsBetween = (a, b) => (a && b ? Math.round((new Date(b + "T00:00") - new Date(a + "T00:00")) / 864e5) : 0);
+  function updateStay() {
+    const room = selectedRoom();
+    $$(".room", $("#rooms")).forEach(card => {
+      const on = !!room && card.dataset.room === String(room.id);
+      card.classList.toggle("is-selected", on);
+      const b = $("[data-pick-room]", card);
+      if (b) { b.setAttribute("aria-pressed", String(on)); b.textContent = on ? ui().roomSelected : ui().selectRoom; }
+    });
+    const n = nightsBetween(checkin.value, checkout.value);
+    let txt = n > 0 ? ui().nights(n) : "";
+    if (n > 0 && room && room.price != null && showPrices()) txt += " · " + ui().total(priceFmt(room.price * n));
+    $("#stayNights").textContent = txt;
+  }
+  stayForm.elements.room.addEventListener("change", () => {
+    fillGuests(stayForm.elements.guests, (selectedRoom() || {}).capacity);
+    updateStay();
+  });
+  function selectRoom(id) {
+    stayForm.elements.room.value = String(id);
+    stayForm.elements.room.dispatchEvent(new Event("change"));
+    // Form ekranda değilse (mobilde odaların altında) forma kaydır
+    const top = stayForm.getBoundingClientRect().top;
+    if (top < 0 || top > window.innerHeight * 0.6) stayForm.scrollIntoView({ behavior: "smooth", block: "start" });
+  }
+
+  /* --- Oda kartları: fotoğraf kaydırıcısı, kapasite, özellikler, "Bu odayı seç" --- */
+  function renderRooms() {
+    $("#roomsWrap").hidden = !ROOMS.length;
+    $("#stayBook").classList.toggle("stay-book--solo", !ROOMS.length);
+    $("#rooms").innerHTML = ROOMS.map(r => {
+      const name = t(r.name), many = r.images.length > 1;
+      const facts = [r.size, t(r.view)].filter(Boolean);
+      const priced = showPrices() && r.price != null;
+      return `<article class="room reveal" data-room="${r.id}">
+        <div class="room__media">
+          <div class="room__slides" data-slides>
+            ${r.images.map((src, i) => `<button type="button" class="room__slide" data-room-photo="${r.id}:${i}" aria-label="${esc(ui().roomPhotos)}: ${esc(name)}${many ? ` (${i + 1}/${r.images.length})` : ""}">
+              <img src="${img(src, 720)}&h=540" srcset="${img(src, 720)}&h=540 1x, ${img(src, 1440)}&h=1080 2x" width="720" height="540" loading="lazy" decoding="async" alt="${esc(name)}">
+            </button>`).join("")}
+          </div>
+          ${r.capacity ? `<span class="room__cap"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="9" cy="8" r="3.2"/><path d="M3 19c0-3.3 2.7-6 6-6s6 2.7 6 6"/><circle cx="17" cy="9" r="2.4"/><path d="M15.5 13.3A5 5 0 0 1 21 18"/></svg>${esc(ui().roomCap(r.capacity))}</span>` : ""}
+          ${many ? `<button type="button" class="room__arrow room__arrow--prev" data-slide="-1" aria-label="${esc(ui().prevPhoto)}">‹</button>
+          <button type="button" class="room__arrow room__arrow--next" data-slide="1" aria-label="${esc(ui().nextPhoto)}">›</button>
+          <span class="room__dots" aria-hidden="true">${r.images.map((_, i) => `<i${i ? "" : ' class="is-on"'}></i>`).join("")}</span>` : ""}
+        </div>
+        <div class="room__body">
+          <h4 class="room__name">${esc(name)}</h4>
+          ${facts.length ? `<p class="room__facts">${facts.map(x => `<span>${esc(x)}</span>`).join("")}</p>` : ""}
+          ${r.desc ? `<p class="room__desc">${esc(t(r.desc))}</p>` : ""}
+          ${r.features && r.features.length ? `<ul class="room__features">${r.features.map(x => `<li>${esc(t(x))}</li>`).join("")}</ul>` : ""}
+          <div class="room__foot">
+            ${priced ? `<span class="room__price">${priceFmt(r.price)}${r.priceNote ? ` <small>${esc(t(r.priceNote))}</small>` : ""}</span>` : "<span></span>"}
+            ${TYPE_ON.konaklama ? `<button type="button" class="btn btn--navy btn--sm" data-pick-room="${r.id}" aria-pressed="false">${esc(ui().selectRoom)}</button>` : ""}
+          </div>
+        </div>
+      </article>`;
+    }).join("");
+    $$("[data-slides]", $("#rooms")).forEach(track => track.addEventListener("scroll", () => {
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      $$(".room__dots i", track.parentElement).forEach((d, k) => d.classList.toggle("is-on", k === i));
+    }, { passive: true }));
+    observeReveal($("#rooms"));
+    updateStay();
+  }
+  $("#rooms").addEventListener("click", e => {
+    const arrow = e.target.closest("[data-slide]");
+    if (arrow) {
+      const track = $("[data-slides]", arrow.closest(".room__media")), count = track.children.length;
+      const i = Math.round(track.scrollLeft / track.clientWidth);
+      track.scrollTo({ left: ((i + Number(arrow.dataset.slide) + count) % count) * track.clientWidth, behavior: "smooth" });
+      return;
+    }
+    const photo = e.target.closest("[data-room-photo]");
+    if (photo) {
+      const [id, i] = photo.dataset.roomPhoto.split(":"), r = roomById(id);
+      openLightbox(r.images.map(src => ({ src, kind: "image", caption: r.name })), +i);
+      return;
+    }
+    const pick = e.target.closest("[data-pick-room]");
+    if (pick) selectRoom(pick.dataset.pickRoom);
+  });
+
+  // WhatsApp kapalıysa gönder düğmeleri "Rezervasyon Talebi Gönder" olur
+  $$(".js-wa-icon, .js-submit-wa").forEach(el => { el.hidden = !CONFIG.sendWhatsapp; });
+  $$(".js-submit-plain").forEach(el => { el.hidden = CONFIG.sendWhatsapp; });
+
+  function saveReservation(payload) {
+    return fetch("api/reservations", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify(payload),
+      keepalive: true
+    }).then(async r => {
+      const d = await r.json().catch(() => ({}));
+      if (!r.ok) throw d;
+      return d;
+    });
+  }
+
+  // Boş zorunlu alanları işaretler; hepsi doluysa true
+  function checkRequired(els) {
     let ok = true;
-    required.forEach(el => {
+    els.forEach(el => {
       const bad = !el.value.trim();
       el.classList.toggle("is-invalid", bad);
       if (bad) ok = false;
     });
-    if (!ok) {
-      formError.textContent = ui().formError;
-      formError.hidden = false;
-      required.find(el => el.classList.contains("is-invalid")).focus();
+    return ok;
+  }
+  function showFormError(f, msg, el) {
+    const err = $(".form__error", f);
+    err.textContent = msg;
+    err.hidden = false;
+    $(".form__ok", f).hidden = true;
+    if (el) el.focus();
+  }
+
+  // Talebi kaydeder; WhatsApp açıksa hazır mesajı da açar. fieldEls: sunucunun hata verdiği alanları işaretlemek için
+  function sendRequest(f, payload, waLines, fieldEls) {
+    const err = $(".form__error", f), okEl = $(".form__ok", f), u = ui();
+    err.hidden = okEl.hidden = true;
+    const showOk = msg => { okEl.textContent = msg; okEl.hidden = false; };
+    const showFail = d => {
+      showFormError(f, (lang === "tr" && d && d.error) || u.formFail);
+      Object.keys((d && d.fields) || {}).forEach(k => { if (fieldEls[k]) fieldEls[k].classList.add("is-invalid"); });
+    };
+    if (!CONFIG.sendWhatsapp) {
+      const btn = $('button[type="submit"]', f);
+      btn.disabled = true;
+      saveReservation(payload)
+        .then(() => { showOk(u.formSent); f.elements.note.value = ""; })
+        .catch(showFail)
+        .finally(() => { btn.disabled = false; });
       return;
     }
-    formError.hidden = true;
-    const u = ui();
-    const date = new Date(f.date.value + "T00:00").toLocaleDateString(lang === "tr" ? "tr-TR" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
-    const lines = [
-      u.waHello,
-      u.waReserve,
-      "",
-      `• ${u.waName}: ${f.name.value.trim()}`,
-      `• ${u.waPhone}: ${f.phone.value.trim()}`,
-      `• ${u.waDate}: ${date}`,
-      `• ${u.waTime}: ${f.time.value}`,
-      `• ${u.waGuests}: ${u.guests(f.guests.value)}`,
-      `• ${u.waTerrace}: ${f.terrace.value === "yes" ? u.waYes : u.waNo}`
-    ];
-    if (f.note.value.trim()) lines.push(`• ${u.waNote}: ${f.note.value.trim()}`);
-    openWa(lines.join("\n"));
-  });
-  $$("input, select", form).forEach(el => el.addEventListener("input", () => el.classList.remove("is-invalid")));
+    // WhatsApp açılırken kayıt arka planda tamamlanır (açılır pencere engellenmesin diye beklenmez)
+    saveReservation(payload).catch(() => { /* WhatsApp mesajı yine de gider */ });
+    openWa(waLines.join("\n"));
+    showOk(u.formSentWa);
+  }
+  const fmtDay = v => new Date(v + "T00:00").toLocaleDateString(lang === "tr" ? "tr-TR" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 
-  /* ============ WhatsApp / Instagram bağlantıları ============ */
+  // Masa formu (sokak / teras)
+  form.addEventListener("submit", e => {
+    e.preventDefault();
+    const f = form.elements, type = rtype(), u = ui();
+    const required = [f.name, f.phone, f.date, f.time, f.guests];
+    if (!checkRequired(required)) { showFormError(form, u.formError, required.find(el => el.classList.contains("is-invalid"))); return; }
+    const payload = { type, name: f.name.value.trim(), phone: f.phone.value.trim(), note: f.note.value.trim(), lang, website: f.website.value,
+      date: f.date.value, time: f.time.value, guests: f.guests.value };
+    const lines = [u.waHello, u.waReserve[type], "", `• ${u.waName}: ${payload.name}`, `• ${u.waPhone}: ${payload.phone}`,
+      `• ${u.waDate}: ${fmtDay(payload.date)}`, `• ${u.waTime}: ${payload.time}`, `• ${u.waGuests}: ${u.guests(payload.guests)}`];
+    if (payload.note) lines.push(`• ${u.waNote}: ${payload.note}`);
+    sendRequest(form, payload, lines, { name: f.name, phone: f.phone, date: f.date, time: f.time, guests: f.guests, note: f.note });
+  });
+
+  // Konaklama formu (odaların yanında)
+  stayForm.addEventListener("submit", e => {
+    e.preventDefault();
+    const f = stayForm.elements, u = ui();
+    const required = [f.name, f.phone, f.checkin, f.checkout, f.guests];
+    if (!checkRequired(required)) { showFormError(stayForm, u.formErrorStay, required.find(el => el.classList.contains("is-invalid"))); return; }
+    if (f.checkout.value <= f.checkin.value) { f.checkout.classList.add("is-invalid"); showFormError(stayForm, u.formErrorRange, f.checkout); return; }
+    const room = selectedRoom();
+    const payload = { type: "konaklama", name: f.name.value.trim(), phone: f.phone.value.trim(), note: f.note.value.trim(), lang, website: f.website.value,
+      checkin: f.checkin.value, checkout: f.checkout.value, guests: f.guests.value, breakfast: f.breakfast.checked, room: f.room.value };
+    const lines = [u.waHello, u.waReserve.konaklama, "", `• ${u.waName}: ${payload.name}`, `• ${u.waPhone}: ${payload.phone}`];
+    if (room) lines.push(`• ${u.waRoom}: ${t(room.name)}`);
+    lines.push(
+      `• ${u.waCheckin}: ${fmtDay(payload.checkin)}`,
+      `• ${u.waCheckout}: ${fmtDay(payload.checkout)} (${u.nights(nightsBetween(payload.checkin, payload.checkout))})`,
+      `• ${u.waGuests}: ${u.guests(payload.guests)}`,
+      `• ${u.waBreakfast}: ${payload.breakfast ? u.waYes : u.waNoThanks}`
+    );
+    if (payload.note) lines.push(`• ${u.waNote}: ${payload.note}`);
+    sendRequest(stayForm, payload, lines, { name: f.name, phone: f.phone, checkin: f.checkin, checkout: f.checkout, guests: f.guests, room: f.room, note: f.note });
+  });
+  [form, stayForm].forEach(fm => $$("input, select", fm).forEach(el => el.addEventListener("input", () => el.classList.remove("is-invalid"))));
+  fillGuestOptions();
+
+  /* ============ İletişim bilgileri ve bağlantılar (panel → İletişim, Adres, Sosyal medya) ============ */
+  const mapsQ = encodeURIComponent(S.mapsQuery || "Kardias Cunda Ayvalık");
+  const setHref = (el, url) => { if (el.getAttribute("href") !== url) el.setAttribute("href", url); };
+  $$("[data-bind]").forEach(el => {
+    const v = { phoneDisplay: S.phoneDisplay, addressStreet: S.addressStreet, addressCity: S.addressCity,
+      addressFull: [S.addressStreet, S.addressCity].filter(Boolean).join(", "), hoursRange: `${CONFIG.openTime} – ${CONFIG.closeTime}`,
+      storyYear: S.storyYear }[el.dataset.bind];
+    if (v) el.textContent = v;
+  });
+  if (CONFIG.phone) $$(".js-tel").forEach(a => setHref(a, "tel:" + CONFIG.phone));
+  $$(".js-dir").forEach(a => setHref(a, `https://www.google.com/maps/dir/?api=1&destination=${mapsQ}`));
+  const mapFrame = $("#mapFrame"), mapSrc = `https://www.google.com/maps?q=${mapsQ}&z=16&output=embed`;
+  if (mapFrame.getAttribute("src") !== mapSrc) mapFrame.setAttribute("src", mapSrc);
+  if (S.email) {
+    $("#emailRow").hidden = false;
+    $("#emailLink").href = "mailto:" + S.email;
+    $("#emailLink").textContent = S.email;
+  }
+
+  const SOCIAL = [["instagram", "i-ig", "Instagram"], ["facebook", "i-fb", "Facebook"], ["tiktok", "i-tt", "TikTok"], ["youtube", "i-yt", "YouTube"], ["tripadvisor", "i-ta", "Tripadvisor"]];
+  $("#social").innerHTML = SOCIAL.filter(([k]) => S[k]).map(([k, icon, label]) =>
+    `<a href="${esc(S[k])}" target="_blank" rel="noopener" aria-label="${label}"><svg viewBox="0 0 24 24"><use href="#${icon}"/></svg></a>`).join("") +
+    `<a href="#" class="js-wa" aria-label="WhatsApp"><svg viewBox="0 0 24 24"><use href="#i-wa"/></svg></a>` +
+    `<a href="#" class="js-gmaps" target="_blank" rel="noopener" aria-label="Google Maps"><svg viewBox="0 0 24 24"><use href="#i-pin"/></svg></a>`;
+  $$(".js-gmaps").forEach(a => setHref(a, `https://www.google.com/maps/search/?api=1&query=${mapsQ}`));
+
   $$(".js-wa").forEach(a => {
     a.target = "_blank"; a.rel = "noopener";
     a.addEventListener("click", e => { e.preventDefault(); openWa(`${ui().waHello} ${ui().waGeneral}`); });
   });
-  $$(".js-insta").forEach(a => { a.href = CONFIG.instagram; });
-  document.addEventListener("click", e => {
+  $$(".js-insta").forEach(a => {
+    if (CONFIG.instagram) setHref(a, CONFIG.instagram);
+    else (a.closest(".gallery__more") || a).hidden = true;
+  });
+  $("#events").addEventListener("click", e => {
     const b = e.target.closest(".js-info");
     if (!b) return;
     const title = $("h3", b.closest(".event")).textContent;
     openWa(`${ui().waHello} ${ui().waInfo(title)}`);
   });
-  $$(".js-room").forEach(a => a.addEventListener("click", e => { e.preventDefault(); openWa(`${ui().waHello} ${ui().waRoom}`); }));
   $$(".js-terrace").forEach(a => a.addEventListener("click", () => {
-    form.elements.terrace.value = "yes";
+    setRtype("teras");
     if (!form.elements.note.value.includes(ui().waSet)) {
       form.elements.note.value = (ui().waSet + " " + form.elements.note.value).trim();
     }
@@ -838,7 +1067,7 @@
 
   /* ============ Gün batımı & açık/kapalı durumu ============
      Gün batımı, Cunda'nın koordinatları için güneş konumu formülüyle hesaplanır (suncalc yöntemi). */
-  const CUNDA = { lat: 39.335, lng: 26.66 };
+  const CUNDA = { lat: Number.isFinite(S.lat) ? S.lat : 39.335, lng: Number.isFinite(S.lng) ? S.lng : 26.66 };
   const TZ = "Europe/Istanbul";
 
   function sunsetAt(date) {
@@ -856,7 +1085,6 @@
     return new Date((jset + 0.5 - J1970) * dayMs);
   }
   const hm = d => d.toLocaleTimeString("tr-TR", { timeZone: TZ, hour: "2-digit", minute: "2-digit" });
-  const quarter = d => new Date(Math.round(d / 9e5) * 9e5);
 
   function updateLiveInfo() {
     const now = new Date(), u = ui();
@@ -876,14 +1104,15 @@
     $("#sunPhase").textContent = u.phase[phase];
     $("#sunsetHint").textContent = tomorrow ? u.sunHintTomorrow : u.sunHint(Math.round((set - now) / 6e4));
 
-    const times = { arrive: quarter(set - 45 * 6e4), sunset: set, oven: quarter(set.getTime() + 60 * 6e4) };
-    $$("[data-eve]").forEach(el => { el.textContent = hm(times[el.dataset.eve]); });
-
-    const hour = Number(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", hourCycle: "h23" }).format(now));
-    const open = CLOSE_H > OPEN_H ? (hour >= OPEN_H && hour < CLOSE_H) : (hour >= OPEN_H || hour < CLOSE_H);
+    // Açık/kapalı: panel → Çalışma saatleri (kapanış açılıştan önceyse gece yarısını geçiyor demektir)
+    const nowMin = toMin(new Intl.DateTimeFormat("en-GB", { timeZone: TZ, hour: "2-digit", minute: "2-digit", hourCycle: "h23" }).format(now));
+    const o = toMin(CONFIG.openTime);
+    let c = toMin(CONFIG.closeTime);
+    if (c <= o) c += 1440;
+    const open = (nowMin >= o && nowMin < c) || (nowMin + 1440 >= o && nowMin + 1440 < c);
     const status = $("#openStatus");
     status.classList.toggle("is-open", open);
-    status.textContent = open ? u.openNow : u.closedNow(SITE.hours.open);
+    status.textContent = open ? u.openNow : u.closedNow(CONFIG.openTime);
   }
   updateLiveInfo();
   setInterval(updateLiveInfo, 60 * 1000);
@@ -891,7 +1120,8 @@
   /* ============ Kayan yazı şeritleri ============ */
   function renderRibbons() {
     $$("[data-ribbon]").forEach(r => {
-      const words = ui().ribbons[r.dataset.ribbon];
+      const fromPanel = S[r.dataset.ribbon === "a" ? "ribbonA" : "ribbonB"];
+      const words = fromPanel && fromPanel.length ? fromPanel.map(w => t(w)) : ui().ribbons[r.dataset.ribbon];
       const run = words.map(w => `<span class="ribbon__item">${esc(w)}</span>`).join("");
       r.innerHTML = `<div class="ribbon__track">${run}${run}</div>`; // iki kopya: kesintisiz döngü
     });
@@ -927,7 +1157,8 @@
     entries.forEach(en => en.isIntersecting ? hideFloatFor.add(en.target) : hideFloatFor.delete(en.target));
     updateFloat();
   }, { threshold: 0.15 });
-  ["#rezervasyon", "#iletisim"].forEach(sel => { const el = $(sel); if (el) floatObserver.observe(el); });
+  // Formların üstüne binmesin: rezervasyon, konaklama formu ve iletişim görünürken gizlenir
+  ["#rezervasyon", "#stayBook", "#iletisim"].forEach(sel => { const el = $(sel); if (el) floatObserver.observe(el); });
   function updateFloat() {
     floatBook.classList.toggle("is-visible", window.scrollY > window.innerHeight * 0.9 && hideFloatFor.size === 0);
   }
@@ -957,7 +1188,11 @@
   /* ============ Başlat ============ */
   $("#year").textContent = today.getFullYear();
   applyLang();
-  applySite();
   renderGallery();
+  renderEvents();
+  renderRooms();
+  renderCredits();
+  renderNotice();
   observeReveal(document);
+}
 })();

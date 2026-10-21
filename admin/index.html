@@ -1,0 +1,87 @@
+<!doctype html>
+<html lang="tr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="robots" content="noindex, nofollow">
+  <title>Kardias Cunda · Yönetim Paneli</title>
+  <link rel="icon" type="image/png" href="/img/kardias/logo-64.png">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="admin.css">
+</head>
+<body>
+  <!-- Giriş -->
+  <main class="login" id="loginView" hidden>
+    <form class="login__card" id="loginForm" novalidate>
+      <div class="brand brand--dark">
+        <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+        <span>Kardias<small>Yönetim Paneli</small></span>
+      </div>
+      <label class="field"><span>Kullanıcı adı</span><input name="username" autocomplete="username" required maxlength="60"></label>
+      <label class="field"><span>Parola</span><input name="password" type="password" autocomplete="current-password" required maxlength="200"></label>
+      <p class="form-error" id="loginError" role="alert" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit">Giriş yap</button>
+      <a class="login__back" href="/">← Siteye dön</a>
+    </form>
+  </main>
+
+  <!-- Panel -->
+  <div class="shell" id="appView" hidden>
+    <aside class="side" id="side">
+      <div class="side__top">
+        <a class="brand" href="#/">
+          <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+          <span>Kardias<small>Yönetim Paneli</small></span>
+        </a>
+        <button class="side__close" type="button" id="sideClose" aria-label="Menüyü kapat">×</button>
+      </div>
+      <nav class="side__nav" id="sideNav" aria-label="Panel menüsü"></nav>
+      <div class="side__foot">
+        <a class="btn btn--ghost btn--block" href="/" target="_blank" rel="noopener">Siteyi görüntüle ↗</a>
+        <button class="btn btn--link btn--block" type="button" id="logoutBtn">Çıkış yap</button>
+      </div>
+    </aside>
+    <div class="main">
+      <header class="topbar">
+        <button class="burger" type="button" id="burger" aria-label="Menüyü aç"><span></span><span></span><span></span></button>
+        <div class="crumbs" id="crumbs"></div>
+        <span class="who" id="who"></span>
+      </header>
+      <section class="content" id="content" tabindex="-1" aria-live="polite"></section>
+    </div>
+  </div>
+
+  <!-- Kayıt formu penceresi -->
+  <dialog class="modal" id="editModal">
+    <form method="dialog" class="modal__box" id="editForm" novalidate>
+      <header class="modal__head"><h2 id="editTitle"></h2><button class="icon-btn" type="button" data-close aria-label="Kapat">×</button></header>
+      <div class="modal__body" id="editBody"></div>
+      <footer class="modal__foot">
+        <p class="form-error" id="editError" role="alert" hidden></p>
+        <label class="switch"><input type="checkbox" id="editActive" checked><span></span> Sitede göster</label>
+        <button class="btn" type="button" data-close>Vazgeç</button>
+        <button class="btn btn--primary" type="submit" id="editSave">Kaydet</button>
+      </footer>
+    </form>
+  </dialog>
+
+  <!-- Medya seçici -->
+  <dialog class="modal modal--wide" id="mediaModal">
+    <div class="modal__box">
+      <header class="modal__head"><h2 id="mediaTitle">Medya seç</h2><button class="icon-btn" type="button" data-close aria-label="Kapat">×</button></header>
+      <div class="modal__body" id="mediaBody"></div>
+      <footer class="modal__foot">
+        <span class="muted" id="mediaHint"></span>
+        <button class="btn" type="button" data-close>Vazgeç</button>
+        <button class="btn btn--primary" type="button" id="mediaChoose" disabled>Seç</button>
+      </footer>
+    </div>
+  </dialog>
+
+  <div class="toasts" id="toasts" aria-live="assertive"></div>
+
+  <script src="admin.js"></script>
+</body>
+</html>

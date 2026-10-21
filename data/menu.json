@@ -1,25 +1,12 @@
 {
-  "_info": "Kardias Cunda menü verisi. Fiyatları ve ürünleri buradan güncelleyin. price: tek fiyat, prices: birden fazla seçenek, priceText: 'Sorunuz' gibi metin. tags: favori, vejetaryen, vegan, acili, glutensiz, sef. image: ürün fotoğrafı — Unsplash görsel kimliği (photo-...) ya da kendi dosyanızın yolu (ör. img/menu/pizza.jpg). Kategorilerde section (mutfak/bar), kapak görseli image ve pair (ürün detayında \"yanına yakışır\" önerilen kategori) bulunur; sıralama menüdeki sıradır.",
+  "_info": "Kardias Cunda menü verisi. Fiyatları ve ürünleri buradan güncelleyin. showPrices: false iken sitede hiçbir fiyat görünmez (fiyatlar burada saklı kalır), true yapınca hepsi geri gelir.price: tek fiyat, prices: birden fazla seçenek, priceText: 'Sorunuz' gibi metin. tags: favori, vejetaryen, vegan, acili, glutensiz, sef. image: ürün fotoğrafı — Unsplash görsel kimliği (photo-...) ya da kendi dosyanızın yolu (ör. img/menu/pizza.jpg). Kategorilerde section (mutfak/bar), kapak görseli image ve pair (ürün detayında \"yanına yakışır\" önerilen kategori) bulunur; sıralama menüdeki sıradır.",
   "currency": "₺",
+  "showPrices": false,
   "sections": [
     {"id": "mutfak", "name": {"tr": "Mutfak", "en": "Kitchen"}, "desc": {"tr": "Taş fırından, Ege bahçelerinden ve sabah tezgâhından", "en": "From the stone oven, Aegean gardens and the morning catch"}},
     {"id": "bar", "name": {"tr": "Bar", "en": "Bar"}, "desc": {"tr": "Rakı sofrası, Ege bağları ve gün batımı kokteylleri", "en": "Rakı table, Aegean vineyards and sunset cocktails"}}
   ],
   "categories": [
-    {
-      "id": "kahvalti",
-      "pair": "sicak",
-      "section": "mutfak",
-      "image": "photo-1533089860892-a7c6f0a88666",
-      "name": {"tr": "Kahvaltı", "en": "Breakfast"},
-      "note": {"tr": "Otel misafirlerimiz ve dışarıdan gelen misafirlerimiz için, 09:00 – 12:00", "en": "For hotel guests and visitors, 09:00 – 12:00"},
-      "items": [
-        {"name": {"tr": "Serpme Ege Kahvaltısı", "en": "Aegean Breakfast Spread"}, "desc": {"tr": "Ezine ve keçi peynirleri, Ayvalık zeytinleri, ev reçelleri, köy yumurtası, bal-kaymak, söğüş ve sınırsız çay (2 kişilik)", "en": "Ezine & goat cheeses, Ayvalık olives, homemade jams, free-range eggs, honey & clotted cream, fresh vegetables, bottomless tea (for 2)"}, "price": 1450, "tags": ["favori", "vejetaryen"], "image": "photo-1504754524776-8f4f37790ca0"},
-        {"name": {"tr": "Menemen", "en": "Menemen"}, "desc": {"tr": "Köy domatesi, sivri biber ve tereyağında yumurta", "en": "Village tomatoes, green peppers and eggs in butter"}, "price": 320, "tags": ["vejetaryen", "glutensiz"], "image": "photo-1590412200988-a436970781fa"},
-        {"name": {"tr": "Ayvalık Tostu", "en": "Ayvalık Toast"}, "desc": {"tr": "Sucuk, kaşar, salam, turşu, domates ve özel sos; ev yapımı tost ekmeğinde", "en": "Sucuk, kashar, salami, pickles, tomato and house sauce in homemade bread"}, "price": 340, "tags": ["favori"], "image": "photo-1559054663-e8d23213f55c"},
-        {"name": {"tr": "Gözleme", "en": "Gözleme"}, "desc": {"tr": "El açması yufkada peynirli, patatesli veya ıspanaklı", "en": "Hand-rolled flatbread with cheese, potato or spinach"}, "price": 280, "tags": ["vejetaryen"], "image": "photo-1529006557810-274b9b2fc783"}
-      ]
-    },
     {
       "id": "baslangic",
       "pair": "raki",
@@ -255,7 +242,7 @@
     },
     {
       "id": "soguk",
-      "pair": "kahvalti",
+      "pair": "tatli",
       "section": "bar",
       "image": "photo-1621263764928-df1444c5e859",
       "name": {"tr": "Soğuk İçecekler", "en": "Soft Drinks"},

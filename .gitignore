@@ -1,0 +1,8 @@
+# Bağımlılıklar
+node_modules/
+
+# Veritabanı ve yüklenen dosyalar — parola özetleri ve misafir bilgileri içerir, asla GitHub'a gönderilmez
+storage/
+
+*.log
+.env
