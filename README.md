@@ -15,8 +15,10 @@ server/             Sunucu: API, veritabanı, yetkilendirme, dosya yükleme
 storage/            Veritabanı (kardias.db) ve yüklenen dosyalar (uploads/) — YEDEKLEYİN
 tests/              Otomatik testler
 data/menu.json      Yalnızca ilk kurulumda veritabanına aktarılan eski menü
-data/site.json      GitHub Pages önizlemesi için içerik kopyası (npm run export-static üretir)
-static/uploads/     Önizleme için yüklenmiş fotoğrafların kopyası
+data/site.json      GitHub Pages'teki sitenin okuduğu içerik (export-static ya da GitHub Pages paneli üretir)
+data/admin-db.json  GitHub Pages panelinin düzenlediği tam içerik kopyası (gizli kayıtlar ve medya dahil)
+static/uploads/     GitHub Pages'te yayınlanan yüklenmiş fotoğraf ve videolar
+admin/github.js     Sunucu yokken panelin içeriği doğrudan GitHub deposuna kaydetmesi
 ```
 
 ## Çalıştırma
@@ -73,13 +75,27 @@ Hetzner, cPanel'de Node.js uygulaması vb.) kurun:
 - Site HTTPS arkasında çalışmalı; bir proxy (Nginx, Cloudflare vb.) arkasındaysa `TRUST_PROXY=1` verin
 - Ayarlar: `PORT` (varsayılan 3000), `HOST`, `DATA_DIR`, `COOKIE_SECURE` (auto/always), `SESSION_HOURS` (varsayılan 12), `IDLE_MINUTES` (işlem yapılmazsa otomatik çıkış, varsayılan 60)
 
-## GitHub Pages önizlemesi ve GitHub'ı güncelleme
+## GitHub Pages: site ve yönetim paneli
 
-**Önizleme:** https://sibel464.github.io/kardias-cunda/
+**Site:** https://sibel464.github.io/kardias-cunda/
+**Panel:** https://sibel464.github.io/kardias-cunda/admin/
 
-GitHub Pages sunucu çalıştıramaz; önizleme, panelde girilen içeriğin sabit bir kopyasını
-(`data/site.json` ve `static/uploads/`) gösterir. Orada panel açılmaz; rezervasyon formu WhatsApp ile çalışır.
-Panelde içerik değiştirdikten sonra önizlemeyi güncellemek için:
+GitHub Pages sunucu çalıştıramaz; bu yüzden oradaki panel, değişiklikleri doğrudan GitHub deposuna kaydeder
+(`data/admin-db.json`, `data/site.json` ve yüklenen dosyalar için `static/uploads/`). GitHub Pages siteyi
+1–2 dakika içinde yeniden yayınlar. Bilgisayarın açık olması gerekmez.
+
+**Giriş:** kullanıcı adı/parola yerine bir GitHub erişim anahtarı kullanılır. Anahtar oluşturmak için:
+GitHub → Settings → Developer settings → Personal access tokens → **Fine-grained tokens** → *Generate new token*
+- Repository access: **Only select repositories** → `kardias-cunda`
+- Permissions → Repository permissions → **Contents: Read and write**
+
+Anahtar yalnızca girildiği tarayıcıda saklanır; “Çıkış yap” ile silinir. Anahtarı kimseyle paylaşmayın.
+
+**GitHub Pages panelinde olmayanlar:** rezervasyon kayıtları (form WhatsApp ile çalışır), kullanıcılar, güvenlik kayıtları,
+e-posta ile şifre sıfırlama. Videolar en fazla 50 MB olabilir.
+
+**Sunucudaki panelle birlikte kullanım:** iki panel ayrı kopyalar üzerinde çalışır. Sunucudaki içeriği GitHub'a aktarmak için
+aşağıdaki komutlar kullanılır; bu, GitHub Pages panelinde yapılan değişikliklerin **üzerine yazar**:
 
     npm run export-static
     git add -A

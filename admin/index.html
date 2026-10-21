@@ -5,7 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <meta name="robots" content="noindex, nofollow">
   <title>Kardias Cunda · Yönetim Paneli</title>
-  <link rel="icon" type="image/png" href="/img/kardias/logo-64.png">
+  <link rel="icon" type="image/png" href="../img/kardias/logo-64.png">
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=DM+Sans:opsz,wght@9..40,400;9..40,500;9..40,700&family=Fraunces:opsz,wght@9..144,500;9..144,600&display=swap" rel="stylesheet">
@@ -16,7 +16,7 @@
   <main class="login" id="loginView" hidden>
     <form class="login__card" id="loginForm" novalidate>
       <div class="brand brand--dark">
-        <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+        <img src="../img/kardias/logo-144.png" width="48" height="48" alt="">
         <span>Kardias<small>Yönetim Paneli</small></span>
       </div>
       <label class="field"><span>Kullanıcı adı</span><input name="username" autocomplete="username" required maxlength="60"></label>
@@ -25,13 +25,19 @@
       <p class="form-error" id="loginError" role="alert" hidden></p>
       <button class="btn btn--primary btn--block" type="submit">Giriş yap</button>
       <button class="login__link" type="button" id="forgotOpen">Şifremi unuttum</button>
-      <a class="login__back" href="/">← Siteye dön</a>
+      <p class="login__text" id="ghHelp" hidden>
+        Bu panel, değişiklikleri doğrudan <strong id="ghRepo"></strong> GitHub deposuna kaydeder; site 1–2 dakika içinde güncellenir.
+        Giriş için depoya yazma izni olan bir erişim anahtarı gerekir:
+        <a href="https://github.com/settings/personal-access-tokens/new" target="_blank" rel="noopener">GitHub'da anahtar oluşturun</a>
+        (Repository access: yalnızca bu depo · Permissions → Contents: Read and write). Anahtar bu tarayıcıda hatırlanır; “Çıkış yap” ile silinir.
+      </p>
+      <a class="login__back" href="../">← Siteye dön</a>
     </form>
 
     <!-- Şifremi unuttum: 1) kullanıcı adı / e-posta → koda e-posta  2) kod + yeni parola -->
     <form class="login__card" id="forgotForm" novalidate hidden>
       <div class="brand brand--dark">
-        <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+        <img src="../img/kardias/logo-144.png" width="48" height="48" alt="">
         <span>Şifremi unuttum<small>Yönetim Paneli</small></span>
       </div>
       <div id="forgotStep1">
@@ -56,14 +62,14 @@
     <aside class="side" id="side">
       <div class="side__top">
         <a class="brand" href="#/">
-          <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+          <img src="../img/kardias/logo-144.png" width="48" height="48" alt="">
           <span>Kardias<small>Yönetim Paneli</small></span>
         </a>
         <button class="side__close" type="button" id="sideClose" aria-label="Menüyü kapat">×</button>
       </div>
       <nav class="side__nav" id="sideNav" aria-label="Panel menüsü"></nav>
       <div class="side__foot">
-        <a class="btn btn--ghost btn--block" href="/" target="_blank" rel="noopener">Siteyi görüntüle ↗</a>
+        <a class="btn btn--ghost btn--block" href="../" target="_blank" rel="noopener">Siteyi görüntüle ↗</a>
         <button class="btn btn--link btn--block" type="button" id="logoutBtn">Çıkış yap</button>
       </div>
     </aside>
@@ -106,6 +112,7 @@
 
   <div class="toasts" id="toasts" aria-live="assertive"></div>
 
+  <script src="github.js"></script>
   <script src="admin.js"></script>
 </body>
 </html>

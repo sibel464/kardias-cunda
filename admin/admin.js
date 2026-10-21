@@ -1,5 +1,6 @@
 /* Kardias Cunda — yönetim paneli (tek sayfa uygulama).
-   Formlar sunucudaki şemadan (/api/admin/schema) otomatik üretilir; tüm işlemler /api/admin üzerinden veritabanına yazılır. */
+   Formlar sunucudaki şemadan (/api/admin/schema) otomatik üretilir; tüm işlemler /api/admin üzerinden veritabanına yazılır.
+   Sunucu yoksa (GitHub Pages) aynı istekleri github.js karşılar ve içeriği doğrudan GitHub deposuna kaydeder. */
 (() => {
   "use strict";
 
@@ -25,7 +26,8 @@
     return el;
   }
 
-  const imgUrl = (v, w = 400) => !v ? "" : /^photo-/.test(v) ? `https://images.unsplash.com/${v}?w=${w}&q=70&auto=format&fit=crop` : v.startsWith("/") ? v : "/" + v;
+  const imgUrl = (v, w = 400) => !v ? "" : /^photo-/.test(v) ? `https://images.unsplash.com/${v}?w=${w}&q=70&auto=format&fit=crop`
+    : state.gh ? state.gh.fileUrl(v.startsWith("/") ? v : "../" + v) : v.startsWith("/") ? v : "/" + v;
   const isVideo = v => /\.(mp4|webm)$/i.test(v || "");
   const money = n => n == null ? "" : new Intl.NumberFormat("tr-TR").format(n) + " ₺";
   const tr = v => (v && typeof v === "object" ? v.tr : v) || "";
@@ -48,9 +50,17 @@
   }
 
   /* ============ API ============ */
-  const state = { csrf: null, user: null, schema: null, lists: {} };
+  // gh: GitHub Pages modunda github.js (window.KardiasGitHub); sunucuda null
+  const state = { csrf: null, user: null, schema: null, lists: {}, gh: null };
+  const savedMsg = () => state.gh ? "Kaydedildi — site 1–2 dakika içinde güncellenir." : "Kaydedildi — sitede güncellendi.";
 
   async function api(method, url, body, { quiet401 = false } = {}) {
+    if (state.gh) {
+      try { return await state.gh.request(method, url, body); } catch (ex) {
+        if (ex.status === 401 && !quiet401) showLogin("Oturumunuz kapandı, lütfen tekrar giriş yapın.");
+        throw ex;
+      }
+    }
     const headers = {};
     if (state.csrf && method !== "GET") headers["X-CSRF-Token"] = state.csrf;
     let payload;
@@ -69,6 +79,7 @@
 
   // Dosya yükleme (ilerleme çubuğu için XMLHttpRequest)
   function uploadFiles(files, onProgress) {
+    if (state.gh) return state.gh.upload(files, onProgress);
     return new Promise((resolve, reject) => {
       const fd = new FormData();
       [...files].forEach(f => fd.append("files", f));
@@ -106,7 +117,7 @@
     const err = $("#loginError");
     err.hidden = !msg;
     err.textContent = msg || "";
-    setTimeout(() => $("#loginForm").username.focus(), 30);
+    setTimeout(() => (state.gh ? $("#loginForm").password : $("#loginForm").username).focus(), 30);
   }
 
   $("#loginForm").addEventListener("submit", async e => {
@@ -115,7 +126,8 @@
     err.hidden = true;
     btn.disabled = true;
     try {
-      const d = await api("POST", "/login", { username: f.username.value.trim(), password: f.password.value }, { quiet401: true });
+      const d = state.gh ? await state.gh.login(f.password.value)
+        : await api("POST", "/login", { username: f.username.value.trim(), password: f.password.value }, { quiet401: true });
       f.password.value = "";
       await start(d);
     } catch (ex) {
@@ -204,10 +216,14 @@
     ["Sistem", [["#/medya", "Medya kütüphanesi"], ["#/ayar/seo", "Arama motorları (SEO)"], ["#/kullanicilar", "Kullanıcılar"], ["#/hesap", "Hesabım"], ["#/guvenlik", "Güvenlik kayıtları", "secBadge"], ["#/eposta", "E-posta gönderimi"]]]
   ];
 
+  // GitHub Pages'te sunucu gerektiren bölümler (rezervasyon kayıtları, kullanıcılar, güvenlik, e-posta) yok
+  const GH_HIDDEN = new Set(["#/rezervasyonlar", "#/kullanicilar", "#/hesap", "#/guvenlik", "#/eposta"]);
+  const navGroups = () => state.gh ? NAV.map(([g, links]) => [g, links.filter(l => !GH_HIDDEN.has(l[0]))]) : NAV;
+
   function buildNav() {
     const nav = $("#sideNav");
     // Her başlık açılır-kapanır; aynı anda yalnızca biri açık kalır
-    nav.replaceChildren(...NAV.map(([group, links]) => h("details.side__sec", { name: "sidenav" },
+    nav.replaceChildren(...navGroups().map(([group, links]) => h("details.side__sec", { name: "sidenav" },
       h("summary.side__group", null, h("span", null, group), h("span.side__dot", { hidden: true })),
       ...links.map(([href, label, badge]) => h("a", { href }, h("span", null, label), badge ? h("span.badge", { id: badge, hidden: true }) : null))
     )));
@@ -296,20 +312,23 @@
   async function viewDashboard(page) {
     const s = await refreshBadge() || await api("GET", "/stats");
     const stat = (href, n, label, hot) => h("a.stat", { href, class: hot ? "stat--hot" : "" }, h("b", null, String(n)), h("span", null, label));
+    const gh = !!state.gh;
     page.append(
-      pageHead("Genel bakış", `Hoş geldiniz, ${state.user.username}. Burada yaptığınız her değişiklik kaydedildiği anda sitede görünür.`,
-        h("a.btn.btn--primary", { href: "/", target: "_blank", rel: "noopener" }, "Siteyi aç ↗")),
-      securityCard(s.security),
+      pageHead("Genel bakış", gh
+        ? `Hoş geldiniz, ${state.user.username}. Değişiklikler GitHub'a kaydedilir ve 1–2 dakika içinde sitede görünür.`
+        : `Hoş geldiniz, ${state.user.username}. Burada yaptığınız her değişiklik kaydedildiği anda sitede görünür.`,
+        h("a.btn.btn--primary", { href: "../", target: "_blank", rel: "noopener" }, "Siteyi aç ↗")),
+      gh ? null : securityCard(s.security),
       h("div.stats", null,
-        stat("#/rezervasyonlar?status=yeni", s.reservationsNew, "Yeni rezervasyon talebi", s.reservationsNew > 0),
-        stat("#/rezervasyonlar", s.reservationsUpcoming, "Yaklaşan rezervasyon"),
+        gh ? null : stat("#/rezervasyonlar?status=yeni", s.reservationsNew, "Yeni rezervasyon talebi", s.reservationsNew > 0),
+        gh ? null : stat("#/rezervasyonlar", s.reservationsUpcoming, "Yaklaşan rezervasyon"),
         stat("#/e/items", s.items, "Menüdeki ürün"),
         stat("#/e/categories", s.categories, "Menü kategorisi"),
         stat("#/e/rooms", s.rooms, "Konaklama odası"),
         stat("#/e/gallery", s.gallery, "Galeri öğesi"),
         stat("#/e/events", s.events, "Etkinlik"),
         stat("#/medya", s.media, "Yüklenen dosya")),
-      h("div.card", null,
+      gh ? null : h("div.card", null,
         h("h2", null, "Son rezervasyon talepleri"),
         s.latest.length ? s.latest.map(r => resSummary(r)) : h("p.muted", null, "Henüz rezervasyon talebi yok. Sitedeki formdan gelen talepler burada görünür."),
         s.latest.length ? h("a.btn", { href: "#/rezervasyonlar" }, "Tümünü gör →") : null),
@@ -525,7 +544,7 @@
       editCtx.saved = saved;
       state.lists[type] = null;
       editModal.close();
-      toast("Kaydedildi — sitede güncellendi.", "ok");
+      toast(savedMsg(), "ok");
       const page = $("#content > div");
       if (page && parseHash().path === "/e/" + type) page.dispatchEvent(new Event("entity-saved"));
     } catch (ex) {
@@ -755,7 +774,7 @@
     const drop = h("div.drop", null,
       h("p", null, "Dosyaları buraya sürükleyin ya da"),
       h("button.btn.btn--primary", { type: "button", onclick: () => input.click() }, "Bilgisayardan seç"),
-      h("p.muted", { style: "margin:10px 0 0" }, "Görsel: JPG, PNG, WEBP, GIF, AVIF (en fazla 15 MB) · Video: MP4, WEBM (en fazla 200 MB)"),
+      h("p.muted", { style: "margin:10px 0 0" }, `Görsel: JPG, PNG, WEBP, GIF, AVIF (en fazla 15 MB) · Video: MP4, WEBM (en fazla ${state.gh ? 50 : 200} MB)`),
       input, progress, status);
     const send = async files => {
       if (!files.length) return;
@@ -790,7 +809,7 @@
     const load = async () => {
       const list = (await api("GET", "/media")).filter(m => filter === "all" || m.kind === filter);
       grid.replaceChildren(...(list.length ? list.map(m => h("div.tile", null,
-        h("a.tile__media", { href: m.path, target: "_blank", rel: "noopener" }, mediaThumb(m.path, 300)),
+        h("a.tile__media", { href: imgUrl(m.path), target: "_blank", rel: "noopener" }, mediaThumb(m.path, 300)),
         m.kind === "video" ? h("span.tile__kind", null, "Video") : null,
         h("div.tile__meta", { title: m.name }, `${m.name || m.path} · ${fmtSize(m.size)}`),
         h("div.tile__del", null, h("button.icon-btn", {
@@ -824,7 +843,7 @@
       btn.disabled = true;
       try {
         await api("PUT", `/settings/${group}`, body);
-        toast("Kaydedildi — sitede güncellendi.", "ok");
+        toast(savedMsg(), "ok");
       } catch (ex) {
         const fields = (ex.data && ex.data.fields) || {};
         controls.forEach(c => { if (fields[c.field.key]) c.setError(fields[c.field.key]); });
@@ -1195,12 +1214,34 @@
   }
 
   /* ============ Başlat ============ */
-  api("GET", "/me", undefined, { quiet401: true }).then(start).catch(ex => {
-    // Sunucu yoksa (ör. GitHub Pages önizlemesi) panel çalışamaz
-    if (ex.status !== 401) {
-      showLogin("Yönetim paneli bu adreste çalışmıyor. Panel yalnızca sitenin kendi sunucusunda (npm start) açılır; GitHub Pages önizlemesinde kullanılamaz.");
+  // GitHub Pages girişi: kullanıcı adı/parola yerine depoya yazma izni olan GitHub erişim anahtarı
+  function useGitHub(gh) {
+    state.gh = gh;
+    const f = $("#loginForm");
+    f.username.closest("label").hidden = true;
+    f.password.closest("label").querySelector("span").textContent = "GitHub erişim anahtarı";
+    f.password.autocomplete = "off";
+    f.password.placeholder = "github_pat_…";
+    $("#forgotOpen").hidden = true;
+    $("#ghHelp").hidden = false;
+    $("#ghRepo").textContent = `${gh.target().owner}/${gh.target().repo}`;
+  }
+
+  api("GET", "/me", undefined, { quiet401: true }).then(start).catch(async ex => {
+    if (ex.status === 401) return showLogin();
+    // Sunucu yok (ör. GitHub Pages): panel içeriği doğrudan GitHub deposuna kaydeder
+    const gh = window.KardiasGitHub;
+    if (!gh || !gh.available()) {
+      showLogin("Yönetim paneli bu adreste çalışmıyor. Panel sitenin kendi sunucusunda (npm start) ya da GitHub Pages'te açılır.");
       $("#loginForm button[type=submit]").disabled = true;
       return;
+    }
+    useGitHub(gh);
+    const token = gh.savedToken();
+    if (token) {
+      try { return await start(await gh.login(token)); } catch (e) {
+        return showLogin(e.status === 401 ? "Kayıtlı erişim anahtarının süresi dolmuş; yenisini yapıştırın." : e.message);
+      }
     }
     showLogin();
   });

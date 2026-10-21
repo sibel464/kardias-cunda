@@ -7,6 +7,11 @@
      i18nlist                                               → [{ tr, en }, …] satır listesi
      prices                                                 → [{ label: { tr, en }, price }, …]
      ref                                                    → başka bir tablodaki kayıt (id) */
+// Hem sunucuda (require) hem tarayıcıda (GitHub Pages paneli: window.KardiasSchema) çalışır
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.KardiasSchema = factory();
+})(typeof self !== "undefined" ? self : this, function () {
 
 const TAGS = ["favori", "vejetaryen", "vegan", "acili", "glutensiz", "sef"];
 const TAG_LABELS = { favori: "Favori", vejetaryen: "Vejetaryen", vegan: "Vegan", acili: "Acılı", glutensiz: "Glutensiz", sef: "Şefin önerisi" };
@@ -257,4 +262,5 @@ function columnsOf(f) {
 
 const JSON_TYPES = new Set(["tags", "i18nlist", "prices", "images"]);
 
-module.exports = { ENTITIES, SETTINGS, SETTING_FIELDS, TAGS, columnsOf, JSON_TYPES };
+return { ENTITIES, SETTINGS, SETTING_FIELDS, TAGS, columnsOf, JSON_TYPES };
+});

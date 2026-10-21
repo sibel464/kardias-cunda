@@ -1,4 +1,9 @@
 /* Girdi doğrulama: şemadaki alan tanımına göre gelen veriyi temizler, hataları alan bazında döndürür */
+// Hem sunucuda (require) hem tarayıcıda (GitHub Pages paneli: window.KardiasValidate) çalışır
+(function (root, factory) {
+  if (typeof module === "object" && module.exports) module.exports = factory();
+  else root.KardiasValidate = factory();
+})(typeof self !== "undefined" ? self : this, function () {
 
 const IMAGE_RE = [
   /^\/uploads\/[a-z0-9-]+\.(jpe?g|png|webp|gif|avif)$/,   // panelden yüklenen
@@ -194,4 +199,5 @@ function safeInlineHtml(s) {
     .replace(/\n/g, "<br>");
 }
 
-module.exports = { validate, ValidationError, escapeHtml, safeInlineHtml, isImage, isVideo };
+return { validate, ValidationError, escapeHtml, safeInlineHtml, isImage, isVideo };
+});

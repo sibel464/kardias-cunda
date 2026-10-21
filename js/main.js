@@ -6,7 +6,8 @@
   "use strict";
 
   const dataEl = document.getElementById("site-data");
-  const getJson = url => fetch(url).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
+  // no-cache: panelde yapılan değişiklik (GitHub Pages yeniden yayınlayınca) eski kopya beklenmeden görünsün
+  const getJson = url => fetch(url, { cache: "no-cache" }).then(r => { if (!r.ok) throw new Error(r.status); return r.json(); });
   if (dataEl) boot(JSON.parse(dataEl.textContent), false);
   else {
     getJson("api/site")
