@@ -127,6 +127,8 @@ const SETTINGS = [
     fields: [
       { key: "phone", type: "tel", label: "Telefon (arama bağlantısı)", required: true, help: "Ülke koduyla: +902663271965" },
       { key: "phoneDisplay", type: "text", label: "Telefon (görünen)", required: true, max: 30, help: "Ör: 0266 327 19 65" },
+      { key: "phone2", type: "tel", label: "İkinci telefon (arama bağlantısı)", help: "Rezervasyon bölümündeki ikinci “Bizi arayın” kutusu. Boş bırakılırsa kutu gizlenir. Ör: +905324112938" },
+      { key: "phone2Display", type: "text", label: "İkinci telefon (görünen)", max: 30, help: "Ör: 0532 411 29 38" },
       { key: "whatsapp", type: "digits", label: "WhatsApp numarası", required: true, help: "Ülke koduyla, + ve boşluk olmadan: 905xxxxxxxxx" },
       { key: "email", type: "email", label: "E-posta" }
     ]
@@ -192,11 +194,11 @@ const SETTINGS = [
     fields: [
       { key: "logo", type: "image", label: "Logo", help: "Üst menüde ve sayfa altında yuvarlak olarak görünür. Kare (ör. 512×512) bir görsel yükleyin; boşsa varsayılan Kardias logosu kullanılır." },
       { key: "heroImage", type: "image", label: "Giriş (hero) görseli", required: true },
-      { key: "storyImage", type: "image", label: "Hikâyemiz — büyük görsel", required: true },
-      { key: "storyInset", type: "image", label: "Hikâyemiz — küçük görsel", required: true },
+      { key: "storyImage", type: "image", label: "Hikâyemiz — 1. fotoğraf", required: true },
+      { key: "storyInset", type: "image", label: "Hikâyemiz — 2. fotoğraf", required: true },
+      { key: "storyThird", type: "image", label: "Hikâyemiz — 3. fotoğraf", required: true },
       { key: "stayImage", type: "image", label: "Konaklama — büyük görsel", required: true },
-      { key: "stayInset", type: "image", label: "Konaklama — küçük görsel", required: true },
-      { key: "storyYear", type: "text", label: "Hikâyemiz rozetindeki yıl", max: 10 }
+      { key: "stayInset", type: "image", label: "Konaklama — küçük görsel", required: true }
     ]
   },
   {

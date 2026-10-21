@@ -56,7 +56,41 @@ function migrate(db) {
       target TEXT,
       at TEXT NOT NULL DEFAULT (datetime('now'))
     );
+    -- E-postayla gönderilen tek kullanımlık kodlar (parola sıfırlama, e-posta doğrulama); kodun kendisi saklanmaz
+    CREATE TABLE IF NOT EXISTS auth_codes (
+      id INTEGER PRIMARY KEY,
+      user_id INTEGER NOT NULL REFERENCES users(id) ON DELETE CASCADE,
+      purpose TEXT NOT NULL CHECK (purpose IN ('reset', 'verify')),
+      code_hash TEXT NOT NULL,
+      email TEXT NOT NULL,
+      attempts INTEGER NOT NULL DEFAULT 0,
+      expires_at INTEGER NOT NULL,
+      created_at TEXT NOT NULL DEFAULT (datetime('now'))
+    );
+    -- Güvenlik kayıtları: girişler, hatalı denemeler, kilitlenmeler, parola ve e-posta işlemleri
+    CREATE TABLE IF NOT EXISTS security_log (
+      id INTEGER PRIMARY KEY,
+      at TEXT NOT NULL DEFAULT (datetime('now')),
+      event TEXT NOT NULL,
+      level TEXT NOT NULL DEFAULT 'info' CHECK (level IN ('info', 'warn', 'alert')),
+      user_id INTEGER,
+      username TEXT,
+      ip TEXT,
+      ua TEXT,
+      detail TEXT
+    );
+    CREATE INDEX IF NOT EXISTS idx_security_log_at ON security_log(at);
+    -- Siteye hiç gönderilmeyen ayarlar (ör. e-posta sunucusu parolası)
+    CREATE TABLE IF NOT EXISTS private_settings (key TEXT PRIMARY KEY, value TEXT NOT NULL);
   `);
+  const userCols = new Set(db.prepare("PRAGMA table_info(users)").all().map(r => r.name));
+  if (!userCols.has("email")) db.exec("ALTER TABLE users ADD COLUMN email TEXT");
+  if (!userCols.has("email_verified_at")) db.exec("ALTER TABLE users ADD COLUMN email_verified_at TEXT");
+  // Oturumlar: son işlem zamanı (hareketsizlikte otomatik çıkış) ve hangi cihazdan açıldığı
+  const sessCols = new Set(db.prepare("PRAGMA table_info(sessions)").all().map(r => r.name));
+  if (!sessCols.has("last_seen")) db.exec("ALTER TABLE sessions ADD COLUMN last_seen INTEGER");
+  if (!sessCols.has("ip")) db.exec("ALTER TABLE sessions ADD COLUMN ip TEXT");
+  if (!sessCols.has("ua")) db.exec("ALTER TABLE sessions ADD COLUMN ua TEXT");
 
   // İçerik tabloları şemadan oluşturulur; şemaya sonradan eklenen alanlar mevcut tabloya sütun olarak eklenir
   for (const def of Object.values(ENTITIES)) {

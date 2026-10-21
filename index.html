@@ -173,32 +173,24 @@
       <div class="container story">
         <div class="story__text reveal">
           <p class="eyebrow" data-i18n="story.eyebrow">Hikâyemiz</p>
-          <h2 class="h2" data-i18n="story.title">Rum mahallesinde, <em>yüz yıllık</em> bir taş evde</h2>
-          <p class="lead-p" data-i18n="story.p1">Kardias, Cunda'nın eski Rum mahallesinin en tepesinde, 19. yüzyıldan kalma bir taş evde yaşıyor. Kalın duvarları, ahşap kepenkleri ve kemerli pencereleriyle bu ev; adanın balıkçılarını, zeytin tüccarlarını ve uzun yaz akşamlarını görmüş.</p>
-          <p data-i18n="story.p2">Biz de o akşamları geri getirmek istedik. Taş fırında her gün yoğrulan hamur, elde açılan makarnalar, Ayvalık'ın otları ve zeytinyağıyla hazırlanan mezeler… Hepsi, limana ve meydana bakan terasımızda, güneş denize inerken sofraya geliyor.</p>
-          <p class="story__sign" data-i18n="story.sign">— Kardias ailesi</p>
+          <h2 class="h2" data-i18n="story.title">Bazı yerler keşfedilir, <em>bazıları hatırlanır.</em></h2>
+          <p data-i18n="story.p2">Cunda'nın taş sokaklarından, kendine özgü mimarisinden ve Ege'nin sakinliğinden ilham aldık. Buraya gelen herkesin kendine ait güzel bir anı biriktirebileceği bir yer olsun istedik.</p>
+          <p data-i18n="story.p3">Bugün Kardias; konaklayabileceğiniz sıcak odaları, sokak arasındaki masaları ve gün batımını izleyebileceğiniz terasıyla Cunda'da sizi bekliyor.</p>
+          <p data-i18n="story.p4">Özenle hazırlanan pizzalarımız, makarnalarımız, seçkin lezzetlerimiz ve keyifli kokteyllerimizle güzel anlarınıza eşlik ediyoruz.</p>
+          <p data-i18n="story.p5">Bazen güzel bir akşam yemeği, bazen uzun bir sohbet, bazen de yeni bir yerde uyanmanın verdiği mutluluk… Bizim için Kardias'ı özel kılan, bütün bu küçük anların bir araya gelmesi.</p>
+          <p class="story__sign" data-i18n="story.sign">Cunda'da kendinize güzel bir anı bırakmanız dileğiyle.</p>
 
-          <ul class="pillars">
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 18h18M5 18c0-4 3-7 7-7s7 3 7 7M12 8V4M7 9 5 7m12 2 2-2" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <span><strong data-i18n="feat.1.t">Limana bakan teras</strong><small data-i18n="feat.1.d">Adanın en güzel gün batımı</small></span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 20h18M5 20V11a7 7 0 0 1 14 0v9M9 20v-4a3 3 0 0 1 6 0v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"/></svg>
-              <span><strong data-i18n="feat.2.t">Taş fırın, günlük hamur</strong><small data-i18n="feat.2.d">Her sabah yoğrulur, odun ateşinde pişer</small></span>
-            </li>
-            <li>
-              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-leaf"/></svg>
-              <span><strong data-i18n="feat.3.t">Ayvalık zeytinyağı</strong><small data-i18n="feat.3.d">Mezelerden tatlıya, sofranın her köşesinde</small></span>
-            </li>
-          </ul>
         </div>
         <figure class="story__media reveal">
-          <div class="arch">
-            <img data-img="storyImage" src="img/cunda/tas-ev.jpg" loading="lazy" decoding="async" alt="Cunda'da mavi kepenkli eski bir taş Rum evi" width="1200" height="900">
+          <!-- Üç fotoğraf arasında oklarla / noktalarla / kaydırarak geçilir (js/main.js) -->
+          <div class="arch story__slider" id="storySlider" aria-roledescription="carousel" aria-label="Kardias fotoğrafları">
+            <img class="story__slide is-active" data-img="storyImage" src="img/kardias/sef-omur-pizzalar.jpg" loading="lazy" decoding="async" alt="Şefimiz Ömür Kayaöz, taş fırın pizzalarla" width="1117" height="1408">
+            <img class="story__slide" data-img="storyInset" src="img/kardias/pizza-ravioli-kokteyl.jpg" loading="lazy" decoding="async" alt="Pizza, ravioli ve martini" width="605" height="797">
+            <img class="story__slide" data-img="storyThird" src="img/kardias/oda-k-yastik.jpg" loading="lazy" decoding="async" alt="Kardias odasında K harfli yastık" width="465" height="662">
+            <button type="button" class="story__arrow story__arrow--prev" aria-label="Önceki fotoğraf">‹</button>
+            <button type="button" class="story__arrow story__arrow--next" aria-label="Sonraki fotoğraf">›</button>
+            <div class="story__dots"></div>
           </div>
-          <img class="story__inset" data-parallax="0.08" data-img="storyInset" src="img/cunda/gullu-sokak.jpg" loading="lazy" decoding="async" alt="Cunda'da güllerle bezeli bir sokak" width="1200" height="900">
-          <figcaption class="story__badge"><strong data-bind="storyYear">1890</strong><span data-i18n="story.badge">taş ev</span></figcaption>
         </figure>
       </div>
     </section>
@@ -284,18 +276,19 @@
       <div class="container"><div class="divider" aria-hidden="true"><span></span><svg viewBox="0 0 220 120"><use href="#i-branch"/></svg><span></span></div></div>
       <div class="container stay">
         <div class="stay__media reveal">
-          <img class="stay__img stay__img--main" data-img="stayImage" src="https://images.unsplash.com/photo-1611892440504-42a792e24d32?w=900&q=70&auto=format&fit=crop" loading="lazy" decoding="async" alt="Butik otel odası" width="900" height="675">
-          <img class="stay__img stay__img--small" data-parallax="0.08" data-img="stayInset" src="img/cunda/tas-konak.jpg" loading="lazy" decoding="async" alt="Cunda'da taş bir konak" width="700" height="466">
+          <img class="stay__img stay__img--main" data-img="stayImage" src="img/kardias/oda-genel.jpg" loading="lazy" decoding="async" alt="Kardias'ta pencereden ışık alan aydınlık bir oda" width="540" height="762">
+          <img class="stay__img stay__img--small" data-parallax="0.08" data-img="stayInset" src="img/kardias/oda-yatak.jpg" loading="lazy" decoding="async" alt="Kardias logolu yastık ve desenli yatak örtüsü" width="797" height="797">
         </div>
         <div class="stay__text reveal">
           <p class="eyebrow" data-i18n="stay.eyebrow">Konaklama</p>
-          <h2 class="h2" data-i18n="stay.title">Akşam yemeğinden sonra, <em>sadece birkaç basamak</em></h2>
-          <p data-i18n="stay.p">Kardias aynı zamanda butik bir otel. Taş duvarlı, ahşap tavanlı odalarımız Cunda'nın sakin sabahlarına uyanmak için tasarlandı. Sabah kahvaltısı terasta, deniz manzarasıyla.</p>
+          <h2 class="h2" data-i18n="stay.title">Cunda'nın kalbinde, <em>adanın ritmine yakın.</em></h2>
+          <p class="lead-p" data-i18n="stay.p">Cunda'nın taş sokaklarını keşfetmek, sahil boyunca yürümek ve adanın sevilen mekânlarına kolayca ulaşmak isteyenler için Kardias, konforu ve ada atmosferini bir araya getiriyor.</p>
+          <p data-i18n="stay.p2">Butik otelimizin kendine özgü odalarında dinlenin; güne Cunda'nın huzurlu sabahlarıyla başlayın. Gün içinde sokakların arasında kaybolun, akşam olduğunda ise Kardias'ın restoranında ve terasında güzel yemeklerin, keyifli sohbetlerin tadını çıkarın.</p>
           <ul class="stay__list">
-            <li data-i18n="stay.l1">Deniz veya bahçe manzaralı odalar</li>
-            <li data-i18n="stay.l2">Terasta serpme Ege kahvaltısı dahil</li>
-            <li data-i18n="stay.l3">Klima, ücretsiz Wi-Fi, özel banyo</li>
-            <li data-i18n="stay.l4">Meydana ve sahile yürüme mesafesi</li>
+            <li><span><strong data-i18n="stay.f1.t">Adanın merkezinde</strong><small data-i18n="stay.f1.d">Cunda'nın sokaklarına, çevredeki mekânlara ve ada yaşamına yakın.</small></span></li>
+            <li><span><strong data-i18n="stay.f2.t">Sahile yakın</strong><small data-i18n="stay.f2.d">Sahil yürüyüşlerini ve Cunda'nın deniz kenarındaki atmosferini keşfetmek için ideal bir başlangıç noktası.</small></span></li>
+            <li><span><strong data-i18n="stay.f3.t">Kardias'ta güne başlayın</strong><small data-i18n="stay.f3.d">Huzurlu bir uykunun ardından güne Cunda'nın sakin sabahlarıyla başlayın.</small></span></li>
+            <li><span><strong data-i18n="stay.f4.t">Konaklamadan daha fazlası</strong><small data-i18n="stay.f4.d">Restoran, sokak atmosferi ve teras keyfi aynı Kardias deneyiminin parçası.</small></span></li>
           </ul>
           <a href="#odarezervasyon" class="btn btn--navy js-room" data-i18n="cta.room">Oda Rezervasyonu</a>
         </div>
@@ -412,6 +405,10 @@
               <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
               <span><small data-i18n="res.call">Bizi arayın</small><span data-bind="phoneDisplay">0266 327 19 65</span></span>
             </a>
+            <a href="tel:+905324112938" class="contact-pill js-tel2">
+              <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-phone"/></svg>
+              <span><small data-i18n="res.call">Bizi arayın</small><span data-bind="phone2Display">0532 411 29 38</span></span>
+            </a>
             <a href="#" class="contact-pill contact-pill--wa js-wa">
               <svg viewBox="0 0 24 24" aria-hidden="true"><use href="#i-wa"/></svg>
               <span><small data-i18n="res.wa">WhatsApp'tan yazın</small>WhatsApp</span>
@@ -477,10 +474,9 @@
       <div class="container contact">
         <div class="contact__info reveal">
           <p class="eyebrow" data-i18n="c.eyebrow">İletişim &amp; Konum</p>
-          <h2 class="h2" data-i18n="c.title">Cunda'nın tepesinde, <em>meydanın hemen üstünde</em></h2>
           <dl class="contact__list">
             <div><dt data-i18n="c.addr">Adres</dt><dd data-bind="addressFull">Mithatpaşa Mah., 20082 Sokak No:4, Cunda, 10405 Ayvalık / Balıkesir</dd></div>
-            <div><dt data-i18n="c.phone">Telefon</dt><dd><a href="tel:+902663271965" class="js-tel" data-bind="phoneDisplay">0266 327 19 65</a></dd></div>
+            <div><dt data-i18n="c.phone">Telefon</dt><dd><a href="tel:+902663271965" class="js-tel" data-bind="phoneDisplay">0266 327 19 65</a><a href="tel:+905324112938" class="js-tel2 contact__tel2" data-bind="phone2Display">0532 411 29 38</a></dd></div>
             <div id="emailRow" hidden><dt data-i18n="c.email">E-posta</dt><dd><a href="#" id="emailLink"></a></dd></div>
             <div><dt data-i18n="c.hours">Çalışma saatleri</dt><dd data-i18n="c.hoursv">Her gün 14:00 – 00:00</dd></div>
           </dl>
@@ -533,13 +529,13 @@
         <h4 data-i18n="nav.contact">İletişim</h4>
         <p><span data-bind="addressStreet">Mithatpaşa Mah., 20082 Sokak No:4</span><br><span data-bind="addressCity">Cunda, 10405 Ayvalık / Balıkesir</span></p>
         <p><a href="tel:+902663271965" class="js-tel" data-bind="phoneDisplay">0266 327 19 65</a></p>
+        <p><a href="tel:+905324112938" class="js-tel2" data-bind="phone2Display">0532 411 29 38</a></p>
         <p data-i18n="c.hoursv">Her gün 14:00 – 00:00</p>
       </div>
     </div>
-    <div class="footer__mark" aria-hidden="true">Kardias</div>
     <div class="container footer__bottom">
       <p>© <span id="year"></span> Kardias Cunda. <span data-i18n="foot.rights">Tüm hakları saklıdır.</span></p>
-      <p class="footer__kalimera">Kalispera · <span data-i18n="foot.hello">İyi akşamlar</span> <a class="footer__admin" id="adminLink" href="admin/" rel="nofollow">· <span data-i18n="foot.admin">Yönetim</span></a></p>
+      <a class="footer__admin" id="adminLink" href="admin/" rel="nofollow" data-i18n="foot.admin">Yönetim</a>
     </div>
     <div class="container">
       <details class="credits">

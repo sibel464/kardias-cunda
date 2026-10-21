@@ -8,6 +8,7 @@ const { makeRepo, HttpError } = require("./repo");
 const { ValidationError } = require("./validate");
 const { makeAuth, makeLimiter } = require("./auth");
 const { makeMedia } = require("./media");
+const { makeMailer } = require("./mailer");
 const { makeSite } = require("./site");
 const { seedIfEmpty, syncNewTexts } = require("./seed");
 
@@ -52,6 +53,7 @@ function createApp(opts = {}) {
     dataDir: opts.dataDir || process.env.DATA_DIR || path.join(ROOT, "storage"),
     cookieSecure: opts.cookieSecure || process.env.COOKIE_SECURE || "auto",
     sessionHours: Number(opts.sessionHours || process.env.SESSION_HOURS || 12),
+    idleMinutes: Number(opts.idleMinutes || process.env.IDLE_MINUTES || 60),
     trustProxy: opts.trustProxy ?? process.env.TRUST_PROXY ?? false
   };
   const uploadDir = path.join(config.dataDir, "uploads");
@@ -61,7 +63,8 @@ function createApp(opts = {}) {
   const repo = makeRepo(db);
   seedIfEmpty(db, repo);
   syncNewTexts(db);
-  const auth = makeAuth(db, config);
+  const mailer = makeMailer(db, config.dataDir);
+  const auth = makeAuth(db, config, mailer);
   const media = makeMedia(db, uploadDir);
   const site = makeSite(repo, path.join(ROOT, "index.html"));
   const reservationLimiter = makeLimiter({ max: 8, windowMs: 60 * 60 * 1000 });
@@ -77,6 +80,8 @@ function createApp(opts = {}) {
     res.setHeader("Cross-Origin-Opener-Policy", "same-origin-allow-popups");
     res.setHeader("Content-Security-Policy", req.path.startsWith("/admin") ? CSP_ADMIN : CSP_SITE);
     if (req.path.startsWith("/admin")) res.setHeader("X-Frame-Options", "DENY");
+    // HTTPS ile açıldıysa tarayıcı bundan sonra siteye hep HTTPS ile bağlansın
+    if (req.secure) res.setHeader("Strict-Transport-Security", "max-age=15552000");
     next();
   });
 
@@ -164,6 +169,8 @@ function createApp(opts = {}) {
   const admin = express.Router();
   admin.post("/login", auth.login);
   admin.post("/logout", auth.logout);
+  admin.post("/forgot", auth.forgot);
+  admin.post("/reset", auth.reset);
   admin.use(auth.requireAuth);
 
   // Başarılı her değişiklikten sonra sitenin önbelleği temizlenir ve işlem kayda geçer
@@ -183,9 +190,60 @@ function createApp(opts = {}) {
 
   admin.post("/password", (req, res) => {
     const { current, next } = req.body || {};
-    const out = auth.changePassword(req.user.id, current, next, req.session.id);
+    const out = auth.changePassword(req.user.id, current, next, req.session.id, req);
     if (out.error) return res.status(400).json({ error: out.error, fields: { [out.field]: out.error } });
     res.json({ ok: true });
+  });
+
+  // Hesap e-postası (parola sıfırlama kodu bu adrese gelir)
+  const fieldError = (res, out) => res.status(400).json({ error: out.error, fields: { [out.field]: out.error } });
+  admin.get("/account", (req, res) => res.json(auth.account(req.user.id)));
+  admin.post("/account/email", (req, res) => {
+    const out = auth.requestEmail(req, req.user.id, req.body && req.body.email, req.body && req.body.password);
+    out.error ? fieldError(res, out) : res.json(auth.account(req.user.id));
+  });
+  admin.post("/account/email/verify", (req, res) => {
+    const out = auth.confirmEmail(req, req.user.id, req.body && req.body.code);
+    out.error ? fieldError(res, out) : res.json(auth.account(req.user.id));
+  });
+  admin.post("/account/email/remove", (req, res) => {
+    const out = auth.removeEmail(req, req.user.id, req.body && req.body.password);
+    out.error ? fieldError(res, out) : res.json(auth.account(req.user.id));
+  });
+
+  admin.get("/account/sessions", (req, res) => res.json(auth.sessions(req.user.id, req.session.id)));
+  admin.post("/account/sessions/end-others", (req, res) => res.json({ ended: auth.endOtherSessions(req) }));
+
+  // Güvenlik kayıtları
+  admin.get("/security", (req, res) => {
+    const level = ["warn", "alert"].includes(req.query.level) ? req.query.level : null;
+    const where = level === "alert" ? "WHERE level = 'alert'" : level === "warn" ? "WHERE level IN ('warn','alert')" : "";
+    res.json(db.prepare(`SELECT id, at, event, level, username, ip, ua, detail FROM security_log ${where} ORDER BY id DESC LIMIT 500`).all());
+  });
+
+  // E-posta gönderim ayarları (SMTP) — parola panele asla geri gönderilmez
+  admin.get("/mail", (req, res) => res.json({ config: mailer.publicConfig() }));
+  admin.put("/mail", (req, res) => {
+    const config = mailer.save(req.body);
+    auth.security("mail_settings_changed", { req, userId: req.user.id, username: req.user.username, level: "warn", detail: `Gönderen hesap: ${config.user}` });
+    res.json({ config });
+  });
+  admin.delete("/mail", (req, res) => {
+    mailer.clear();
+    auth.security("mail_settings_removed", { req, userId: req.user.id, username: req.user.username, level: "warn" });
+    res.json({ config: null });
+  });
+  admin.post("/mail/test", async (req, res) => {
+    const me = auth.account(req.user.id);
+    const to = me.email || (mailer.publicConfig() || {}).user;
+    if (!to) return res.status(400).json({ error: "Önce e-posta ayarlarını kaydedin." });
+    try {
+      const out = await mailer.send({ to, subject: "Kardias paneli: deneme e-postası", text: "Bu e-postayı aldıysanız yönetim panelinin e-posta gönderimi çalışıyor." });
+      res.json({ ok: true, to, outbox: !!out.outbox });
+    } catch (err) {
+      auth.security("mail_failed", { req, userId: req.user.id, username: req.user.username, level: "warn", detail: "Deneme e-postası: " + err.message });
+      res.status(400).json({ error: "E-posta gönderilemedi: " + err.message });
+    }
   });
 
   admin.get("/schema", (req, res) => {
@@ -203,7 +261,13 @@ function createApp(opts = {}) {
       events: count("events"), reviews: count("reviews"), media: count("media"),
       reservationsNew: db.prepare("SELECT COUNT(*) AS n FROM reservations WHERE status = 'yeni'").get().n,
       reservationsUpcoming: db.prepare("SELECT COUNT(*) AS n FROM reservations WHERE status IN ('yeni','onaylandi') AND COALESCE(date, checkin) >= ?").get(todayIstanbul()).n,
-      latest: db.prepare("SELECT * FROM reservations ORDER BY id DESC LIMIT 6").all()
+      latest: db.prepare("SELECT * FROM reservations ORDER BY id DESC LIMIT 6").all(),
+      security: {
+        failed24h: db.prepare("SELECT COUNT(*) AS n FROM security_log WHERE event IN ('login_failed','reset_code_wrong') AND at >= datetime('now','-1 day')").get().n,
+        alerts7d: db.prepare("SELECT COUNT(*) AS n FROM security_log WHERE level = 'alert' AND at >= datetime('now','-7 days')").get().n,
+        emailVerified: !!db.prepare("SELECT 1 FROM users WHERE id = ? AND email_verified_at IS NOT NULL").get(req.user.id),
+        mailConfigured: mailer.isConfigured()
+      }
     });
   });
 
@@ -264,17 +328,20 @@ function createApp(opts = {}) {
   });
 
   // Kullanıcılar
-  admin.get("/users", (req, res) => res.json(db.prepare("SELECT id, username, created_at AS createdAt, last_login_at AS lastLoginAt FROM users ORDER BY id").all()));
+  admin.get("/users", (req, res) => res.json(db.prepare("SELECT id, username, CASE WHEN email_verified_at IS NOT NULL THEN email END AS email, created_at AS createdAt, last_login_at AS lastLoginAt FROM users ORDER BY id").all()));
   admin.post("/users", (req, res) => {
     const out = auth.createUser(req.body && req.body.username, req.body && req.body.password);
     if (out.error) return res.status(400).json({ error: out.error });
+    auth.security("user_created", { req, userId: req.user.id, username: req.user.username, level: "alert", detail: `Yeni yönetici eklendi: ${out.username}` });
     res.status(201).json(out);
   });
   admin.delete("/users/:id", (req, res) => {
     const id = Number(req.params.id);
     if (id === req.user.id) return res.status(400).json({ error: "Kendi hesabınızı silemezsiniz." });
+    const target = db.prepare("SELECT username FROM users WHERE id = ?").get(id);
     const info = db.prepare("DELETE FROM users WHERE id = ?").run(id);
     if (!info.changes) throw new HttpError(404, "Kullanıcı bulunamadı.");
+    auth.security("user_deleted", { req, userId: req.user.id, username: req.user.username, level: "alert", detail: `Yönetici silindi: ${target.username}` });
     res.json({ ok: true });
   });
 
@@ -294,7 +361,7 @@ function createApp(opts = {}) {
     res.status(500).json({ error: "Beklenmeyen bir hata oluştu." });
   });
 
-  return { app, db, repo, auth, site, config };
+  return { app, db, repo, auth, site, config, mailer };
 }
 
 module.exports = { createApp };

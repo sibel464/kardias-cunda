@@ -25,6 +25,7 @@ Node.js 22.13 veya üstü gerekir (24 önerilir).
 
     npm install
     npm run create-admin -- yonetici      # ilk yönetici hesabı; parola ekrana yazılır
+    npm run reset-password -- yonetici    # parola unutulduysa ve e-postayla sıfırlanamıyorsa: yeni parola ekrana yazılır
     npm start                             # http://localhost:3000  ·  panel: http://localhost:3000/admin/
 
 İlk çalıştırmada veritabanı otomatik oluşturulur ve sitenin mevcut içeriği (100 ürün, galeri, yorumlar,
@@ -42,7 +43,7 @@ etkinlikler, metinler) içine aktarılır.
 - **Rezervasyonlar:** sitedeki formdan gelen talepler; durum (yeni/onaylandı/tamamlandı/iptal) ve iç not
 - **Medya kütüphanesi:** görsel (JPG, PNG, WEBP, GIF, AVIF — 15 MB) ve video (MP4, WEBM — 200 MB) yükleme
 - Her kayıtta **sıralama** (sürükle-bırak veya oklar) ve **aktif/pasif** (sitede göster/gizle)
-- **Kullanıcılar** ve parola değiştirme; **SEO** (başlık, açıklama, arama motorlarından gizleme)
+- **Kullanıcılar**, parola değiştirme, **Şifremi unuttum** (doğrulanmış e-postaya 6 haneli kod), **Güvenlik kayıtları** (girişler, hatalı denemeler, kilitlenmeler; önemli olaylarda e-posta uyarısı) ve **E-posta gönderimi** (Gmail uygulama şifresi); **SEO** (başlık, açıklama, arama motorlarından gizleme)
 
 ## Güvenlik
 
@@ -70,7 +71,7 @@ Hetzner, cPanel'de Node.js uygulaması vb.) kurun:
 
 - `storage/` klasörü kalıcı bir diskte olmalı (`DATA_DIR` ortam değişkeniyle değiştirilebilir) ve düzenli yedeklenmeli
 - Site HTTPS arkasında çalışmalı; bir proxy (Nginx, Cloudflare vb.) arkasındaysa `TRUST_PROXY=1` verin
-- Ayarlar: `PORT` (varsayılan 3000), `HOST`, `DATA_DIR`, `COOKIE_SECURE` (auto/always), `SESSION_HOURS` (varsayılan 12)
+- Ayarlar: `PORT` (varsayılan 3000), `HOST`, `DATA_DIR`, `COOKIE_SECURE` (auto/always), `SESSION_HOURS` (varsayılan 12), `IDLE_MINUTES` (işlem yapılmazsa otomatik çıkış, varsayılan 60)
 
 ## GitHub Pages önizlemesi ve GitHub'ı güncelleme
 

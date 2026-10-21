@@ -86,14 +86,14 @@ function seedIfEmpty(db, repo) {
 
   tx(db, () => {
     const settings = {
-      contact: { phone: "+902663271965", phoneDisplay: "0266 327 19 65", whatsapp: "905324112938", email: "" },
+      contact: { phone: "+902663271965", phoneDisplay: "0266 327 19 65", phone2: "+905324112938", phone2Display: "0532 411 29 38", whatsapp: "905324112938", email: "" },
       address: { addressStreet: "Mithatpaşa Mah., 20082 Sokak No:4", addressCity: "Cunda, 10405 Ayvalık / Balıkesir", postalCode: "10405", mapsQuery: "Kardias Cunda, Mithatpaşa, Ayvalık", lat: 39.335, lng: 26.66 },
       hours: { openTime: "14:00", closeTime: "00:00", firstBooking: "14:00", lastBooking: "23:00" },
       reservation: { typeStreet: true, typeTerrace: true, typeStay: true, sendWhatsapp: true },
       social: { instagram: "https://www.instagram.com/cundakardiasrestoran/", facebook: "", tiktok: "", youtube: "", tripadvisor: "" },
       menu: { showPrices: menu.showPrices !== false, currency: menu.currency || "₺" },
       reviews: { ratingScore: 4.7, showRating: true, showSampleNote: true },
-      images: { heroImage: "img/cunda/liman-1920.jpg", storyImage: "img/cunda/tas-ev.jpg", storyInset: "img/cunda/gullu-sokak.jpg", stayImage: "photo-1611892440504-42a792e24d32", stayInset: "img/cunda/tas-konak.jpg", storyYear: "1890" },
+      images: { heroImage: "img/cunda/liman-1920.jpg", storyImage: "img/kardias/sef-omur-pizzalar.jpg", storyInset: "img/kardias/pizza-ravioli-kokteyl.jpg", stayImage: "img/kardias/oda-genel.jpg", stayInset: "img/kardias/oda-yatak.jpg", storyThird: "img/kardias/oda-k-yastik.jpg" },
       ribbons: { ribbonA: zip(I18N.ui.tr.ribbons.a, I18N.ui.en.ribbons.a), ribbonB: zip(I18N.ui.tr.ribbons.b, I18N.ui.en.ribbons.b) },
       seo: { siteTitle: decode((html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Kardias Cunda"), siteDescription: meta("description"), siteUrl: "https://www.kardiascunda.com/", noindex: true }
     };

@@ -98,6 +98,9 @@
     state.csrf = null;
     $("#appView").hidden = true;
     $("#loginView").hidden = false;
+    $("#forgotForm").hidden = true;
+    $("#loginForm").hidden = false;
+    $("#loginOk").hidden = true;
     $("#editModal").open && $("#editModal").close();
     $("#mediaModal").open && $("#mediaModal").close();
     const err = $("#loginError");
@@ -115,6 +118,59 @@
       const d = await api("POST", "/login", { username: f.username.value.trim(), password: f.password.value }, { quiet401: true });
       f.password.value = "";
       await start(d);
+    } catch (ex) {
+      err.textContent = ex.message;
+      err.hidden = false;
+    } finally { btn.disabled = false; }
+  });
+
+  /* ============ Şifremi unuttum (e-postaya 6 haneli kod) ============ */
+  const forgot = { form: $("#forgotForm"), step: 1 };
+  function forgotStep(n, info) {
+    const f = forgot.form;
+    forgot.step = n;
+    $("#forgotStep1").hidden = n !== 1;
+    $("#forgotStep2").hidden = n !== 2;
+    $("#forgotResend").hidden = n !== 2;
+    $("#forgotSubmit").textContent = n === 1 ? "Kod gönder" : "Parolayı yenile";
+    $("#forgotInfo").textContent = info || "";
+    $("#forgotError").hidden = true;
+    setTimeout(() => (n === 1 ? f.identity : f.code).focus(), 30);
+  }
+  $("#forgotOpen").addEventListener("click", () => {
+    $("#loginForm").hidden = true;
+    forgot.form.hidden = false;
+    forgot.form.identity.value = $("#loginForm").username.value.trim();
+    forgot.form.code.value = forgot.form.password.value = forgot.form.password2.value = "";
+    forgotStep(1);
+  });
+  $("#forgotBack").addEventListener("click", () => showLogin());
+  async function sendForgotCode() {
+    const d = await api("POST", "/forgot", { identity: forgot.form.identity.value.trim() }, { quiet401: true });
+    forgotStep(2, d.message);
+  }
+  $("#forgotResend").addEventListener("click", async () => {
+    try { await sendForgotCode(); toast("Yeni kod istendi. Önceki kod artık geçersiz.", "ok"); }
+    catch (ex) { $("#forgotError").textContent = ex.message; $("#forgotError").hidden = false; }
+  });
+  forgot.form.addEventListener("submit", async e => {
+    e.preventDefault();
+    const f = forgot.form, err = $("#forgotError"), btn = $("#forgotSubmit");
+    err.hidden = true;
+    if (forgot.step === 1 && !f.identity.value.trim()) { err.textContent = "Kullanıcı adınızı ya da e-postanızı yazın."; err.hidden = false; return; }
+    if (forgot.step === 2 && f.password.value !== f.password2.value) { err.textContent = "Yeni parolalar aynı değil."; err.hidden = false; return; }
+    btn.disabled = true;
+    try {
+      if (forgot.step === 1) await sendForgotCode();
+      else {
+        await api("POST", "/reset", { identity: f.identity.value.trim(), code: f.code.value, password: f.password.value }, { quiet401: true });
+        const user = f.identity.value.trim();
+        f.password.value = f.password2.value = f.code.value = "";
+        showLogin();
+        if (!user.includes("@")) $("#loginForm").username.value = user;
+        $("#loginOk").hidden = false;
+        setTimeout(() => $("#loginForm").password.focus(), 40);
+      }
     } catch (ex) {
       err.textContent = ex.message;
       err.hidden = false;
@@ -145,15 +201,23 @@
     ["Menü", [["#/e/items", "Yiyecek & içecekler"], ["#/e/categories", "Kategoriler"], ["#/e/sections", "Menü bölümleri"], ["#/e/setmenus", "Fiks menüler"], ["#/ayar/menu", "Menü ayarları"]]],
     ["İçerik", [["#/e/rooms", "Konaklama odaları"], ["#/e/events", "Etkinlikler"], ["#/e/gallery", "Fotoğraf & video galerisi"], ["#/e/reviews", "Misafir yorumları"], ["#/ayar/reviews", "Yorum puanı"], ["#/ayar/notice", "Duyuru şeridi"], ["#/ayar/sections", "Bölümleri göster / gizle"], ["#/metinler", "Sayfa metinleri"], ["#/ayar/images", "Site görselleri"], ["#/ayar/ribbons", "Kayan yazılar"], ["#/e/credits", "Fotoğraf künyesi"]]],
     ["İletişim & rezervasyon", [["#/ayar/contact", "Telefon & WhatsApp"], ["#/ayar/address", "Adres & konum"], ["#/ayar/hours", "Çalışma saatleri"], ["#/ayar/reservation", "Rezervasyon ayarları"], ["#/ayar/social", "Sosyal medya"]]],
-    ["Sistem", [["#/medya", "Medya kütüphanesi"], ["#/ayar/seo", "Arama motorları (SEO)"], ["#/kullanicilar", "Kullanıcılar"], ["#/hesap", "Hesabım"]]]
+    ["Sistem", [["#/medya", "Medya kütüphanesi"], ["#/ayar/seo", "Arama motorları (SEO)"], ["#/kullanicilar", "Kullanıcılar"], ["#/hesap", "Hesabım"], ["#/guvenlik", "Güvenlik kayıtları", "secBadge"], ["#/eposta", "E-posta gönderimi"]]]
   ];
 
   function buildNav() {
     const nav = $("#sideNav");
-    nav.replaceChildren(...NAV.flatMap(([group, links]) => [
-      h("div.side__group", null, group),
+    // Her başlık açılır-kapanır; aynı anda yalnızca biri açık kalır
+    nav.replaceChildren(...NAV.map(([group, links]) => h("details.side__sec", { name: "sidenav" },
+      h("summary.side__group", null, h("span", null, group), h("span.side__dot", { hidden: true })),
       ...links.map(([href, label, badge]) => h("a", { href }, h("span", null, label), badge ? h("span.badge", { id: badge, hidden: true }) : null))
-    ]));
+    )));
+  }
+
+  // Kapalı başlıkta bekleyen bir şey varsa (yeni rezervasyon, güvenlik uyarısı) başlıkta nokta göster
+  function syncNavDots() {
+    $$("#sideNav .side__sec").forEach(sec => {
+      sec.querySelector(".side__dot").hidden = ![...sec.querySelectorAll(".badge")].some(b => !b.hidden);
+    });
   }
 
   async function refreshBadge() {
@@ -161,6 +225,9 @@
       const s = await api("GET", "/stats");
       const b = $("#resBadge");
       if (b) { b.textContent = s.reservationsNew; b.hidden = !s.reservationsNew; }
+      const sb = $("#secBadge");
+      if (sb) { sb.textContent = "!"; sb.hidden = !s.security.alerts7d; sb.title = `Son 7 günde ${s.security.alerts7d} önemli güvenlik olayı`; }
+      syncNavDots();
       return s;
     } catch { return null; }
   }
@@ -185,6 +252,9 @@
       if (a.getAttribute("href") === base) a.setAttribute("aria-current", "page");
       else a.removeAttribute("aria-current");
     });
+    // Açık sayfanın başlığı açık dursun
+    const cur = $('#sideNav a[aria-current="page"]');
+    if (cur) cur.closest("details").open = true;
     const label = NAV.flatMap(g => g[1]).find(l => l[0] === base);
     $("#crumbs").textContent = label ? label[1] : "";
 
@@ -201,6 +271,8 @@
       else if (path === "/medya") await viewMedia(page);
       else if (path === "/kullanicilar") await viewUsers(page);
       else if (path === "/hesap") await viewAccount(page);
+      else if (path === "/guvenlik") await viewSecurity(page, params);
+      else if (path === "/eposta") await viewMail(page);
       else page.append(h("p.empty", null, "Sayfa bulunamadı."));
     } catch (ex) {
       if (ex.status === 401) return;
@@ -227,6 +299,7 @@
     page.append(
       pageHead("Genel bakış", `Hoş geldiniz, ${state.user.username}. Burada yaptığınız her değişiklik kaydedildiği anda sitede görünür.`,
         h("a.btn.btn--primary", { href: "/", target: "_blank", rel: "noopener" }, "Siteyi aç ↗")),
+      securityCard(s.security),
       h("div.stats", null,
         stat("#/rezervasyonlar?status=yeni", s.reservationsNew, "Yeni rezervasyon talebi", s.reservationsNew > 0),
         stat("#/rezervasyonlar", s.reservationsUpcoming, "Yaklaşan rezervasyon"),
@@ -249,6 +322,17 @@
           h("button.btn", { type: "button", onclick: () => openEditor("events", null) }, "+ Etkinlik ekle"),
           h("a.btn", { href: "#/ayar/menu" }, "Fiyatları göster / gizle")))
     );
+  }
+
+  // Genel bakıştaki güvenlik özeti: sorun yoksa kısa bir "her şey yolunda" notu
+  function securityCard(sec) {
+    const todo = [];
+    if (!sec.mailConfigured) todo.push(h("li", null, "E-posta gönderimi ayarlanmamış; şifre sıfırlama kodları ve uyarılar gönderilemez. ", h("a", { href: "#/eposta" }, "Ayarla →")));
+    if (!sec.emailVerified) todo.push(h("li", null, "Hesabınıza doğrulanmış bir e-posta bağlı değil; şifrenizi unutursanız sıfırlayamazsınız. ", h("a", { href: "#/hesap" }, "E-posta ekle →")));
+    if (sec.alerts7d) todo.push(h("li", null, `Son 7 günde ${sec.alerts7d} önemli güvenlik olayı var (kilitlenme, yeni yerden giriş, parola sıfırlama vb.). `, h("a", { href: "#/guvenlik?level=alert" }, "İncele →")));
+    if (sec.failed24h >= 3) todo.push(h("li", null, `Son 24 saatte ${sec.failed24h} hatalı giriş / kod denemesi. `, h("a", { href: "#/guvenlik?level=warn" }, "İncele →")));
+    if (!todo.length) return h("div.card.card--ok", null, h("strong", null, "🔒 Güvenlik: "), "her şey yolunda. ", h("a", { href: "#/guvenlik" }, "Güvenlik kayıtları →"));
+    return h("div.card", { class: sec.alerts7d || sec.failed24h >= 3 ? "card--alert" : "card--note" }, h("h2", null, "🔒 Güvenlik"), h("ul", { style: "margin:0;padding-left:20px;display:grid;gap:6px" }, todo));
   }
 
   function resSummary(r) {
@@ -754,7 +838,7 @@
   /* ============ Sayfa metinleri ============ */
   const TEXT_GROUPS = {
     brand: "Logo yanındaki yazı", skip: "Erişilebilirlik", nav: "Üst menü bağlantıları", cta: "Düğmeler", hero: "Giriş (hero) bölümü", info: "Bilgi şeridi",
-    story: "Hikâyemiz", feat: "Hikâyemiz — öne çıkanlar", menu: "Menü bölümü", set: "Fiks menü kutusu", events: "Etkinlikler bölümü",
+    story: "Hikâyemiz", menu: "Menü bölümü", set: "Fiks menü kutusu", events: "Etkinlikler bölümü",
     gallery: "Galeri bölümü", stay: "Konaklama bölümü", rooms: "Oda kartları", rev: "Yorumlar bölümü", res: "Rezervasyon bölümü",
     f: "Rezervasyon formu", c: "İletişim & konum", foot: "Alt bilgi (footer)", mb: "Mobil alt düğmeler"
   };
@@ -858,7 +942,7 @@
     const load = async () => {
       const users = await api("GET", "/users");
       list.replaceChildren(...users.map(u => h("div.row", { style: "grid-template-columns:1fr auto" },
-        h("div.row__title", null, h("strong", null, u.username + (u.id === state.user.id ? " (siz)" : "")), h("small", null, `Oluşturma: ${fmtDate(u.createdAt)} · Son giriş: ${u.lastLoginAt ? fmtDate(u.lastLoginAt) : "hiç"}`)),
+        h("div.row__title", null, h("strong", null, u.username + (u.id === state.user.id ? " (siz)" : "")), h("small", null, `${u.email ? "E-posta: " + u.email : "⚠ Doğrulanmış e-posta yok"} · Oluşturma: ${fmtDate(u.createdAt)} · Son giriş: ${u.lastLoginAt ? fmtDate(u.lastLoginAt) : "hiç"}`)),
         u.id === state.user.id ? h("span") : h("button.btn.btn--sm.btn--danger", {
           type: "button",
           onclick: async () => {
@@ -897,7 +981,7 @@
     const form = h("form.card", { novalidate: true },
       h("h2", null, "Parolayı değiştir"),
       h("label.field", null, h("span", null, "Mevcut parola"), cur),
-      h("label.field", null, h("span", null, "Yeni parola"), nw, h("small.help", null, "En az 10 karakter; en az bir harf ve bir rakam. Değiştirince diğer cihazlardaki oturumlar kapanır.")),
+      h("label.field", null, h("span", null, "Yeni parola"), nw, h("small.help", null, "En az 10 karakter; en az bir harf ve bir rakam; işletme adı gibi kolay tahmin edilen parolalar kabul edilmez. Değiştirince diğer cihazlardaki oturumlar kapanır.")),
       h("label.field", null, h("span", null, "Yeni parola (tekrar)"), nw2),
       err, h("button.btn.btn--primary", { type: "submit" }, "Parolayı değiştir"));
     form.addEventListener("submit", async e => {
@@ -910,7 +994,204 @@
         toast("Parolanız değiştirildi.", "ok");
       } catch (ex) { err.textContent = ex.message; err.hidden = false; }
     });
-    page.append(pageHead("Hesabım", `Giriş yapan kullanıcı: ${state.user.username}`), form);
+    const emailBox = h("div"), sessBox = h("div");
+    page.append(pageHead("Hesabım", `Giriş yapan kullanıcı: ${state.user.username}`), emailBox, form, sessBox);
+    renderEmailCard(emailBox, await api("GET", "/account"));
+    renderSessions(sessBox, await api("GET", "/account/sessions"));
+  }
+
+  // Açık oturumlar: hesabın hangi cihazlarda açık olduğu; tanımadığınız varsa tek tıkla kapatılır
+  function renderSessions(box, list) {
+    const others = list.filter(s => !s.current).length;
+    const btn = others ? h("button.btn", { type: "button", onclick: async () => {
+      if (!confirm("Bu cihaz dışındaki tüm oturumlar kapatılsın mı?")) return;
+      try {
+        const r = await api("POST", "/account/sessions/end-others");
+        toast(`${r.ended} oturum kapatıldı.`, "ok");
+        renderSessions(box, await api("GET", "/account/sessions"));
+      } catch (ex) { toast(ex.message, "err"); }
+    } }, "Diğer cihazlardan çıkış yap") : null;
+    box.replaceChildren(h("div.card", null,
+      h("h2", null, "Açık oturumlar"),
+      h("p.muted", null, "Hesabınızın açık olduğu cihazlar. Tanımadığınız bir cihaz görürseniz diğer oturumları kapatıp parolanızı değiştirin. 60 dakika işlem yapılmayan oturumlar kendiliğinden kapanır."),
+      h("ul", { style: "list-style:none;padding:0;margin:0 0 14px;display:grid;gap:10px" }, list.map(s => h("li", null,
+        h("strong", null, shortUa(s.ua) || "Bilinmeyen cihaz", s.current ? h("span.pill.pill--info", { style: "margin-left:8px" }, "Bu cihaz") : null),
+        h("small.muted", { style: "display:block" }, `IP: ${s.ip || "-"} · Giriş: ${fmtDate(s.createdAt)}${s.lastSeen ? " · Son işlem: " + fmtDate(s.lastSeen) : ""}`)))),
+      btn));
+  }
+
+  // Hesap e-postası: ekle / değiştir → e-postaya gelen 6 haneli kodla doğrula
+  function renderEmailCard(box, acc) {
+    const err = h("p.form-error", { hidden: true });
+    const fail = ex => { err.textContent = ex.message; err.hidden = false; };
+    const mailNote = acc.mailConfigured ? null : h("p.card.card--note", { style: "margin:0 0 14px" },
+      "E-posta gönderimi henüz ayarlanmadı; kod gerçek bir e-posta olarak gitmez. Önce ", h("a", { href: "#/eposta" }, "E-posta gönderimi"), " sayfasını doldurun.");
+
+    if (acc.pendingEmail) {
+      const code = h("input.code-input", { inputmode: "numeric", autocomplete: "one-time-code", maxlength: 7, placeholder: "______" });
+      const form = h("form.card", { novalidate: true },
+        h("h2", null, "E-postanızı doğrulayın"), mailNote,
+        h("p", null, `${acc.pendingEmail} adresine 6 haneli bir kod gönderdik. Kod 15 dakika geçerli.`),
+        h("label.field", null, h("span", null, "Doğrulama kodu"), code),
+        err,
+        h("div.toolbar", { style: "margin:0" },
+          h("button.btn.btn--primary", { type: "submit" }, "Doğrula"),
+          h("button.btn", { type: "button", onclick: () => renderEmailCard(box, { ...acc, pendingEmail: null, changing: true }) }, "Farklı adres / kodu tekrar gönder")));
+      form.addEventListener("submit", async e => {
+        e.preventDefault();
+        err.hidden = true;
+        try {
+          const next = await api("POST", "/account/email/verify", { code: code.value });
+          toast("E-posta adresiniz doğrulandı.", "ok");
+          renderEmailCard(box, next);
+        } catch (ex) { fail(ex); }
+      });
+      box.replaceChildren(form);
+      setTimeout(() => code.focus(), 30);
+      return;
+    }
+
+    if (acc.email && !acc.changing) {
+      const pw = h("input", { type: "password", autocomplete: "current-password", maxlength: 200 });
+      const removeRow = h("div", { hidden: true },
+        h("label.field", null, h("span", null, "Kaldırmak için parolanız"), pw),
+        h("button.btn.btn--danger", { type: "button", onclick: async () => {
+          if (!confirm("E-posta kaldırılırsa şifrenizi unuttuğunuzda sıfırlayamazsınız. Emin misiniz?")) return;
+          try { renderEmailCard(box, await api("POST", "/account/email/remove", { password: pw.value })); toast("E-posta kaldırıldı."); } catch (ex) { fail(ex); }
+        } }, "E-postayı kaldır"));
+      box.replaceChildren(h("div.card.card--ok", null,
+        h("h2", null, "Kurtarma e-postası"),
+        h("p", null, "✔ ", h("strong", null, acc.email), " doğrulandı. Şifrenizi unutursanız giriş ekranındaki “Şifremi unuttum” ile bu adrese kod gelir. Güvenlik uyarıları da bu adrese gönderilir."),
+        err,
+        h("div.toolbar", { style: "margin:0" },
+          h("button.btn", { type: "button", onclick: () => renderEmailCard(box, { ...acc, changing: true }) }, "Adresi değiştir"),
+          h("button.btn.btn--link", { type: "button", style: "color:var(--bad)", onclick: () => { removeRow.hidden = false; } }, "Kaldır…")),
+        removeRow));
+      return;
+    }
+
+    const email = h("input", { type: "email", autocomplete: "email", maxlength: 200, value: acc.email || "" });
+    const pw = h("input", { type: "password", autocomplete: "current-password", maxlength: 200 });
+    const form = h("form.card", { novalidate: true, class: acc.email ? "" : "card--note" },
+      h("h2", null, acc.email ? "Kurtarma e-postasını değiştir" : "⚠ Kurtarma e-postası ekleyin"),
+      h("p", null, "Şifrenizi unutursanız sıfırlama kodu bu adrese gelir; şüpheli girişlerde uyarı da buraya gönderilir. Adresi eklemek için size bir doğrulama kodu göndereceğiz."),
+      mailNote,
+      h("label.field", null, h("span", null, "E-posta adresi"), email),
+      h("label.field", null, h("span", null, "Mevcut parolanız"), pw, h("small.help", null, "Güvenlik için e-posta değişikliğinde parolanız istenir.")),
+      err,
+      h("div.toolbar", { style: "margin:0" },
+        h("button.btn.btn--primary", { type: "submit" }, "Doğrulama kodu gönder"),
+        acc.email ? h("button.btn", { type: "button", onclick: () => renderEmailCard(box, { ...acc, changing: false }) }, "Vazgeç") : null));
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      err.hidden = true;
+      try {
+        const next = await api("POST", "/account/email", { email: email.value, password: pw.value });
+        toast("Doğrulama kodu gönderildi.", "ok");
+        renderEmailCard(box, next);
+      } catch (ex) { fail(ex); }
+    });
+    box.replaceChildren(form);
+  }
+
+  /* ============ Güvenlik kayıtları ============ */
+  const SEC_EVENTS = {
+    login_ok: "Başarılı giriş", login_failed: "Hatalı giriş denemesi", login_locked: "Giriş kilitlendi (çok fazla hatalı deneme)",
+    login_blocked: "Kilitliyken giriş denendi", login_new_ip: "Yeni bir yerden (IP) giriş", logout: "Çıkış",
+    password_changed: "Parola değiştirildi", password_change_failed: "Parola değiştirme: mevcut parola hatalı",
+    password_reset: "Parola e-posta koduyla sıfırlandı", password_reset_cli: "Parola sunucudan komutla yenilendi",
+    reset_requested: "Şifre sıfırlama kodu istendi", reset_unknown: "Olmayan hesap için sıfırlama istendi",
+    reset_no_email: "Sıfırlama istendi ama hesapta e-posta yok", reset_code_wrong: "Hatalı sıfırlama kodu", reset_rate_limited: "Sıfırlama çok sık denendi",
+    email_verify_sent: "E-posta doğrulama kodu gönderildi", email_verified: "E-posta doğrulandı", email_verify_failed: "Hatalı doğrulama kodu",
+    email_change_failed: "E-posta ekleme: parola hatalı", email_removed: "Hesaptan e-posta kaldırıldı",
+    sessions_ended: "Diğer cihazlardaki oturumlar kapatıldı",
+    user_created: "Yeni yönetici eklendi", user_deleted: "Yönetici silindi",
+    mail_settings_changed: "E-posta gönderim ayarları değişti", mail_settings_removed: "E-posta gönderim ayarları silindi", mail_failed: "E-posta gönderilemedi"
+  };
+  const LEVEL_LABEL = { info: "Bilgi", warn: "Dikkat", alert: "Önemli" };
+
+  // Tarayıcı bilgisini kısaltır (ör. "Chrome · Windows")
+  const shortUa = ua => {
+    if (!ua) return "";
+    const b = /Edg\//.test(ua) ? "Edge" : /OPR\//.test(ua) ? "Opera" : /Chrome\//.test(ua) ? "Chrome" : /Firefox\//.test(ua) ? "Firefox" : /Safari\//.test(ua) ? "Safari" : "Tarayıcı";
+    const o = /Windows/.test(ua) ? "Windows" : /Android/.test(ua) ? "Android" : /iPhone|iPad/.test(ua) ? "iPhone/iPad" : /Mac OS/.test(ua) ? "Mac" : /Linux/.test(ua) ? "Linux" : "";
+    return [b, o].filter(Boolean).join(" · ");
+  };
+
+  async function viewSecurity(page, params) {
+    const level = params.get("level") || "";
+    const rows = await api("GET", "/security" + (level ? "?level=" + level : ""));
+    const tabs = h("div.tabs", null, [["", "Tümü"], ["warn", "Dikkat + önemli"], ["alert", "Sadece önemli"]].map(([k, l]) =>
+      h("button", { type: "button", "aria-pressed": String(k === level), onclick: () => { location.hash = "#/guvenlik" + (k ? "?level=" + k : ""); } }, l)));
+    const ips = {};
+    rows.filter(r => r.event === "login_failed").forEach(r => { ips[r.ip] = (ips[r.ip] || 0) + 1; });
+    const topIps = Object.entries(ips).sort((a, b) => b[1] - a[1]).slice(0, 3);
+    const list = rows.length ? h("div.list.seclog", null, rows.map(r => h("div.row", null,
+      h("div", null, h("span.pill", { class: "pill--" + r.level }, LEVEL_LABEL[r.level]), h("div.seclog__when", null, fmtDate(r.at))),
+      h("div.row__title", null,
+        h("strong", null, SEC_EVENTS[r.event] || r.event),
+        h("small", null, [r.username ? "Kullanıcı: " + r.username : null, r.detail, r.ip ? "IP: " + r.ip : null, shortUa(r.ua)].filter(Boolean).join(" · "))),
+      h("span")))) : h("p.empty", null, "Bu filtrede kayıt yok.");
+    page.append(
+      pageHead("Güvenlik kayıtları", "Panele yapılan girişler, hatalı denemeler, kilitlenmeler, parola ve e-posta işlemleri burada tutulur (son 180 gün, en yeni 500 kayıt). “Önemli” olaylarda doğrulanmış e-posta adreslerine uyarı da gönderilir."),
+      topIps.length ? h("div.card.card--note", null, h("strong", null, "En çok hatalı giriş denenen IP adresleri: "), topIps.map(([ip, n]) => `${ip} (${n})`).join(", ")) : null,
+      tabs, list);
+  }
+
+  /* ============ E-posta gönderimi (SMTP) ============ */
+  async function viewMail(page) {
+    const { config } = await api("GET", "/mail");
+    const c = config || { host: "smtp.gmail.com", port: 465, user: "", from: "" };
+    const inp = (name, attrs) => h("input", { name, ...attrs });
+    const host = inp("host", { value: c.host, maxlength: 253 }), port = inp("port", { type: "number", value: String(c.port), min: 1, max: 65535 });
+    const user = inp("user", { type: "email", value: c.user, autocomplete: "off", maxlength: 200 });
+    const pass = inp("pass", { type: "password", autocomplete: "new-password", maxlength: 200, placeholder: config && config.hasPass ? "•••••••• (kayıtlı — değiştirmek için yazın)" : "" });
+    const from = inp("from", { type: "email", value: c.from, maxlength: 200 });
+    const err = h("p.form-error", { hidden: true });
+    const fieldErr = {};
+    const field = (label, input, help) => {
+      fieldErr[input.name] = h("small.field-error", { hidden: true });
+      return h("label.field", null, h("span", null, label), input, help ? h("small.help", null, help) : null, fieldErr[input.name]);
+    };
+    const form = h("form.card", { novalidate: true },
+      h("h2", null, "Gönderen e-posta hesabı"),
+      field("Gönderen hesabın e-posta adresi", user, "Ör: kardiascunda@gmail.com — kodlar ve uyarılar bu hesaptan gönderilir."),
+      field("Uygulama şifresi", pass, "Gmail'de normal şifreniz çalışmaz: Google Hesabı → Güvenlik → 2 Adımlı Doğrulama'yı açın → “Uygulama şifreleri”nden 16 haneli bir şifre oluşturup buraya yapıştırın."),
+      h("details", { style: "margin-bottom:14px" }, h("summary", null, "Gelişmiş (Gmail dışı e-posta için)"),
+        h("div", { style: "margin-top:12px" }, field("SMTP sunucusu", host, "Gmail: smtp.gmail.com · Outlook: smtp.office365.com · Yandex: smtp.yandex.com"), field("Port", port, "Genellikle 465 (SSL) ya da 587."),
+          field("Gönderen adresi (isteğe bağlı)", from, "Boş bırakılırsa yukarıdaki hesap adresi kullanılır."))),
+      err,
+      h("div.toolbar", { style: "margin:0" },
+        h("button.btn.btn--primary", { type: "submit" }, "Kaydet"),
+        config ? h("button.btn", { type: "button", onclick: testMail }, "Deneme e-postası gönder") : null,
+        config ? h("button.btn.btn--link", { type: "button", style: "color:var(--bad)", onclick: async () => {
+          if (!confirm("E-posta ayarları silinsin mi? Şifre sıfırlama kodları gönderilemez.")) return;
+          await api("DELETE", "/mail"); toast("Silindi."); route();
+        } }, "Ayarları sil") : null));
+    async function testMail() {
+      try {
+        const r = await api("POST", "/mail/test");
+        toast(`Deneme e-postası gönderildi: ${r.to}. Gelen kutunuzu kontrol edin.`, "ok");
+      } catch (ex) { err.textContent = ex.message; err.hidden = false; }
+    }
+    form.addEventListener("submit", async e => {
+      e.preventDefault();
+      err.hidden = true;
+      Object.values(fieldErr).forEach(x => { x.hidden = true; });
+      try {
+        await api("PUT", "/mail", { host: host.value, port: Number(port.value), user: user.value, pass: pass.value, from: from.value });
+        toast("Kaydedildi. Şimdi “Deneme e-postası gönder” ile kontrol edin.", "ok");
+        route();
+      } catch (ex) {
+        const f = (ex.data && ex.data.fields) || {};
+        Object.entries(f).forEach(([k, m]) => { if (fieldErr[k]) { fieldErr[k].textContent = m; fieldErr[k].hidden = false; } });
+        err.textContent = ex.message; err.hidden = false;
+      }
+    });
+    page.append(
+      pageHead("E-posta gönderimi", "Şifre sıfırlama kodları, e-posta doğrulama kodları ve güvenlik uyarıları bu hesaptan gönderilir."),
+      config ? h("div.card.card--ok", null, "✔ Ayarlı: ", h("strong", null, config.user), " hesabından gönderiliyor.") : h("div.card.card--note", null, "Henüz ayarlanmadı. Bu ayar yapılmadan “Şifremi unuttum” kodu e-postayla gitmez."),
+      form);
   }
 
   /* ============ Başlat ============ */

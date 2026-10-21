@@ -240,16 +240,15 @@ function boot(SITE, isStatic) {
   /* --- Sayfadaki ana görünüm: bölümler ve kategori kartları --- */
   function homeHTML() {
     let n = 0;
-    const sections = MENU.sections.map((s, si) => {
+    const sections = MENU.sections.map(s => {
       const cats = catsIn(s);
       const cls = `cat-grid${cats.length % 4 && cats.length % 3 === 0 ? " cat-grid--3" : ""}${cats.length % 2 ? " cat-grid--odd" : ""}`;
       return `
       <section class="mhome__section" aria-labelledby="msec-${s.id}">
         <header class="mhome__head">
-          <span class="mhome__num">0${si + 1}</span>
           <div>
             <h3 id="msec-${s.id}">${esc(t(s.name))}</h3>
-            <p>${esc(t(s.desc))}</p>
+            ${t(s.desc) ? `<p>${esc(t(s.desc))}</p>` : ""}
           </div>
         </header>
         <div class="${cls}">
@@ -1018,16 +1017,41 @@ function boot(SITE, isStatic) {
   [form, stayForm].forEach(fm => $$("input, select", fm).forEach(el => el.addEventListener("input", () => el.classList.remove("is-invalid"))));
   fillGuestOptions();
 
+  /* ============ Hikâyemiz fotoğrafları: oklar, noktalar ve parmakla kaydırma ============ */
+  const storySlider = $("#storySlider");
+  if (storySlider) {
+    const slides = $$(".story__slide", storySlider), dots = $(".story__dots", storySlider);
+    let storyIndex = 0;
+    dots.innerHTML = slides.map((_, i) => `<button type="button" aria-label="${i + 1}. fotoğraf"></button>`).join("");
+    const showStory = i => {
+      storyIndex = (i + slides.length) % slides.length;
+      slides.forEach((s, k) => { s.classList.toggle("is-active", k === storyIndex); s.setAttribute("aria-hidden", String(k !== storyIndex)); });
+      $$("button", dots).forEach((b, k) => b.setAttribute("aria-current", String(k === storyIndex)));
+    };
+    showStory(0);
+    $(".story__arrow--prev", storySlider).addEventListener("click", () => showStory(storyIndex - 1));
+    $(".story__arrow--next", storySlider).addEventListener("click", () => showStory(storyIndex + 1));
+    dots.addEventListener("click", e => { const b = e.target.closest("button"); if (b) showStory($$("button", dots).indexOf(b)); });
+    let touchStoryX = null;
+    storySlider.addEventListener("touchstart", e => { touchStoryX = e.touches[0].clientX; }, { passive: true });
+    storySlider.addEventListener("touchend", e => {
+      if (touchStoryX == null) return;
+      const dx = e.changedTouches[0].clientX - touchStoryX;
+      touchStoryX = null;
+      if (Math.abs(dx) > 40) showStory(storyIndex + (dx < 0 ? 1 : -1));
+    });
+  }
+
   /* ============ İletişim bilgileri ve bağlantılar (panel → İletişim, Adres, Sosyal medya) ============ */
   const mapsQ = encodeURIComponent(S.mapsQuery || "Kardias Cunda Ayvalık");
   const setHref = (el, url) => { if (el.getAttribute("href") !== url) el.setAttribute("href", url); };
   $$("[data-bind]").forEach(el => {
-    const v = { phoneDisplay: S.phoneDisplay, addressStreet: S.addressStreet, addressCity: S.addressCity,
-      addressFull: [S.addressStreet, S.addressCity].filter(Boolean).join(", "), hoursRange: `${CONFIG.openTime} – ${CONFIG.closeTime}`,
-      storyYear: S.storyYear }[el.dataset.bind];
+    const v = { phoneDisplay: S.phoneDisplay, phone2Display: S.phone2Display, addressStreet: S.addressStreet, addressCity: S.addressCity,
+      addressFull: [S.addressStreet, S.addressCity].filter(Boolean).join(", "), hoursRange: `${CONFIG.openTime} – ${CONFIG.closeTime}` }[el.dataset.bind];
     if (v) el.textContent = v;
   });
   if (CONFIG.phone) $$(".js-tel").forEach(a => setHref(a, "tel:" + CONFIG.phone));
+  $$(".js-tel2").forEach(a => { a.hidden = !S.phone2; if (S.phone2) setHref(a, "tel:" + S.phone2); });
   $$(".js-dir").forEach(a => setHref(a, `https://www.google.com/maps/dir/?api=1&destination=${mapsQ}`));
   const mapFrame = $("#mapFrame"), mapSrc = `https://www.google.com/maps?q=${mapsQ}&z=16&output=embed`;
   if (mapFrame.getAttribute("src") !== mapSrc) mapFrame.setAttribute("src", mapSrc);

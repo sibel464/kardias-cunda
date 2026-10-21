@@ -88,12 +88,12 @@ function bindings(s) {
   const hours = s.openTime && s.closeTime ? `${s.openTime} – ${s.closeTime}` : "";
   return {
     phoneDisplay: s.phoneDisplay,
+    phone2Display: s.phone2Display,
     addressStreet: s.addressStreet,
     addressCity: s.addressCity,
     addressFull: [s.addressStreet, s.addressCity].filter(Boolean).join(", "),
     hoursRange: hours,
-    ratingScore: s.ratingScore != null ? String(s.ratingScore) : "",
-    storyYear: s.storyYear
+    ratingScore: s.ratingScore != null ? String(s.ratingScore) : ""
   };
 }
 

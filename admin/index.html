@@ -21,9 +21,33 @@
       </div>
       <label class="field"><span>Kullanıcı adı</span><input name="username" autocomplete="username" required maxlength="60"></label>
       <label class="field"><span>Parola</span><input name="password" type="password" autocomplete="current-password" required maxlength="200"></label>
+      <p class="login__ok" id="loginOk" role="status" hidden>Parolanız yenilendi. Yeni parolanızla giriş yapabilirsiniz.</p>
       <p class="form-error" id="loginError" role="alert" hidden></p>
       <button class="btn btn--primary btn--block" type="submit">Giriş yap</button>
+      <button class="login__link" type="button" id="forgotOpen">Şifremi unuttum</button>
       <a class="login__back" href="/">← Siteye dön</a>
+    </form>
+
+    <!-- Şifremi unuttum: 1) kullanıcı adı / e-posta → koda e-posta  2) kod + yeni parola -->
+    <form class="login__card" id="forgotForm" novalidate hidden>
+      <div class="brand brand--dark">
+        <img src="/img/kardias/logo-144.png" width="48" height="48" alt="">
+        <span>Şifremi unuttum<small>Yönetim Paneli</small></span>
+      </div>
+      <div id="forgotStep1">
+        <p class="login__text">Kullanıcı adınızı ya da hesabınıza bağlı e-posta adresini yazın. Doğrulanmış e-posta adresinize 6 haneli bir kod göndereceğiz.</p>
+        <label class="field"><span>Kullanıcı adı veya e-posta</span><input name="identity" autocomplete="username" maxlength="200"></label>
+      </div>
+      <div id="forgotStep2" hidden>
+        <p class="login__text" id="forgotInfo"></p>
+        <label class="field"><span>E-postadaki 6 haneli kod</span><input name="code" inputmode="numeric" autocomplete="one-time-code" maxlength="7" pattern="[0-9 ]*"></label>
+        <label class="field"><span>Yeni parola</span><input name="password" type="password" autocomplete="new-password" maxlength="200"><small class="help">En az 10 karakter; en az bir harf ve bir rakam.</small></label>
+        <label class="field"><span>Yeni parola (tekrar)</span><input name="password2" type="password" autocomplete="new-password" maxlength="200"></label>
+      </div>
+      <p class="form-error" id="forgotError" role="alert" hidden></p>
+      <button class="btn btn--primary btn--block" type="submit" id="forgotSubmit">Kod gönder</button>
+      <button class="login__link" type="button" id="forgotResend" hidden>Kodu tekrar gönder</button>
+      <button class="login__link" type="button" id="forgotBack">← Girişe dön</button>
     </form>
   </main>
 

@@ -1,20 +1,22 @@
 /* Komut satırı araçları
      npm run create-admin -- <kullanici-adi> [parola]
+     npm run reset-password -- <kullanici-adi> [parola]   (parolasını unutup e-postayla sıfırlayamayanlar için)
    Parola verilmezse güçlü bir parola üretilip ekrana yazılır (ilk girişten sonra panelden değiştirin). */
 const path = require("node:path");
 const crypto = require("node:crypto");
 const { openDb } = require("./db");
 const { makeAuth } = require("./auth");
+const { makeMailer } = require("./mailer");
 
 const [cmd, username, given] = process.argv.slice(2);
-if (cmd !== "create-admin" || !username) {
-  console.log("Kullanım: npm run create-admin -- <kullanici-adi> [parola]");
+if (!["create-admin", "reset-password"].includes(cmd) || !username) {
+  console.log("Kullanım: npm run create-admin -- <kullanici-adi> [parola]\n         npm run reset-password -- <kullanici-adi> [parola]");
   process.exit(1);
 }
 
 const dataDir = process.env.DATA_DIR || path.join(__dirname, "..", "storage");
 const db = openDb(path.join(dataDir, "kardias.db"));
-const auth = makeAuth(db, { sessionHours: 12, cookieSecure: "auto" });
+const auth = makeAuth(db, { sessionHours: 12, cookieSecure: "auto" }, makeMailer(db, dataDir));
 
 // Okunması kolay ama tahmini zor: 4 grup x 4 karakter + rakam garantisi
 const generated = () => {
@@ -23,10 +25,10 @@ const generated = () => {
   return groups.join("-") + crypto.randomInt(10);
 };
 const password = given || generated();
-const out = auth.createUser(username, password);
+const out = cmd === "create-admin" ? auth.createUser(username, password) : auth.setPassword(username, password);
 if (out.error) {
   console.error("Hata: " + out.error);
   process.exit(1);
 }
-console.log(`Yönetici oluşturuldu: ${out.username}`);
+console.log(cmd === "create-admin" ? `Yönetici oluşturuldu: ${out.username}` : `Parola yenilendi: ${out.username} (açık oturumlar kapatıldı)`);
 if (!given) console.log(`Parola: ${password}\n(İlk girişten sonra panelde “Hesabım” bölümünden değiştirin.)`);
