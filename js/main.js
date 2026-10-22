@@ -739,13 +739,15 @@ function boot(SITE, isStatic) {
   revPeople.innerHTML = REVIEWS.map((r, i) =>
     `<button type="button" class="testi__person" data-rev="${i}" aria-label="${esc(r.name)}" aria-pressed="false">${esc(r.name[0])}</button>`).join("");
 
+  // Yorum tarihi ay ve yıl olarak: "Kasım 2025" / "November 2025"
+  const revDate = v => v ? new Date(v + "T00:00").toLocaleDateString(lang === "tr" ? "tr-TR" : "en-GB", { month: "long", year: "numeric" }) : "";
   function showReview(i) {
     revIndex = (i + REVIEWS.length) % REVIEWS.length;
     const r = REVIEWS[revIndex];
     revStage.innerHTML = `<figure class="testi__slide">
         <span class="stars" aria-label="${r.rating}/5"><span style="--r:${r.rating}"></span></span>
         <blockquote>${esc(r.text)}</blockquote>
-        <figcaption><strong>${esc(r.name)}</strong> · ${esc(r.src)}</figcaption>
+        <figcaption><strong>${esc(r.name)}</strong>${[r.src, revDate(r.date)].filter(Boolean).map(x => " · " + esc(x)).join("")}</figcaption>
       </figure>`;
     $$(".testi__person", revPeople).forEach((b, k) => b.setAttribute("aria-pressed", String(k === revIndex)));
     revBar.style.animation = "none"; void revBar.offsetWidth; revBar.style.animation = "";
@@ -753,6 +755,8 @@ function boot(SITE, isStatic) {
   function startRev() { stopRev(); testi.classList.add("is-playing"); revTimer = setInterval(() => showReview(revIndex + 1), REV_MS); }
   function stopRev() { clearInterval(revTimer); revTimer = null; testi.classList.remove("is-playing"); }
   showReview(0);
+  // Dil değişince tarih de yeni dilde görünsün
+  $$(".lang button").forEach(b => b.addEventListener("click", () => showReview(revIndex)));
   if (!matchMedia("(prefers-reduced-motion: reduce)").matches) startRev();
   revPeople.addEventListener("click", e => { const b = e.target.closest("[data-rev]"); if (b) { showReview(+b.dataset.rev); startRev(); } });
   $("#revPrev").addEventListener("click", () => { showReview(revIndex - 1); startRev(); });
@@ -848,7 +852,7 @@ function boot(SITE, isStatic) {
     });
     const n = nightsBetween(checkin.value, checkout.value);
     let txt = n > 0 ? ui().nights(n) : "";
-    if (n > 0 && room && room.price != null && showPrices()) txt += " · " + ui().total(priceFmt(room.price * n));
+    if (n > 0 && room && room.price != null) txt += " · " + ui().total(priceFmt(room.price * n));
     $("#stayNights").textContent = txt;
   }
   stayForm.elements.room.addEventListener("change", () => {
@@ -870,7 +874,7 @@ function boot(SITE, isStatic) {
     $("#rooms").innerHTML = ROOMS.map(r => {
       const name = t(r.name), many = r.images.length > 1;
       const facts = [r.size, t(r.view)].filter(Boolean);
-      const priced = showPrices() && r.price != null;
+      const priced = r.price != null;
       return `<article class="room reveal" data-room="${r.id}">
         <div class="room__media">
           <div class="room__slides" data-slides>

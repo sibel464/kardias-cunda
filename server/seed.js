@@ -54,14 +54,12 @@ const GALLERY = [
   { media: "img/kardias/pizza-duvar.jpg", ratio: "1:1", caption: { tr: "Kardias'ta keyifli anlar", en: "Good times at Kardias" } }
 ];
 
-// Örnek yorumlar — "Örnek içerik" notu açık gelir; gerçek yorumlar girilince panelden kapatılır
+// Gerçek Google yorumları (Cunda Kardias Otel Restaurant, Ekim 2026'da alındı)
 const REVIEWS = [
-  { name: "Elif K.", source: "Google", rating: 5, text: "Cunda'da gün batımını izlemek için daha güzel bir yer düşünemiyorum. Girit ezmesi ve Cunda pizzası harikaydı, servis çok ilgiliydi." },
-  { name: "Mark T.", source: "Google", rating: 5, text: "The view over the harbour at sunset is unreal. Homemade pasta was excellent and the rakı-meze experience felt truly local." },
-  { name: "Burak & Selin", source: "Google", rating: 5, text: "Evlilik teklifimizi burada yaptık; masayı mumlar ve çiçeklerle hazırlamışlardı. Hayatımızın en güzel akşamıydı." },
-  { name: "Ayşe D.", source: "Google", rating: 4, text: "Taş evin atmosferi çok etkileyici. Mezeler taze, şarap listesi Ege bağlarından çok iyi seçilmiş. Hafta sonu mutlaka rezervasyon yapın." },
-  { name: "Sophie L.", source: "Google", rating: 5, text: "We stayed at the hotel and had breakfast on the terrace every morning. Charming rooms, warm hosts, perfect location." },
-  { name: "Murat Y.", source: "Google", rating: 5, text: "Pizzaların hamuru gerçekten farklı, tam kıvamında. Kalamarlı linguine ve lor tatlısı için tekrar geleceğiz." }
+  { name: "Ayşegül Günay", source: "Google", rating: 5, date: "2026-08-22", text: "Temizliği, çalışanları, kahvaltısı, terası ve konumuyla her açıdan memnun kaldığımız bir işletme oldu." },
+  { name: "Elif Şahin", source: "Google", rating: 5, date: "2025-11-19", text: "Konumu sayesinde otelin kalitesi tartışılmaz, merkezde her yere yürüyerek gidebiliyorsunuz. Personelin ilgisi her şeyin üstünde, ustanın hazırladığı pizzalar ise mükemmel." },
+  { name: "Mert Şahin", source: "Google", rating: 5, date: "2025-11-14", text: "Cunda'da kaldığım en iyi otellerden biri! Kardias'ın konumu da güler yüzlü çalışanları da tatilimizi daha keyifli hâle getirdi. Odalar tertemizdi, kahvaltı ise gerçekten beklentimin üzerindeydi. Kendimizi evimizde gibi hissettik. Cunda'ya yine gelirsem kesinlikle burada kalacağım!" },
+  { name: "Efkan Efe", source: "Google", rating: 5, date: "2025-11-02", text: "Konumu tam Cunda'nın merkezinde, en gözde yerlere 2 dakikalık yürüme mesafesinde. Oda çok temizdi; tuvalet ve banyonun çamaşır suyuyla temizlenmiş olması hijyen konusunda içimizi rahatlattı. Kahvaltı deniz manzaralı terasta servis edildi ve her şey çok lezzetliydi. Geceleri ana kapı kilitleniyor ve anahtarla açılıyor, odalara giden koridorlarda güvenlik kameraları var. Pizzalar inanılmaz lezzetli görünüyordu ama deneme fırsatımız olmadı; bir sonraki gelişimizde mutlaka deneyeceğiz. İşletme sahibi ve eşi çok güler yüzlüydü." }
 ];
 
 const CREDITS = [
@@ -89,10 +87,10 @@ function seedIfEmpty(db, repo) {
       contact: { phone: "+902663271965", phoneDisplay: "0266 327 19 65", phone2: "+905324112938", phone2Display: "0532 411 29 38", whatsapp: "905324112938", email: "" },
       address: { addressStreet: "Mithatpaşa Mah., 20082 Sokak No:4", addressCity: "Cunda, 10405 Ayvalık / Balıkesir", postalCode: "10405", mapsQuery: "Kardias Cunda, Mithatpaşa, Ayvalık", lat: 39.335, lng: 26.66 },
       hours: { openTime: "14:00", closeTime: "00:00", firstBooking: "14:00", lastBooking: "23:00" },
-      reservation: { typeStreet: true, typeTerrace: true, typeStay: true, sendWhatsapp: true },
+      reservation: { typeStreet: true, typeTerrace: true, typeStay: true, showRoomPrices: true, sendWhatsapp: true },
       social: { instagram: "https://www.instagram.com/cundakardiasrestoran/", facebook: "", tiktok: "", youtube: "", tripadvisor: "" },
       menu: { showPrices: menu.showPrices !== false, currency: menu.currency || "₺" },
-      reviews: { ratingScore: 4.7, showRating: true, showSampleNote: true },
+      reviews: { ratingScore: 4.5, showRating: true, showSampleNote: false },
       images: { heroImage: "img/cunda/liman-1920.jpg", storyImage: "img/kardias/sef-omur-pizzalar.jpg", storyInset: "img/kardias/pizza-ravioli-kokteyl.jpg", stayImage: "img/kardias/oda-genel.jpg", stayInset: "img/kardias/oda-yatak.jpg", storyThird: "img/kardias/oda-k-yastik.jpg" },
       ribbons: { ribbonA: zip(I18N.ui.tr.ribbons.a, I18N.ui.en.ribbons.a), ribbonB: zip(I18N.ui.tr.ribbons.b, I18N.ui.en.ribbons.b) },
       seo: { siteTitle: decode((html.match(/<title>([\s\S]*?)<\/title>/) || [])[1] || "Kardias Cunda"), siteDescription: meta("description"), siteUrl: "https://www.kardiascunda.com/", noindex: true }

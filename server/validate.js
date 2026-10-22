@@ -99,6 +99,11 @@ function cleanField(f, v, ctx) {
       if (s && !/^[0-9]{8,15}$/.test(s)) throw "Yalnızca rakam, ülke koduyla (ör. 905321234567).";
       return s;
     }
+    case "date": {
+      const s = str(v);
+      if (s && !(/^\d{4}-\d{2}-\d{2}$/.test(s) && !isNaN(new Date(s + "T00:00")))) throw "Geçerli bir tarih seçin.";
+      return s;
+    }
     case "time": {
       const s = str(v);
       if (s && !/^([01]\d|2[0-3]):[0-5]\d$/.test(s)) throw "SS:DD biçiminde girin (ör. 14:00).";

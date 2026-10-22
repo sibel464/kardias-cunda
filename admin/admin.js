@@ -558,7 +558,7 @@
   });
 
   /* --- Alan türüne göre form denetimi --- */
-  const INPUT_TYPE = { url: "url", email: "email", tel: "tel", time: "time", digits: "text", text: "text", slug: "text", link: "text" };
+  const INPUT_TYPE = { url: "url", email: "email", tel: "tel", time: "time", date: "date", digits: "text", text: "text", slug: "text", link: "text" };
 
   function control(f, value) {
     const err = h("span.field-error", { hidden: true });
@@ -566,7 +566,7 @@
     let body;
 
     switch (f.type) {
-      case "text": case "slug": case "url": case "email": case "tel": case "digits": case "time": case "link": {
+      case "text": case "slug": case "url": case "email": case "tel": case "digits": case "time": case "date": case "link": {
         const input = h("input", { type: INPUT_TYPE[f.type], value: value ?? "", maxlength: f.max || (f.type === "url" || f.type === "link" ? 500 : 200), placeholder: f.type === "url" ? "https://…" : f.type === "link" ? "https://… ya da #etkinlikler" : null, inputmode: f.type === "digits" ? "numeric" : null });
         ctl.input = input;
         ctl.get = () => input.value;

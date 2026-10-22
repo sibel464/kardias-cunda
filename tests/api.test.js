@@ -33,7 +33,7 @@ test("site, veritabanındaki içerikle ve güvenlik başlıklarıyla sunulur", a
   assert.equal(d.menu.categories.length, 16);
   assert.equal(d.events.length, 4);
   assert.equal(d.gallery.length, 13);
-  assert.equal(d.reviews.length, 6);
+  assert.equal(d.reviews.length, 4);
   // Kategori sırası eski menu.json ile aynı (önce Mutfak, sonra Bar) — menüdeki önceki/sonraki geçişi buna dayanır
   const original = JSON.parse(fs.readFileSync(path.join(__dirname, "../data/menu.json"), "utf8")).categories.map(c => c.id);
   assert.deepEqual(d.menu.categories.map(c => c.id), original);
@@ -163,7 +163,11 @@ test("oda ekleme: sitede ve rezervasyon seçeneklerinde görünür", async () =>
   const d = await siteData();
   assert.equal(d.rooms.length, 1);
   assert.equal(d.rooms[0].name.en, "Sea View Room");
-  assert.equal(d.rooms[0].price, undefined, "fiyatlar gizliyken oda fiyatı da gönderilmemeli");
+  assert.equal(d.rooms[0].price, 3500, "oda fiyatı menü fiyatlarından bağımsız görünmeli");
+  const resv = { typeStreet: true, typeTerrace: true, typeStay: true, sendWhatsapp: true };
+  assert.equal((await admin.put("/api/admin/settings/reservation", { ...resv, showRoomPrices: false })).status, 200);
+  assert.equal((await siteData()).rooms[0].price, undefined, "oda fiyatları kapalıyken gönderilmemeli");
+  await admin.put("/api/admin/settings/reservation", { ...resv, showRoomPrices: true });
   const noImg = await admin.post("/api/admin/entities/rooms", { name: { tr: "Fotoğrafsız" }, images: [] });
   assert.equal(noImg.status, 400);
 });

@@ -6,7 +6,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "name": {
      "tr": "Mutfak",
      "en": "Kitchen"
@@ -21,7 +21,7 @@
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "name": {
      "tr": "Bar",
      "en": "Bar"
@@ -38,7 +38,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:48:07",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Başlangıçlar",
@@ -56,7 +56,7 @@
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Soğuk Mezeler",
@@ -74,7 +74,7 @@
     "id": 3,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Salatalar",
@@ -92,7 +92,7 @@
     "id": 4,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Pizzalar",
@@ -110,7 +110,7 @@
     "id": 5,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Makarnalar",
@@ -128,7 +128,7 @@
     "id": 6,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Ana Yemekler & Izgaralar",
@@ -146,7 +146,7 @@
     "id": 7,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Deniz Ürünleri",
@@ -164,7 +164,7 @@
     "id": 8,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 1,
     "name": {
      "tr": "Tatlılar",
@@ -182,7 +182,7 @@
     "id": 9,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Rakılar",
@@ -200,7 +200,7 @@
     "id": 10,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Şaraplar",
@@ -218,7 +218,7 @@
     "id": 11,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Kokteyller",
@@ -236,7 +236,7 @@
     "id": 12,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Alkolsüz Kokteyller",
@@ -254,7 +254,7 @@
     "id": 13,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Biralar",
@@ -272,7 +272,7 @@
     "id": 14,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Sert İçkiler",
@@ -290,7 +290,7 @@
     "id": 15,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Sıcak İçecekler",
@@ -308,7 +308,7 @@
     "id": 16,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "section": 2,
     "name": {
      "tr": "Soğuk İçecekler",
@@ -328,7 +328,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 1,
     "name": {
      "tr": "Sıcak Peynirli Börek",
@@ -359,7 +359,7 @@
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 1,
     "name": {
      "tr": "Kalamar Tava",
@@ -390,7 +390,7 @@
     "id": 3,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 1,
     "name": {
      "tr": "Karides Güveç",
@@ -422,7 +422,7 @@
     "id": 4,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 1,
     "name": {
      "tr": "Paçanga Böreği",
@@ -451,7 +451,7 @@
     "id": 5,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 1,
     "name": {
      "tr": "Sarımsaklı Ekmek",
@@ -482,7 +482,7 @@
     "id": 101,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:33:20",
     "category": 1,
     "name": {
      "tr": "mardin tava",
@@ -511,7 +511,7 @@
     "id": 6,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Girit Ezmesi",
@@ -544,7 +544,7 @@
     "id": 7,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Deniz Börülcesi",
@@ -576,7 +576,7 @@
     "id": 8,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Közlenmiş Patlıcan",
@@ -608,7 +608,7 @@
     "id": 9,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Haydari",
@@ -640,7 +640,7 @@
     "id": 10,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Ayvalık Otları",
@@ -673,7 +673,7 @@
     "id": 11,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Fava",
@@ -705,7 +705,7 @@
     "id": 12,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Lakerda",
@@ -736,7 +736,7 @@
     "id": 13,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Atom",
@@ -769,7 +769,7 @@
     "id": 14,
     "sort": 8,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Cacık",
@@ -801,7 +801,7 @@
     "id": 15,
     "sort": 9,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 2,
     "name": {
      "tr": "Zeytinyağlı Enginar",
@@ -833,7 +833,7 @@
     "id": 16,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 3,
     "name": {
      "tr": "Roka – Parmesan",
@@ -865,7 +865,7 @@
     "id": 17,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 3,
     "name": {
      "tr": "Ege Otlu Salata",
@@ -897,7 +897,7 @@
     "id": 18,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 3,
     "name": {
      "tr": "Burrata Salata",
@@ -930,7 +930,7 @@
     "id": 19,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 3,
     "name": {
      "tr": "Çoban Salata",
@@ -959,10 +959,39 @@
     "meta": ""
    },
    {
+    "id": 102,
+    "sort": 4,
+    "active": true,
+    "updatedAt": "2026-10-22 12:47:35",
+    "category": 3,
+    "name": {
+     "tr": "sezar salatası",
+     "en": ""
+    },
+    "desc": {
+     "tr": "",
+     "en": ""
+    },
+    "image": "/uploads/mvjjd1vv-df5c3080934d.png",
+    "price": null,
+    "prices": [],
+    "priceText": {
+     "tr": "",
+     "en": ""
+    },
+    "tags": [],
+    "soldOut": false,
+    "group": {
+     "tr": "",
+     "en": ""
+    },
+    "meta": ""
+   },
+   {
     "id": 20,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Margherita",
@@ -993,7 +1022,7 @@
     "id": 21,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Mantarlı",
@@ -1024,7 +1053,7 @@
     "id": 22,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Cunda",
@@ -1057,7 +1086,7 @@
     "id": 23,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Pepperoni",
@@ -1088,7 +1117,7 @@
     "id": 24,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Dört Peynir",
@@ -1119,7 +1148,7 @@
     "id": 25,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Ege Otları",
@@ -1150,7 +1179,7 @@
     "id": 26,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 4,
     "name": {
      "tr": "Trüflü",
@@ -1182,7 +1211,7 @@
     "id": 27,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 5,
     "name": {
      "tr": "Ispanaklı Ravyoli",
@@ -1213,7 +1242,7 @@
     "id": 28,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 5,
     "name": {
      "tr": "Kalamarlı Linguine",
@@ -1244,7 +1273,7 @@
     "id": 29,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 5,
     "name": {
      "tr": "Karidesli Spaghetti",
@@ -1276,7 +1305,7 @@
     "id": 30,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 5,
     "name": {
      "tr": "Penne Arrabbiata",
@@ -1308,7 +1337,7 @@
     "id": 31,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 5,
     "name": {
      "tr": "Kremalı Mantarlı Fettuccine",
@@ -1339,7 +1368,7 @@
     "id": 32,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 6,
     "name": {
      "tr": "Izgara Tavuk",
@@ -1370,7 +1399,7 @@
     "id": 33,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 6,
     "name": {
      "tr": "Izgara Köfte",
@@ -1399,7 +1428,7 @@
     "id": 34,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 6,
     "name": {
      "tr": "Dana Bonfile",
@@ -1431,7 +1460,7 @@
     "id": 35,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 6,
     "name": {
      "tr": "Kuzu Pirzola",
@@ -1463,7 +1492,7 @@
     "id": 36,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 6,
     "name": {
      "tr": "Günün Balığı",
@@ -1494,7 +1523,7 @@
     "id": 37,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 7,
     "name": {
      "tr": "Papalina",
@@ -1523,7 +1552,7 @@
     "id": 38,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 7,
     "name": {
      "tr": "Ahtapot Izgara",
@@ -1555,7 +1584,7 @@
     "id": 39,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 7,
     "name": {
      "tr": "Levrek",
@@ -1586,7 +1615,7 @@
     "id": 40,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 7,
     "name": {
      "tr": "Çupra",
@@ -1617,7 +1646,7 @@
     "id": 41,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 7,
     "name": {
      "tr": "Midye Tava",
@@ -1648,7 +1677,7 @@
     "id": 42,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "Lor Tatlısı",
@@ -1680,7 +1709,7 @@
     "id": 43,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "Tiramisu",
@@ -1711,7 +1740,7 @@
     "id": 44,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "Girit Dondurması",
@@ -1743,7 +1772,7 @@
     "id": 45,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "İrmik Helvası",
@@ -1774,7 +1803,7 @@
     "id": 46,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "Mevsim Meyve Tabağı",
@@ -1806,7 +1835,7 @@
     "id": 47,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 8,
     "name": {
      "tr": "Panna Cotta",
@@ -1838,7 +1867,7 @@
     "id": 48,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 9,
     "name": {
      "tr": "Yeni Rakı",
@@ -1896,7 +1925,7 @@
     "id": 49,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 9,
     "name": {
      "tr": "Tekirdağ Altın Seri",
@@ -1956,7 +1985,7 @@
     "id": 50,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 9,
     "name": {
      "tr": "Efe Yaş Üzüm",
@@ -2014,7 +2043,7 @@
     "id": 51,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 9,
     "name": {
      "tr": "Beylerbeyi Göbek",
@@ -2074,7 +2103,7 @@
     "id": 52,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Urla Vourla Beyaz",
@@ -2120,7 +2149,7 @@
     "id": 53,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Corvus Bozcaada Çavuş",
@@ -2164,7 +2193,7 @@
     "id": 54,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Şirince Narince",
@@ -2208,7 +2237,7 @@
     "id": 55,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Urlice Boğazkere – Merlot",
@@ -2254,7 +2283,7 @@
     "id": 56,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Bozcaada Karalahna",
@@ -2298,7 +2327,7 @@
     "id": 57,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Şirince Syrah",
@@ -2342,7 +2371,7 @@
     "id": 58,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Urla Gün Batımı Roze",
@@ -2388,7 +2417,7 @@
     "id": 59,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Bozcaada Kuntra Roze",
@@ -2432,7 +2461,7 @@
     "id": 60,
     "sort": 8,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Urla Brut",
@@ -2476,7 +2505,7 @@
     "id": 61,
     "sort": 9,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 10,
     "name": {
      "tr": "Prosecco DOC",
@@ -2520,7 +2549,7 @@
     "id": 62,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Cunda Gün Batımı",
@@ -2552,7 +2581,7 @@
     "id": 63,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Ayvalık Zeytin Martini",
@@ -2581,7 +2610,7 @@
     "id": 64,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Sakızlı Mojito",
@@ -2610,7 +2639,7 @@
     "id": 65,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Moschonisi Spritz",
@@ -2639,7 +2668,7 @@
     "id": 66,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Aperol Spritz",
@@ -2668,7 +2697,7 @@
     "id": 67,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Negroni",
@@ -2697,7 +2726,7 @@
     "id": 68,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Mojito",
@@ -2726,7 +2755,7 @@
     "id": 69,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Margarita",
@@ -2755,7 +2784,7 @@
     "id": 70,
     "sort": 8,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 11,
     "name": {
      "tr": "Gin Tonic",
@@ -2784,7 +2813,7 @@
     "id": 71,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 12,
     "name": {
      "tr": "Bakır Gün Batımı",
@@ -2815,7 +2844,7 @@
     "id": 72,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 12,
     "name": {
      "tr": "Virgin Mojito",
@@ -2846,7 +2875,7 @@
     "id": 73,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 12,
     "name": {
      "tr": "Lavanta Limonata",
@@ -2878,7 +2907,7 @@
     "id": 74,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 12,
     "name": {
      "tr": "Ege Bahçesi",
@@ -2909,7 +2938,7 @@
     "id": 75,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Fıçı Bira",
@@ -2955,7 +2984,7 @@
     "id": 76,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Efes Pilsen",
@@ -2984,7 +3013,7 @@
     "id": 77,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Tuborg Gold",
@@ -3013,7 +3042,7 @@
     "id": 78,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Corona Extra",
@@ -3042,7 +3071,7 @@
     "id": 79,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Heineken",
@@ -3071,7 +3100,7 @@
     "id": 80,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 13,
     "name": {
      "tr": "Craft Seçkisi",
@@ -3102,7 +3131,7 @@
     "id": 81,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Jameson",
@@ -3146,7 +3175,7 @@
     "id": 82,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Chivas Regal 12",
@@ -3190,7 +3219,7 @@
     "id": 83,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Glenfiddich 12",
@@ -3234,7 +3263,7 @@
     "id": 84,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Bombay Sapphire",
@@ -3278,7 +3307,7 @@
     "id": 85,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Hendrick's",
@@ -3322,7 +3351,7 @@
     "id": 86,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Absolut",
@@ -3366,7 +3395,7 @@
     "id": 87,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Grey Goose",
@@ -3410,7 +3439,7 @@
     "id": 88,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Jose Cuervo Silver",
@@ -3454,7 +3483,7 @@
     "id": 89,
     "sort": 8,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 14,
     "name": {
      "tr": "Likör Seçkisi",
@@ -3498,7 +3527,7 @@
     "id": 90,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 15,
     "name": {
      "tr": "Türk Kahvesi",
@@ -3527,7 +3556,7 @@
     "id": 91,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 15,
     "name": {
      "tr": "Dibek Kahvesi",
@@ -3556,7 +3585,7 @@
     "id": 92,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 15,
     "name": {
      "tr": "Espresso Çeşitleri",
@@ -3607,7 +3636,7 @@
     "id": 93,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 15,
     "name": {
      "tr": "Çay",
@@ -3636,7 +3665,7 @@
     "id": 94,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 15,
     "name": {
      "tr": "Bitki Çayları",
@@ -3667,7 +3696,7 @@
     "id": 95,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Ev Limonatası",
@@ -3699,7 +3728,7 @@
     "id": 96,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Taze Sıkma Portakal",
@@ -3730,7 +3759,7 @@
     "id": 97,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Ayran",
@@ -3759,7 +3788,7 @@
     "id": 98,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Maden Suyu",
@@ -3788,7 +3817,7 @@
     "id": 99,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Meşrubatlar",
@@ -3817,7 +3846,7 @@
     "id": 100,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "category": 16,
     "name": {
      "tr": "Buzlu Kahve",
@@ -3848,7 +3877,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": {
      "tr": "Fiks Gün Batımı Menüsü",
      "en": "Sunset Set Menu"
@@ -3895,7 +3924,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:37:33",
     "name": {
      "tr": "3 kişilik balkonlu oda",
      "en": ""
@@ -3919,6 +3948,45 @@
      "tr": "",
      "en": ""
     }
+   },
+   {
+    "id": 2,
+    "sort": 1,
+    "active": true,
+    "updatedAt": "2026-10-22 13:19:14",
+    "name": {
+     "tr": "5 numaralı oda",
+     "en": ""
+    },
+    "desc": {
+     "tr": "guneye bakan taraf.",
+     "en": ""
+    },
+    "images": [
+     "/uploads/mvjjmkwk-6e9a3d3bbaaa.jpg",
+     "/uploads/mvjjnher-a160333407da.jpg"
+    ],
+    "capacity": 3,
+    "size": "",
+    "view": {
+     "tr": "",
+     "en": ""
+    },
+    "features": [
+     {
+      "tr": "zdsds",
+      "en": ""
+     },
+     {
+      "tr": "sfsfsfs",
+      "en": ""
+     }
+    ],
+    "price": null,
+    "priceNote": {
+     "tr": "",
+     "en": ""
+    }
    }
   ],
   "events": [
@@ -3926,7 +3994,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": {
      "tr": "Canlı Müzik Geceleri",
      "en": "Live Music Nights"
@@ -3945,7 +4013,7 @@
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": {
      "tr": "Şarap Tadımı Akşamları",
      "en": "Wine Tasting Evenings"
@@ -3964,7 +4032,7 @@
     "id": 3,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": {
      "tr": "Özel Gün Organizasyonları",
      "en": "Special Occasions"
@@ -3983,7 +4051,7 @@
     "id": 4,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": {
      "tr": "Grup Yemekleri",
      "en": "Group Dinners"
@@ -4004,7 +4072,7 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/aksamustu-tekne.jpg",
     "poster": "",
     "caption": {
@@ -4017,7 +4085,7 @@
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/teras-gun-batimi.jpg",
     "poster": "",
     "caption": {
@@ -4030,7 +4098,7 @@
     "id": 3,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/yel-degirmeni.jpg",
     "poster": "",
     "caption": {
@@ -4043,7 +4111,7 @@
     "id": 4,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/sarap-pizza.jpg",
     "poster": "",
     "caption": {
@@ -4056,7 +4124,7 @@
     "id": 5,
     "sort": 4,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/gullu-sokak.jpg",
     "poster": "",
     "caption": {
@@ -4069,7 +4137,7 @@
     "id": 6,
     "sort": 5,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/margarita.jpg",
     "poster": "",
     "caption": {
@@ -4082,7 +4150,7 @@
     "id": 7,
     "sort": 6,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/tas-ev.jpg",
     "poster": "",
     "caption": {
@@ -4095,7 +4163,7 @@
     "id": 8,
     "sort": 7,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/ravioli.jpg",
     "poster": "",
     "caption": {
@@ -4108,7 +4176,7 @@
     "id": 9,
     "sort": 8,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/kediler.jpg",
     "poster": "",
     "caption": {
@@ -4121,7 +4189,7 @@
     "id": 10,
     "sort": 9,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/teras-manzara.jpg",
     "poster": "",
     "caption": {
@@ -4134,7 +4202,7 @@
     "id": 11,
     "sort": 10,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/cunda/rum-kilisesi.jpg",
     "poster": "",
     "caption": {
@@ -4147,7 +4215,7 @@
     "id": 12,
     "sort": 11,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/sef-omur-kayaoz.jpg",
     "poster": "",
     "caption": {
@@ -4160,7 +4228,7 @@
     "id": 13,
     "sort": 12,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
+    "updatedAt": "2026-10-21 11:16:12",
     "media": "img/kardias/pizza-duvar.jpg",
     "poster": "",
     "caption": {
@@ -4175,60 +4243,44 @@
     "id": 1,
     "sort": 0,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Elif K.",
+    "updatedAt": "2026-10-22 12:36:36",
+    "name": "Ayşegül Günay",
     "rating": 5,
-    "text": "Cunda'da gün batımını izlemek için daha güzel bir yer düşünemiyorum. Girit ezmesi ve Cunda pizzası harikaydı, servis çok ilgiliydi.",
+    "text": "Temizliği, çalışanları, kahvaltısı, terası ve konumuyla her açıdan memnun kaldığımız bir işletme oldu.",
+    "date": "2026-08-22",
     "source": "Google"
    },
    {
     "id": 2,
     "sort": 1,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Mark T.",
+    "updatedAt": "2026-10-22 12:36:36",
+    "name": "Elif Şahin",
     "rating": 5,
-    "text": "The view over the harbour at sunset is unreal. Homemade pasta was excellent and the rakı-meze experience felt truly local.",
+    "text": "Konumu sayesinde otelin kalitesi tartışılmaz, merkezde her yere yürüyerek gidebiliyorsunuz. Personelin ilgisi her şeyin üstünde, ustanın hazırladığı pizzalar ise mükemmel.",
+    "date": "2025-11-19",
     "source": "Google"
    },
    {
     "id": 3,
     "sort": 2,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Burak & Selin",
+    "updatedAt": "2026-10-22 12:36:36",
+    "name": "Mert Şahin",
     "rating": 5,
-    "text": "Evlilik teklifimizi burada yaptık; masayı mumlar ve çiçeklerle hazırlamışlardı. Hayatımızın en güzel akşamıydı.",
+    "text": "Cunda'da kaldığım en iyi otellerden biri! Kardias'ın konumu da güler yüzlü çalışanları da tatilimizi daha keyifli hâle getirdi. Odalar tertemizdi, kahvaltı ise gerçekten beklentimin üzerindeydi. Kendimizi evimizde gibi hissettik. Cunda'ya yine gelirsem kesinlikle burada kalacağım!",
+    "date": "2025-11-14",
     "source": "Google"
    },
    {
     "id": 4,
     "sort": 3,
     "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Ayşe D.",
-    "rating": 4,
-    "text": "Taş evin atmosferi çok etkileyici. Mezeler taze, şarap listesi Ege bağlarından çok iyi seçilmiş. Hafta sonu mutlaka rezervasyon yapın.",
-    "source": "Google"
-   },
-   {
-    "id": 5,
-    "sort": 4,
-    "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Sophie L.",
+    "updatedAt": "2026-10-22 12:36:36",
+    "name": "Efkan Efe",
     "rating": 5,
-    "text": "We stayed at the hotel and had breakfast on the terrace every morning. Charming rooms, warm hosts, perfect location.",
-    "source": "Google"
-   },
-   {
-    "id": 6,
-    "sort": 5,
-    "active": true,
-    "updatedAt": "2026-10-21 18:44:21",
-    "name": "Murat Y.",
-    "rating": 5,
-    "text": "Pizzaların hamuru gerçekten farklı, tam kıvamında. Kalamarlı linguine ve lor tatlısı için tekrar geleceğiz.",
+    "text": "Konumu tam Cunda'nın merkezinde, en gözde yerlere 2 dakikalık yürüme mesafesinde. Oda çok temizdi; tuvalet ve banyonun çamaşır suyuyla temizlenmiş olması hijyen konusunda içimizi rahatlattı. Kahvaltı deniz manzaralı terasta servis edildi ve her şey çok lezzetliydi. Geceleri ana kapı kilitleniyor ve anahtarla açılıyor, odalara giden koridorlarda güvenlik kameraları var. Pizzalar inanılmaz lezzetli görünüyordu ama deneme fırsatımız olmadı; bir sonraki gelişimizde mutlaka deneyeceğiz. İşletme sahibi ve eşi çok güler yüzlüydü.",
+    "date": "2025-11-02",
     "source": "Google"
    }
   ],
@@ -4237,7 +4289,7 @@
     "id": 1,
     "sort": 0,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Cunda adası,Ayvalık - panoramio (1).jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3ACunda_adas%C4%B1%2CAyval%C4%B1k_-_panoramio_%281%29.jpg",
     "author": "HALUK COMERTEL",
@@ -4247,7 +4299,7 @@
     "id": 2,
     "sort": 1,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Cunda houses 2020 (2).jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3ACunda_houses_2020_%282%29.jpg",
     "author": "Antoloji",
@@ -4257,7 +4309,7 @@
     "id": 3,
     "sort": 2,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "A street from Cunda Island.JPG",
     "url": "https://commons.wikimedia.org/wiki/File%3AA_street_from_Cunda_Island.JPG",
     "author": "The cat",
@@ -4267,7 +4319,7 @@
     "id": 4,
     "sort": 3,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Alibey Adasi, Ayvalık, Turkey (Unsplash).jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3AAlibey_Adasi%2C_Ayval%C4%B1k%2C_Turkey_%28Unsplash%29.jpg",
     "author": "Arda Çetin ardacetin",
@@ -4277,7 +4329,7 @@
     "id": 5,
     "sort": 4,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Cunda2006.JPG",
     "url": "https://commons.wikimedia.org/wiki/File%3ACunda2006.JPG",
     "author": "Original uploader was Towsonu2003 at tr.wikipedia",
@@ -4287,7 +4339,7 @@
     "id": 6,
     "sort": 5,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Cunda Adası 01.jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3ACunda_Adas%C4%B1_01.jpg",
     "author": "Ferit BAYCUMAN",
@@ -4297,7 +4349,7 @@
     "id": 7,
     "sort": 6,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Abandoned Old Church.jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3AAbandoned_Old_Church.jpg",
     "author": "BilgeSaygin",
@@ -4307,7 +4359,7 @@
     "id": 8,
     "sort": 7,
     "active": false,
-    "updatedAt": "2026-10-21 19:03:42",
+    "updatedAt": "2026-10-21 11:16:12",
     "title": "Moshos Otel (9649207733).jpg",
     "url": "https://commons.wikimedia.org/wiki/File%3AMoshos_Otel_%289649207733%29.jpg",
     "author": "Omer Unlu from Ankara, Turkey",
@@ -4318,20 +4370,18 @@
  "nextId": {
   "sections": 3,
   "categories": 17,
-  "items": 102,
+  "items": 103,
   "setmenus": 2,
-  "rooms": 2,
+  "rooms": 3,
   "events": 5,
   "gallery": 14,
-  "reviews": 7,
+  "reviews": 5,
   "credits": 9,
-  "media": 3
+  "media": 6
  },
  "settings": {
   "phone": "+902663271965",
   "phoneDisplay": "0266 327 19 65",
-  "phone2": "+905324112938",
-  "phone2Display": "0532 411 29 38",
   "whatsapp": "905324112938",
   "email": "",
   "addressStreet": "Mithatpaşa Mah., 20082 Sokak No:4",
@@ -4355,14 +4405,12 @@
   "tripadvisor": "",
   "showPrices": false,
   "currency": "₺",
-  "ratingScore": 4.7,
+  "ratingScore": 4.5,
   "showRating": true,
-  "showSampleNote": true,
-  "logo": "",
+  "showSampleNote": false,
   "heroImage": "img/cunda/liman-1920.jpg",
   "storyImage": "img/kardias/sef-omur-pizzalar.jpg",
   "storyInset": "img/kardias/pizza-ravioli-kokteyl.jpg",
-  "storyThird": "img/kardias/oda-k-yastik.jpg",
   "stayImage": "img/kardias/oda-genel.jpg",
   "stayInset": "img/kardias/oda-yatak.jpg",
   "ribbonA": [
@@ -4420,7 +4468,11 @@
   "siteTitle": "Kardias Cunda | Limana Bakan Teras Restoran & Butik Otel – Ayvalık",
   "siteDescription": "Kardias Cunda: Cunda Adası'nın tepesinde, limana bakan taş terasta gün batımı sofrası. Taş fırın pizza, ev yapımı makarna, Ege mezeleri, rakı ve şarap. Ayvalık'ta butik otel.",
   "siteUrl": "https://www.kardiascunda.com/",
-  "noindex": true
+  "noindex": true,
+  "storyThird": "img/kardias/oda-k-yastik.jpg",
+  "phone2": "+905324112938",
+  "phone2Display": "0532 411 29 38",
+  "showRoomPrices": true
  },
  "texts": [
   {
@@ -4557,6 +4609,11 @@
    "key": "f.room",
    "tr": "Oda",
    "en": "Room"
+  },
+  {
+   "key": "f.stay",
+   "tr": "Konaklama",
+   "en": "Stay"
   },
   {
    "key": "f.stayLink",
@@ -4830,8 +4887,8 @@
   },
   {
    "key": "rev.count",
-   "tr": "Google'da 1.200+ yorum",
-   "en": "1,200+ reviews on Google"
+   "tr": "Google'da 294 yorum",
+   "en": "294 reviews on Google"
   },
   {
    "key": "rev.cta",
@@ -4988,20 +5045,47 @@
   {
    "id": 1,
    "path": "/uploads/mvi18hji-40cc34e7dab5.jpg",
-   "name": "mvi18hji-40cc34e7dab5.jpg",
+   "name": "images.jpg",
    "mime": "image/jpeg",
    "kind": "image",
    "size": 42040,
-   "createdAt": "2026-10-21 19:03:42"
+   "createdAt": "2026-10-21 11:32:09"
   },
   {
    "id": 2,
    "path": "/uploads/mvi1exge-73ce64987308.jpg",
-   "name": "mvi1exge-73ce64987308.jpg",
+   "name": "Ekran gÃrÃ¼ntÃ¼sÃ¼ 2026-10-21 143624.jpg",
    "mime": "image/jpeg",
    "kind": "image",
    "size": 105541,
-   "createdAt": "2026-10-21 19:03:42"
+   "createdAt": "2026-10-21 11:37:09"
+  },
+  {
+   "id": 3,
+   "path": "/uploads/mvjjd1vv-df5c3080934d.png",
+   "name": "Ekran gÃrÃ¼ntÃ¼sÃ¼ 2026-10-22 154646.png",
+   "mime": "image/png",
+   "kind": "image",
+   "size": 381887,
+   "createdAt": "2026-10-22 12:47:21"
+  },
+  {
+   "id": 4,
+   "path": "/uploads/mvjjmkwk-6e9a3d3bbaaa.jpg",
+   "name": "Ekran gÃrÃ¼ntÃ¼sÃ¼ 2026-10-22 155426.jpg",
+   "mime": "image/jpeg",
+   "kind": "image",
+   "size": 58368,
+   "createdAt": "2026-10-22 12:54:46"
+  },
+  {
+   "id": 5,
+   "path": "/uploads/mvjjnher-a160333407da.jpg",
+   "name": "Ekran gÃrÃ¼ntÃ¼sÃ¼ 2026-10-22 155506.jpg",
+   "mime": "image/jpeg",
+   "kind": "image",
+   "size": 89962,
+   "createdAt": "2026-10-22 12:55:28"
   }
  ]
 }

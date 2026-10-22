@@ -80,7 +80,7 @@ const ENTITIES = {
       { key: "size", type: "text", label: "Büyüklük", max: 30, help: "Ör: 24 m²" },
       { key: "view", type: "i18n", label: "Manzara", max: 60, help: "Ör: Deniz manzaralı" },
       { key: "features", type: "i18nlist", label: "Özellikler", max: 80 },
-      { key: "price", type: "money", label: "Gecelik fiyat", help: "Fiyatlar menü ayarındaki “Fiyatları göster” açıkken görünür." },
+      { key: "price", type: "money", label: "Gecelik fiyat", help: "Boş bırakılırsa sitede fiyat görünmez. “Rezervasyon ayarları → Oda fiyatlarını sitede göster” ile topluca gizlenebilir." },
       { key: "priceNote", type: "i18n", label: "Fiyat notu", max: 60, help: "Ör: gecelik, kahvaltı dahil" }
     ]
   },
@@ -111,6 +111,7 @@ const ENTITIES = {
       { key: "name", type: "text", label: "Misafir adı", required: true, max: 60 },
       { key: "rating", type: "int", label: "Puan (1–5)", required: true, min: 1, max: 5, default: 5 },
       { key: "text", type: "textarea", label: "Yorum", required: true, max: 1000 },
+      { key: "date", type: "date", label: "Yorum tarihi", help: "Yorumun Google'da yazıldığı tarih. Sitede ay ve yıl olarak görünür." },
       { key: "source", type: "text", label: "Kaynak", max: 40, default: "Google" }
     ]
   },
@@ -165,6 +166,7 @@ const SETTINGS = [
       { key: "typeStreet", type: "bool", label: "Sokak masası rezervasyonu açık" },
       { key: "typeTerrace", type: "bool", label: "Teras masası rezervasyonu açık" },
       { key: "typeStay", type: "bool", label: "Konaklama rezervasyonu açık" },
+      { key: "showRoomPrices", type: "bool", label: "Oda fiyatlarını sitede göster", help: "Açıkken fiyat girilen odalarda gecelik fiyat görünür. Menü fiyatlarından bağımsızdır." },
       { key: "sendWhatsapp", type: "bool", label: "Kayıttan sonra WhatsApp mesajı da açılsın", help: "Kapalıysa talep yalnızca panele düşer, misafire “talebiniz alındı” mesajı gösterilir." }
     ]
   },
@@ -182,7 +184,7 @@ const SETTINGS = [
   {
     group: "menu", label: "Menü ayarları",
     fields: [
-      { key: "showPrices", type: "bool", label: "Fiyatları sitede göster", help: "Kapalıyken menüde, fiks menüde ve odalarda fiyat görünmez; fiyatlar silinmez." },
+      { key: "showPrices", type: "bool", label: "Fiyatları sitede göster", help: "Kapalıyken menüde ve fiks menüde fiyat görünmez; fiyatlar silinmez. Oda fiyatları “Rezervasyon ayarları”ndan yönetilir." },
       { key: "currency", type: "text", label: "Para birimi", required: true, max: 5 }
     ]
   },

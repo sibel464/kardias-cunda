@@ -15,6 +15,7 @@ function buildSiteData(repo) {
   const s = repo.getSettings();
   const showPrices = s.showPrices !== false;
   const money = v => (showPrices && v != null ? v : undefined);
+  const showRoomPrices = s.showRoomPrices !== false;
 
   const texts = {};
   for (const t of repo.getTexts()) {
@@ -69,12 +70,12 @@ function buildSiteData(repo) {
     events: repo.list("events", { activeOnly: true }).map(e => ({ title: i18n(e.title), when: i18n(e.when), desc: i18n(e.desc), image: e.image })),
     rooms: repo.list("rooms", { activeOnly: true }).map(r => ({
       id: r.id, name: i18n(r.name), desc: i18n(r.desc), images: r.images, capacity: r.capacity ?? undefined,
-      size: r.size || undefined, view: i18n(r.view), features: i18nList(r.features), price: money(r.price), priceNote: showPrices ? i18n(r.priceNote) : undefined
+      size: r.size || undefined, view: i18n(r.view), features: i18nList(r.features), price: showRoomPrices && r.price != null ? r.price : undefined, priceNote: showRoomPrices && r.price != null ? i18n(r.priceNote) : undefined
     })),
     gallery: repo.list("gallery", { activeOnly: true }).map(g => ({
       src: g.media, kind: /\.(mp4|webm)$/.test(g.media) ? "video" : "image", poster: g.poster || undefined, caption: i18n(g.caption), ratio: g.ratio || "auto"
     })),
-    reviews: repo.list("reviews", { activeOnly: true }).map(r => ({ name: r.name, rating: r.rating, text: r.text, src: r.source || undefined })),
+    reviews: repo.list("reviews", { activeOnly: true }).map(r => ({ name: r.name, rating: r.rating, text: r.text, src: r.source || undefined, date: r.date || undefined })),
     credits: repo.list("credits", { activeOnly: true }).map(c => ({ title: c.title, url: c.url || undefined, author: c.author || undefined, license: c.license || undefined }))
   });
 }

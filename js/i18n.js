@@ -79,7 +79,7 @@ window.I18N = {
 
     "rev.eyebrow": "Our Guests",
     "rev.title": "What <em>they say</em>",
-    "rev.count": "1,200+ reviews on Google",
+    "rev.count": "294 reviews on Google",
     "rev.cta": "Review us on Google →",
     "rev.sample": "Sample content: rating and reviews will be replaced with real Google reviews before launch.",
 
