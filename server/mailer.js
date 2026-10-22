@@ -1,5 +1,6 @@
 /* E-posta gönderimi: panelde girilen SMTP bilgileriyle (ör. Gmail + uygulama şifresi).
-   SMTP ayarlanmamışsa e-postalar gönderilmez; storage/outbox klasörüne metin dosyası olarak yazılır (yerel deneme için). */
+   SMTP ayarlanmamışsa: geliştirmede e-postalar storage/outbox klasörüne metin dosyası olarak yazılır (yerel deneme için);
+   yayında (NODE_ENV=production) hiçbir yere yazılmaz ve gönderim hata verir — kodlar diskte açık metin kalmaz. */
 const fs = require("node:fs");
 const path = require("node:path");
 const crypto = require("node:crypto");
@@ -9,7 +10,7 @@ const { ValidationError } = require("./validate");
 const EMAIL_RE = /^[^\s@<>"',;]{1,64}@[a-zA-Z0-9.-]{1,190}\.[a-zA-Z]{2,24}$/;
 const HOST_RE = /^[a-zA-Z0-9.-]{1,253}$/;
 
-function makeMailer(db, dataDir) {
+function makeMailer(db, dataDir, { allowOutbox = process.env.NODE_ENV !== "production" } = {}) {
   const outboxDir = path.join(dataDir, "outbox");
   const recent = []; // son yazılan outbox iletileri (testler okur)
 
@@ -43,6 +44,7 @@ function makeMailer(db, dataDir) {
 
   async function send({ to, subject, text }) {
     const c = read();
+    if (!c && !allowOutbox) throw new Error("E-posta gönderimi ayarlanmamış (Panel → E-posta gönderimi).");
     if (!c) {
       fs.mkdirSync(outboxDir, { recursive: true });
       const file = path.join(outboxDir, `${Date.now()}-${crypto.randomBytes(3).toString("hex")}.txt`);
@@ -60,7 +62,8 @@ function makeMailer(db, dataDir) {
     return { sent: true };
   }
 
-  return { publicConfig, save, clear, send, isConfigured: () => !!read(), recent };
+  // canSend: gerçekten gönderilebilir mi (SMTP ayarlı ya da geliştirmede outbox)
+  return { publicConfig, save, clear, send, isConfigured: () => !!read(), canSend: () => !!read() || allowOutbox, recent };
 }
 
 module.exports = { makeMailer, EMAIL_RE };

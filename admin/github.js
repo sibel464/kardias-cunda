@@ -14,11 +14,15 @@
   const VIDEO_MAX = 50 * 1024 * 1024; // GitHub 50 MB üstü dosyalarda uyarır, 100 MB'ı kabul etmez
   const SCRIPTS = ["../server/schema.js", "../server/validate.js", "../server/site-data.js"];
 
+  // Erişim anahtarı yalnızca bu sekmede (sessionStorage) tutulur: sekme kapanınca silinir ve aynı github.io adresindeki
+  // başka sayfalarla paylaşılmaz. Depo ayarı (REPO_KEY) yerel denemeler için localStorage'dan okunur.
   const store = {
-    get: k => { try { return localStorage.getItem(k); } catch { return null; } },
-    set: (k, v) => { try { localStorage.setItem(k, v); } catch { /* gizli pencere: yalnızca bu oturum */ } },
-    del: k => { try { localStorage.removeItem(k); } catch { /* yok say */ } }
+    get: k => { try { return k === REPO_KEY ? localStorage.getItem(k) : sessionStorage.getItem(k); } catch { return null; } },
+    set: (k, v) => { try { sessionStorage.setItem(k, v); } catch { /* depolama kapalı: yalnızca bu sayfa */ } },
+    del: k => { try { sessionStorage.removeItem(k); localStorage.removeItem(k); } catch { /* yok say */ } }
   };
+  // Eski sürümün kalıcı olarak sakladığı anahtar temizlenir
+  try { localStorage.removeItem(TOKEN_KEY); } catch { /* yok say */ }
 
   class HttpError extends Error {
     constructor(status, message, data) { super(message); this.status = status; this.data = data; }

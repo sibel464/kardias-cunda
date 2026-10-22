@@ -212,7 +212,7 @@
     ["Genel", [["#/", "Genel bakış"], ["#/rezervasyonlar", "Rezervasyonlar", "resBadge"]]],
     ["Menü", [["#/e/items", "Yiyecek & içecekler"], ["#/e/categories", "Kategoriler"], ["#/e/sections", "Menü bölümleri"], ["#/e/setmenus", "Fiks menüler"], ["#/ayar/menu", "Menü ayarları"]]],
     ["İçerik", [["#/e/rooms", "Konaklama odaları"], ["#/e/events", "Etkinlikler"], ["#/e/gallery", "Fotoğraf & video galerisi"], ["#/e/reviews", "Misafir yorumları"], ["#/ayar/reviews", "Yorum puanı"], ["#/ayar/notice", "Duyuru şeridi"], ["#/ayar/sections", "Bölümleri göster / gizle"], ["#/metinler", "Sayfa metinleri"], ["#/ayar/images", "Site görselleri"], ["#/ayar/ribbons", "Kayan yazılar"], ["#/e/credits", "Fotoğraf künyesi"]]],
-    ["İletişim & rezervasyon", [["#/ayar/contact", "Telefon & WhatsApp"], ["#/ayar/address", "Adres & konum"], ["#/ayar/hours", "Çalışma saatleri"], ["#/ayar/reservation", "Rezervasyon ayarları"], ["#/ayar/social", "Sosyal medya"]]],
+    ["İletişim & rezervasyon", [["#/ayar/contact", "Telefon & WhatsApp"], ["#/ayar/address", "Adres & konum"], ["#/ayar/hours", "Çalışma saatleri"], ["#/ayar/reservation", "Rezervasyon ayarları"], ["#/ayar/social", "Sosyal medya"], ["#/ayar/kvkk", "KVKK aydınlatma metni"]]],
     ["Sistem", [["#/medya", "Medya kütüphanesi"], ["#/ayar/seo", "Arama motorları (SEO)"], ["#/kullanicilar", "Kullanıcılar"], ["#/hesap", "Hesabım"], ["#/guvenlik", "Güvenlik kayıtları", "secBadge"], ["#/eposta", "E-posta gönderimi"]]]
   ];
 
@@ -350,8 +350,12 @@
     if (!sec.emailVerified) todo.push(h("li", null, "Hesabınıza doğrulanmış bir e-posta bağlı değil; şifrenizi unutursanız sıfırlayamazsınız. ", h("a", { href: "#/hesap" }, "E-posta ekle →")));
     if (sec.alerts7d) todo.push(h("li", null, `Son 7 günde ${sec.alerts7d} önemli güvenlik olayı var (kilitlenme, yeni yerden giriş, parola sıfırlama vb.). `, h("a", { href: "#/guvenlik?level=alert" }, "İncele →")));
     if (sec.failed24h >= 3) todo.push(h("li", null, `Son 24 saatte ${sec.failed24h} hatalı giriş / kod denemesi. `, h("a", { href: "#/guvenlik?level=warn" }, "İncele →")));
-    if (!todo.length) return h("div.card.card--ok", null, h("strong", null, "🔒 Güvenlik: "), "her şey yolunda. ", h("a", { href: "#/guvenlik" }, "Güvenlik kayıtları →"));
-    return h("div.card", { class: sec.alerts7d || sec.failed24h >= 3 ? "card--alert" : "card--note" }, h("h2", null, "🔒 Güvenlik"), h("ul", { style: "margin:0;padding-left:20px;display:grid;gap:6px" }, todo));
+    if (sec.kvkkMissing) todo.push(h("li", null, "KVKK aydınlatma metninde veri sorumlusunun unvanı girilmemiş. ", h("a", { href: "#/ayar/kvkk" }, "Doldur →")));
+    if (sec.backupAgeHours == null || sec.backupAgeHours > 36) todo.push(h("li", null, sec.backupAgeHours == null ? "Henüz otomatik yedek alınmamış." : `Son otomatik yedek ${Math.round(sec.backupAgeHours)} saat önce alınmış.`, " Sunucunun yedekleme ayarını kontrol edin."));
+    const download = h("p", { style: "margin:8px 0 0" }, "💾 ", h("a", { href: "/api/admin/backup" }, "Veritabanı yedeğini indir"),
+      h("span.muted", null, " — haftada bir indirip bilgisayarınızda ya da bulutta saklayın (yüklenen fotoğraflar sunucudaki günlük yedeklerdedir)."));
+    if (!todo.length) return h("div.card.card--ok", null, h("strong", null, "🔒 Güvenlik: "), "her şey yolunda. ", h("a", { href: "#/guvenlik" }, "Güvenlik kayıtları →"), download);
+    return h("div.card", { class: sec.alerts7d || sec.failed24h >= 3 ? "card--alert" : "card--note" }, h("h2", null, "🔒 Güvenlik"), h("ul", { style: "margin:0;padding-left:20px;display:grid;gap:6px" }, todo), download);
   }
 
   function resSummary(r) {

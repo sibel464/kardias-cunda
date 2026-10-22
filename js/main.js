@@ -936,7 +936,7 @@ function boot(SITE, isStatic) {
       keepalive: true
     }).then(async r => {
       const d = await r.json().catch(() => ({}));
-      if (!r.ok) throw d;
+      if (!r.ok) throw { ...d, status: r.status }; // sunucunun yanıtı (status var); bağlantı hatasında TypeError gelir
       return d;
     });
   }
@@ -961,26 +961,37 @@ function boot(SITE, isStatic) {
 
   // Talebi kaydeder; WhatsApp açıksa hazır mesajı da açar. fieldEls: sunucunun hata verdiği alanları işaretlemek için
   function sendRequest(f, payload, waLines, fieldEls) {
-    const err = $(".form__error", f), okEl = $(".form__ok", f), u = ui();
+    const err = $(".form__error", f), okEl = $(".form__ok", f), u = ui(), btn = $('button[type="submit"]', f);
+    if (btn.disabled) return; // gönderim sürerken ikinci tıklama yok sayılır
     err.hidden = okEl.hidden = true;
     const showOk = msg => { okEl.textContent = msg; okEl.hidden = false; };
     const showFail = d => {
       showFormError(f, (lang === "tr" && d && d.error) || u.formFail);
       Object.keys((d && d.fields) || {}).forEach(k => { if (fieldEls[k]) fieldEls[k].classList.add("is-invalid"); });
     };
+    const text = waLines.join("\n");
+    // Sunucu yok (GitHub Pages kopyası): talep yalnızca WhatsApp ile gider
+    if (isStatic) { openWa(text); showOk(u.formSentWaOnly); return; }
+    btn.disabled = true;
+    const done = () => { btn.disabled = false; };
     if (!CONFIG.sendWhatsapp) {
-      const btn = $('button[type="submit"]', f);
-      btn.disabled = true;
       saveReservation(payload)
         .then(() => { showOk(u.formSent); f.elements.note.value = ""; })
         .catch(showFail)
-        .finally(() => { btn.disabled = false; });
+        .finally(done);
       return;
     }
-    // WhatsApp açılırken kayıt arka planda tamamlanır (açılır pencere engellenmesin diye beklenmez)
-    saveReservation(payload).catch(() => { /* WhatsApp mesajı yine de gider */ });
-    openWa(waLines.join("\n"));
-    showOk(u.formSentWa);
+    // Pencere tıklama anında açılır (açılır pencere engelleyicisine takılmasın); WhatsApp adresi kayıt bitince verilir
+    const win = window.open("", "_blank");
+    if (win) win.opener = null;
+    const goWa = () => { if (win && !win.closed) win.location.href = waLink(text); else openWa(text); };
+    saveReservation(payload)
+      .then(() => { goWa(); showOk(u.formSentWa); })
+      .catch(d => {
+        if (d && d.status) { if (win) win.close(); showFail(d); } // sunucu reddetti: hatayı göster, WhatsApp açılmaz
+        else { goWa(); showOk(u.formSentWaOnly); }                // bağlantı yok: talep yine WhatsApp ile ulaşır
+      })
+      .finally(done);
   }
   const fmtDay = v => new Date(v + "T00:00").toLocaleDateString(lang === "tr" ? "tr-TR" : "en-GB", { weekday: "long", day: "numeric", month: "long", year: "numeric" });
 

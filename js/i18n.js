@@ -73,7 +73,7 @@ window.I18N = {
     "rooms.title": "Our rooms",
     "sf.title": "Book Your Stay",
     "sf.lead": "Choose your room and dates; our team will check availability and get back to you.",
-    "sf.noteph": "Late arrival, baby cot, allergies…",
+    "sf.noteph": "Late arrival, baby cot, extra bed…",
     "f.stayLink": "Planning a stay?",
     "f.stayLinkCta": "See our rooms and book a room →",
 
@@ -106,11 +106,13 @@ window.I18N = {
     "f.breakfast": "Breakfast",
     "f.breakfastv": "I'd like the Aegean breakfast spread on the terrace",
     "f.note": "Special requests",
-    "f.noteph": "Birthday, allergies, high chair…",
+    "f.noteph": "Birthday, high chair, table preference…",
     "f.room": "Room",
     "f.submit": "Send via WhatsApp",
     "f.submitPlain": "Send Reservation Request",
     "f.hint": "Your reservation is confirmed once our team replies.",
+    "f.kvkkNote": "Your details are processed only to answer your request.",
+    "f.kvkkLink": "Privacy notice (KVKK)",
 
     "c.eyebrow": "Contact & Location",
     "c.addr": "Address",
@@ -192,6 +194,7 @@ window.I18N = {
       waRoom: "Oda",
       formSent: "Talebiniz bize ulaştı. Ekibimiz en kısa sürede sizi arayarak rezervasyonunuzu onaylayacak.",
       formSentWa: "Talebiniz kaydedildi. WhatsApp'ta açılan hazır mesajı göndermeyi unutmayın.",
+      formSentWaOnly: "WhatsApp'ta hazır mesajınız açıldı. Talebinizin bize ulaşması için mesajı göndermeyi unutmayın.",
       formFail: "Talebiniz gönderilemedi. Lütfen tekrar deneyin ya da bizi arayın.",
       playVideo: "Videoyu oynat"
     },
@@ -255,6 +258,7 @@ window.I18N = {
       waRoom: "Room",
       formSent: "We've received your request. Our team will call you shortly to confirm your reservation.",
       formSentWa: "Your request has been saved. Don't forget to send the ready-made WhatsApp message.",
+      formSentWaOnly: "Your ready-made WhatsApp message is open. Please send it so that your request reaches us.",
       formFail: "Your request could not be sent. Please try again or give us a call.",
       playVideo: "Play video"
     }

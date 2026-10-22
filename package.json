@@ -12,6 +12,8 @@
     "create-admin": "node server/cli.js create-admin",
     "reset-password": "node server/cli.js reset-password",
     "export-static": "node server/export-static.js",
+    "import-static": "node server/import-static.js",
+    "backup": "node server/backup.js",
     "test": "node --test \"tests/*.test.js\""
   },
   "dependencies": {

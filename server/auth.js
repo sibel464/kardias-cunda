@@ -93,6 +93,8 @@ const codeMatches = (code, stored) => {
   const a = Buffer.from(sha256(salt + String(code))), b = Buffer.from(hash || "");
   return a.length === b.length && crypto.timingSafeEqual(a, b);
 };
+// Var olmayan hesaplar için girilen değer kayda maskeli yazılır (kullanıcı adı yerine yanlışlıkla parola yazılmış olabilir)
+const maskTyped = v => (typeof v === "string" && v ? v.slice(0, 2) + "***" : null);
 const maskEmail = e => String(e).replace(/^(.)(.*)(@.*)$/, (m, a, mid, d) => a + "*".repeat(Math.min(mid.length, 6)) + d);
 
 function makeAuth(db, config, mailer) {
@@ -183,7 +185,7 @@ function makeAuth(db, config, mailer) {
     const userKey = username.toLowerCase(), ipKey = String(req.ip);
     const wait = Math.max(userLimiter.blocked(userKey), ipLimiter.blocked(ipKey));
     if (wait) {
-      security("login_blocked", { req, username, level: "warn", detail: "Kilitliyken giriş denendi" });
+      security("login_blocked", { req, username: maskTyped(username), level: "warn", detail: "Kilitliyken giriş denendi" });
       res.setHeader("Retry-After", String(wait));
       return res.status(429).json({ error: `Çok fazla hatalı deneme. ${Math.ceil(wait / 60)} dakika sonra tekrar deneyin.` });
     }
@@ -192,11 +194,12 @@ function makeAuth(db, config, mailer) {
     if (!ok) {
       userLimiter.hit(userKey);
       ipLimiter.hit(ipKey);
-      security("login_failed", { req, userId: user && user.id, username, level: "warn", detail: user ? "Parola hatalı" : "Böyle bir kullanıcı yok" });
+      const logged = user ? user.username : maskTyped(username);
+      security("login_failed", { req, userId: user && user.id, username: logged, level: "warn", detail: user ? "Parola hatalı" : "Böyle bir kullanıcı yok" });
       if (userLimiter.blocked(userKey) || ipLimiter.blocked(ipKey)) {
-        security("login_locked", { req, userId: user && user.id, username, level: "alert", detail: "Çok fazla hatalı deneme — giriş 15 dakika kilitlendi" });
+        security("login_locked", { req, userId: user && user.id, username: logged, level: "alert", detail: "Çok fazla hatalı deneme — giriş 15 dakika kilitlendi" });
         alertAdmins("⚠ Kardias paneli: çok fazla hatalı giriş denemesi",
-          `Yönetim paneline “${username}” kullanıcı adıyla art arda hatalı parola girildi ve giriş 15 dakika kilitlendi.\n${when(req)}\n\nBu siz değilseniz parolanızı değiştirin ve panelde “Güvenlik kayıtları” sayfasına bakın.`);
+          `Yönetim paneline “${logged}” kullanıcı adıyla art arda hatalı parola girildi ve giriş 15 dakika kilitlendi.\n${when(req)}\n\nBu siz değilseniz parolanızı değiştirin ve panelde “Güvenlik kayıtları” sayfasına bakın.`);
       }
       return res.status(401).json({ error: "Kullanıcı adı veya parola hatalı." });
     }
@@ -323,10 +326,14 @@ function makeAuth(db, config, mailer) {
       return res.status(429).json({ error: "Çok fazla istek. 15 dakika sonra tekrar deneyin." });
     }
     forgotLimiter.hit(ipKey);
+    // E-posta gönderilemiyorsa “kod gönderildi” denmez (hesabın varlığı yine belli olmaz: yanıt herkes için aynıdır)
+    if (!mailer.canSend()) {
+      return res.status(503).json({ error: "E-posta gönderimi henüz ayarlanmadığı için parola e-postayla sıfırlanamıyor. Sunucuya erişimi olan kişi `npm run reset-password` ile yeni parola verebilir." });
+    }
     const identity = req.body && req.body.identity;
     const user = findByIdentity(identity);
     if (!user) {
-      security("reset_unknown", { req, username: typeof identity === "string" ? identity : null, level: "warn", detail: "Olmayan bir hesap için kod istendi" });
+      security("reset_unknown", { req, username: maskTyped(identity), level: "warn", detail: "Olmayan bir hesap için kod istendi" });
       return res.json(generic);
     }
     if (!user.email || !user.email_verified_at) {
@@ -353,7 +360,7 @@ function makeAuth(db, config, mailer) {
     const row = user && consumeCode(user.id, "reset", b.code);
     if (!row) {
       resetLimiter.hit(ipKey);
-      security("reset_code_wrong", { req, userId: user && user.id, username: user ? user.username : typeof b.identity === "string" ? b.identity : null, level: "warn", detail: "Hatalı ya da süresi dolmuş kod" });
+      security("reset_code_wrong", { req, userId: user && user.id, username: user ? user.username : maskTyped(b.identity), level: "warn", detail: "Hatalı ya da süresi dolmuş kod" });
       return res.status(400).json({ error: "Kod hatalı ya da süresi dolmuş. Yeni kod isteyebilirsiniz.", fields: { code: "Kod hatalı ya da süresi dolmuş." } });
     }
     db.prepare("UPDATE users SET password_hash = ? WHERE id = ?").run(hashPassword(b.password), user.id);
@@ -380,6 +387,7 @@ function makeAuth(db, config, mailer) {
     }
     const e = typeof email === "string" ? email.trim().toLowerCase() : "";
     if (e.length > 200 || !EMAIL_RE.test(e)) return { error: "Geçerli bir e-posta adresi girin.", field: "email" };
+    if (!mailer.canSend()) return { error: "Doğrulama kodu gönderilemez: önce Panel → E-posta gönderimi ayarlarını yapın.", field: "email" };
     if (db.prepare("SELECT 1 FROM users WHERE email = ? COLLATE NOCASE AND email_verified_at IS NOT NULL AND id != ?").get(e, userId)) {
       return { error: "Bu e-posta başka bir hesapta kayıtlı.", field: "email" };
     }

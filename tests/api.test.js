@@ -407,7 +407,8 @@ test("rezervasyon formu kötüye kullanıma karşı sınırlandırılır", async
   const c = client(S.base);
   let last;
   for (let i = 0; i < 12; i++) {
-    last = await c.post("/api/reservations", { type: "sokak", name: "Sınır Testi", phone: "05321112233", date: istanbulDay(1), time: "20:00", guests: "2" });
+    // Her istek farklı saat: birebir aynı talep zaten yeni kayıt açmaz (mükerrer koruması), sınırı farklı talepler doldurur
+    last = await c.post("/api/reservations", { type: "sokak", name: "Sınır Testi", phone: "05321112233", date: istanbulDay(1), time: `20:${String(i * 5).padStart(2, "0")}`, guests: "2" });
     if (last.status === 429) break;
   }
   assert.equal(last.status, 429);

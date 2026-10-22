@@ -246,6 +246,17 @@ const SETTINGS = [
       { key: "siteUrl", type: "url", label: "Sitenin gerçek adresi", help: "Ör: https://www.kardiascunda.com" },
       { key: "noindex", type: "bool", label: "Arama motorlarından gizle (önizleme modu)", help: "Gerçek yayına geçince kapatın." }
     ]
+  },
+  {
+    group: "kvkk", label: "KVKK aydınlatma metni",
+    help: "Sitedeki /kvkk sayfası bu bilgilerle oluşur ve rezervasyon formlarında bağlantısı bulunur. Yayına almadan önce doldurun ve metni bir hukukçuya kontrol ettirin.",
+    fields: [
+      { key: "kvkkLegalName", type: "text", label: "Veri sorumlusu (ticari unvan ya da işletme sahibinin adı)", max: 160, help: "Vergi levhasındaki unvan. Boşsa sayfada “Kardias Cunda” yazar ve metin eksik kalır." },
+      { key: "kvkkAddress", type: "text", label: "Başvuru (tebligat) adresi", max: 240, help: "Boşsa sitedeki adres kullanılır." },
+      { key: "kvkkEmail", type: "email", label: "Başvuru e-postası", help: "Boşsa sitedeki e-posta kullanılır." },
+      { key: "kvkkHosting", type: "text", label: "Barındırma hizmeti ve ülkesi", max: 160, help: "Ör: Render Services, Inc. — Frankfurt, Almanya. Sunucu yurt dışındaysa bu yurt dışına aktarım sayılır." },
+      { key: "kvkkRetentionDays", type: "int", label: "Rezervasyon kayıtlarının saklama süresi (gün)", min: 30, max: 3650, help: "Konaklama/masa tarihinden bu kadar gün sonra, sonuçlanmış talepler her gece otomatik silinir. Boşsa silinmez." }
+    ]
   }
 ];
 

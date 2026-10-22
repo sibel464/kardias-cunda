@@ -177,4 +177,4 @@ function makeRepo(db) {
   };
 }
 
-module.exports = { makeRepo, HttpError, entityDef, rowToObj };
+module.exports = { makeRepo, HttpError, entityDef, rowToObj, objToCols };

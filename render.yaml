@@ -1,0 +1,15 @@
+# Render Blueprint (https://render.com/docs/blueprint-spec) — ücretli bir planla çalışır; kalıcı disk ücretsiz planda yoktur.
+# Ortam değişkenlerinin çoğu Dockerfile'da tanımlıdır. Yayına aldıktan sonra Render Shell'de:  npm run create-admin -- <kullanici-adi>
+services:
+  - type: web
+    runtime: docker
+    name: kardias-cunda
+    region: frankfurt
+    plan: 0.5c-512mb
+    dockerfilePath: ./Dockerfile
+    healthCheckPath: /healthz
+    autoDeployTrigger: "off"
+    disk:
+      name: kardias-data
+      mountPath: /data
+      sizeGB: 1

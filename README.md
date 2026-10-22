@@ -29,6 +29,8 @@ Node.js 22.13 veya üstü gerekir (24 önerilir).
     npm run create-admin -- yonetici      # ilk yönetici hesabı; parola ekrana yazılır
     npm run reset-password -- yonetici    # parola unutulduysa ve e-postayla sıfırlanamıyorsa: yeni parola ekrana yazılır
     npm start                             # http://localhost:3000  ·  panel: http://localhost:3000/admin/
+    npm run backup                        # tutarlı yedek (storage/backups/), alındıktan sonra doğrulanır
+    npm run import-static                 # GitHub Pages kopyasını veritabanına aktarma önizlemesi (-- --uygula ile uygular)
 
 İlk çalıştırmada veritabanı otomatik oluşturulur ve sitenin mevcut içeriği (100 ürün, galeri, yorumlar,
 etkinlikler, metinler) içine aktarılır.
@@ -55,7 +57,9 @@ etkinlikler, metinler) içine aktarılır.
 - Tüm girdiler sunucuda alan bazında doğrulanır; metinlerde yalnızca `<em>`, `<strong>`, `<br>` geçer
 - Yüklenen dosyaların türü uzantıdan değil içeriğinden anlaşılır; SVG/HTML gibi betik taşıyabilen dosyalar reddedilir
 - Sitede kullanılan bir dosya silinemez; ürünü olan kategori silinemez
-- Rezervasyon formunda bot tuzağı ve IP başına saatlik sınır
+- Rezervasyon formunda bot tuzağı, IP başına saatlik sınır ve mükerrer kayıt koruması (aynı talep 30 dk içinde tek kayıt)
+- Var olmayan kullanıcı adlarıyla yapılan denemeler güvenlik kayıtlarına maskeli yazılır
+- KVKK aydınlatma metni (/kvkk) panelden doldurulur; isteğe bağlı saklama süresi dolan rezervasyonlar otomatik silinir
 - İçerik Güvenlik Politikası (CSP) ve diğer güvenlik başlıkları
 
 ## Testler
@@ -67,13 +71,15 @@ Backend (yetkilendirme, doğrulama, medya, rezervasyon, güvenlik) ve uçtan uca
 
 ## Yayına alma
 
+**Ayrıntılı adımlar, yedekleme, geri yükleme ve geri dönüş planı: [YAYINA-ALMA.md](YAYINA-ALMA.md)**
+
 Bu sürüm bir sunucu (Node.js) ve veritabanı gerektirir; **GitHub Pages yalnızca statik dosya
 barındırdığı için paneli çalıştıramaz.** Node.js destekleyen bir sunucuya (VPS, Render, Railway,
 Hetzner, cPanel'de Node.js uygulaması vb.) kurun:
 
 - `storage/` klasörü kalıcı bir diskte olmalı (`DATA_DIR` ortam değişkeniyle değiştirilebilir) ve düzenli yedeklenmeli
 - Site HTTPS arkasında çalışmalı; bir proxy (Nginx, Cloudflare vb.) arkasındaysa `TRUST_PROXY=1` verin
-- Ayarlar: `PORT` (varsayılan 3000), `HOST`, `DATA_DIR`, `COOKIE_SECURE` (auto/always), `SESSION_HOURS` (varsayılan 12), `IDLE_MINUTES` (işlem yapılmazsa otomatik çıkış, varsayılan 60)
+- Ayarlar: `PORT` (varsayılan 3000), `HOST` (varsayılan 127.0.0.1; Docker'da 0.0.0.0), `DATA_DIR`, `NODE_ENV`, `BACKUP_INTERVAL_HOURS`, `BACKUP_KEEP`, `INITIAL_CONTENT`, `COOKIE_SECURE` (auto/always), `SESSION_HOURS` (varsayılan 12), `IDLE_MINUTES` (işlem yapılmazsa otomatik çıkış, varsayılan 60)
 
 ## GitHub Pages: site ve yönetim paneli
 
@@ -89,13 +95,13 @@ GitHub → Settings → Developer settings → Personal access tokens → **Fine
 - Repository access: **Only select repositories** → `kardias-cunda`
 - Permissions → Repository permissions → **Contents: Read and write**
 
-Anahtar yalnızca girildiği tarayıcıda saklanır; “Çıkış yap” ile silinir. Anahtarı kimseyle paylaşmayın.
+Anahtar yalnızca o tarayıcı sekmesinde saklanır; sekme kapanınca ya da “Çıkış yap” ile silinir. Anahtarı kimseyle paylaşmayın.
 
 **GitHub Pages panelinde olmayanlar:** rezervasyon kayıtları (form WhatsApp ile çalışır), kullanıcılar, güvenlik kayıtları,
 e-posta ile şifre sıfırlama. Videolar en fazla 50 MB olabilir.
 
 **Sunucudaki panelle birlikte kullanım:** iki panel ayrı kopyalar üzerinde çalışır. Sunucudaki içeriği GitHub'a aktarmak için
-aşağıdaki komutlar kullanılır; bu, GitHub Pages panelinde yapılan değişikliklerin **üzerine yazar**:
+aşağıdaki komutlar kullanılır. GitHub kopyasında veritabanında olmayan kayıt varsa komut durur (önce `npm run import-static`):
 
     npm run export-static
     git add -A

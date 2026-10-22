@@ -1,7 +1,11 @@
-# İmaja girmeyenler: bağımlılıklar imajda yeniden kurulur, veritabanı kalıcı diskte durur
+# İmaja girmeyenler: bağımlılıklar imajda yeniden kurulur, veritabanı ve yedekler kalıcı diskte durur
 node_modules/
 storage/
 tests/
 *.log
 .env
+.env.*
 .git/
+*.db
+*.db-wal
+*.db-shm

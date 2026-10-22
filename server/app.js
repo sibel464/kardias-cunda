@@ -1,16 +1,19 @@
 /* Express uygulaması: site, herkese açık API ve yönetim paneli API'si */
 const path = require("node:path");
 const fs = require("node:fs");
+const os = require("node:os");
+const crypto = require("node:crypto");
 const express = require("express");
 const { openDb } = require("./db");
 const { ENTITIES, SETTINGS } = require("./schema");
 const { makeRepo, HttpError } = require("./repo");
-const { ValidationError } = require("./validate");
+const { ValidationError, escapeHtml } = require("./validate");
 const { makeAuth, makeLimiter } = require("./auth");
 const { makeMedia } = require("./media");
 const { makeMailer } = require("./mailer");
 const { makeSite } = require("./site");
 const { seedIfEmpty, syncNewTexts } = require("./seed");
+const { renderKvkk } = require("./kvkk");
 
 const ROOT = path.join(__dirname, "..");
 
@@ -56,18 +59,49 @@ function createApp(opts = {}) {
     idleMinutes: Number(opts.idleMinutes || process.env.IDLE_MINUTES || 60),
     trustProxy: opts.trustProxy ?? process.env.TRUST_PROXY ?? false
   };
+  config.backupDir = opts.backupDir || process.env.BACKUP_DIR || path.join(config.dataDir, "backups");
   const uploadDir = path.join(config.dataDir, "uploads");
   fs.mkdirSync(uploadDir, { recursive: true });
 
   const db = openDb(path.join(config.dataDir, "kardias.db"));
   const repo = makeRepo(db);
-  seedIfEmpty(db, repo);
+  const seeded = seedIfEmpty(db, repo);
   syncNewTexts(db);
+  // Yeni kurulumda (boş veritabanı) içerik, sitenin güncel kopyası data/admin-db.json'dan alınır (INITIAL_CONTENT=admin-db)
+  if (seeded && (opts.initialContent || process.env.INITIAL_CONTENT) === "admin-db") {
+    const { loadSource, prepare, apply } = require("./import-static");
+    try {
+      const prepared = prepare(loadSource());
+      if (prepared.errors.length) throw new Error(prepared.errors.join("; "));
+      apply(db, prepared, uploadDir);
+      console.log("İlk kurulum: içerik data/admin-db.json'dan yüklendi.");
+    } catch (err) {
+      console.error("İlk kurulum içeriği yüklenemedi, varsayılan içerikle devam ediliyor:", err.message);
+    }
+  }
   const mailer = makeMailer(db, config.dataDir);
   const auth = makeAuth(db, config, mailer);
   const media = makeMedia(db, uploadDir);
   const site = makeSite(repo, path.join(ROOT, "index.html"));
   const reservationLimiter = makeLimiter({ max: 8, windowMs: 60 * 60 * 1000 });
+
+  // En son otomatik yedeğin yaşı (saat); hiç yoksa null
+  const lastBackupAgeHours = () => {
+    try {
+      const dirs = fs.readdirSync(config.backupDir).filter(n => n.startsWith("yedek-")).sort();
+      if (!dirs.length) return null;
+      return (Date.now() - fs.statSync(path.join(config.backupDir, dirs.at(-1))).mtimeMs) / 3600000;
+    } catch { return null; }
+  };
+
+  // KVKK saklama süresi: tarihi bu kadar gün önce geçmiş, sonuçlanmış talepler silinir ("yeni" olanlara dokunulmaz)
+  function purgeOldReservations() {
+    const days = repo.getSettings().kvkkRetentionDays;
+    if (!days) return 0;
+    const n = db.prepare("DELETE FROM reservations WHERE status != 'yeni' AND COALESCE(checkout, date) < date('now', ?)").run(`-${days} days`).changes;
+    if (n) auth.security("reservations_purged", { level: "info", detail: `Saklama süresi (${days} gün) dolan ${n} rezervasyon silindi` });
+    return n;
+  }
 
   const app = express();
   app.disable("x-powered-by");
@@ -102,6 +136,34 @@ function createApp(opts = {}) {
   };
   app.get("/", sendSite);
   app.get("/index.html", sendSite);
+  const sendKvkk = (req, res) => {
+    res.setHeader("Cache-Control", "no-cache");
+    res.type("html").send(renderKvkk(repo.getSettings()));
+  };
+  app.get("/kvkk", sendKvkk);
+  app.get("/kvkk.html", sendKvkk);
+
+  // Arama motorları: önizleme modunda (noindex) hiçbir sayfa taranmaz; yayında panel ve API hariç her şey
+  const siteBase = () => (repo.getSettings().siteUrl || "").replace(/\/$/, "");
+  app.get("/robots.txt", (req, res) => {
+    const s = repo.getSettings();
+    const lines = s.noindex
+      ? ["User-agent: *", "Disallow: /"]
+      : ["User-agent: *", "Disallow: /admin/", "Disallow: /api/", ...(s.siteUrl ? ["", `Sitemap: ${siteBase()}/sitemap.xml`] : [])];
+    res.type("text").send(lines.join("\n") + "\n");
+  });
+  app.get("/sitemap.xml", (req, res) => {
+    const base = siteBase();
+    if (!base || repo.getSettings().noindex) return res.status(404).type("text").send("Sayfa bulunamadı.");
+    const urls = [`${base}/`, `${base}/kvkk`].map(u => `  <url><loc>${escapeHtml(u)}</loc></url>`);
+    res.type("application/xml").send(['<?xml version="1.0" encoding="UTF-8"?>', '<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">', ...urls, "</urlset>", ""].join("\n"));
+  });
+  // Barındırma hizmetinin sağlık denetimi: veritabanı okunabiliyorsa 200
+  app.get("/healthz", (req, res) => {
+    db.prepare("SELECT 1").get();
+    res.setHeader("Cache-Control", "no-store");
+    res.type("text").send("ok");
+  });
   const staticOpts = { index: false, dotfiles: "deny", fallthrough: true };
   app.use("/css", express.static(path.join(ROOT, "css"), staticOpts));
   app.use("/js", express.static(path.join(ROOT, "js"), staticOpts));
@@ -170,6 +232,11 @@ function createApp(opts = {}) {
     if (type && !GUESTS.includes(row.guests)) errors.guests = "Kişi sayısını seçin.";
 
     if (Object.keys(errors).length) return res.status(400).json({ error: "Lütfen işaretli alanları kontrol edin.", fields: errors });
+    // Aynı talep (çift tıklama, sayfayı yenileyip yeniden gönderme) 30 dakika içinde ikinci bir kayıt açmaz
+    const dup = db.prepare(`SELECT id FROM reservations WHERE type = ? AND phone = ? AND date IS ? AND time IS ? AND checkin IS ? AND checkout IS ?
+                            AND status = 'yeni' AND created_at >= datetime('now', '-30 minutes') ORDER BY id DESC LIMIT 1`)
+      .get(row.type, row.phone, row.date, row.time, row.checkin, row.checkout);
+    if (dup) return res.status(200).json({ ok: true, id: dup.id, duplicate: true });
     reservationLimiter.hit(ipKey);
     const cols = Object.keys(row);
     const info = db.prepare(`INSERT INTO reservations (${cols.join(", ")}) VALUES (${cols.map(() => "?").join(", ")})`).run(...cols.map(c => row[c]));
@@ -278,7 +345,9 @@ function createApp(opts = {}) {
         failed24h: db.prepare("SELECT COUNT(*) AS n FROM security_log WHERE event IN ('login_failed','reset_code_wrong') AND at >= datetime('now','-1 day')").get().n,
         alerts7d: db.prepare("SELECT COUNT(*) AS n FROM security_log WHERE level = 'alert' AND at >= datetime('now','-7 days')").get().n,
         emailVerified: !!db.prepare("SELECT 1 FROM users WHERE id = ? AND email_verified_at IS NOT NULL").get(req.user.id),
-        mailConfigured: mailer.isConfigured()
+        mailConfigured: mailer.isConfigured(),
+        kvkkMissing: !repo.getSettings().kvkkLegalName,
+        backupAgeHours: lastBackupAgeHours()
       }
     });
   });
@@ -313,6 +382,20 @@ function createApp(opts = {}) {
     });
   });
   admin.delete("/media/:id", (req, res) => { media.remove(req.params.id); res.json({ ok: true }); });
+
+  // Veritabanı yedeğini indir (tutarlı anlık görüntü). Parola özetleri ve misafir bilgileri içerir: kayda geçer.
+  admin.get("/backup", (req, res, next) => {
+    const tmp = path.join(os.tmpdir(), `kardias-${crypto.randomBytes(8).toString("hex")}.db`);
+    try {
+      db.exec(`VACUUM INTO '${tmp.replace(/'/g, "''")}'`);
+    } catch (err) {
+      fs.rmSync(tmp, { force: true });
+      return next(err);
+    }
+    auth.security("backup_downloaded", { req, userId: req.user.id, username: req.user.username, level: "warn", detail: "Veritabanı yedeği indirildi" });
+    res.setHeader("Cache-Control", "no-store");
+    res.download(tmp, `kardias-yedek-${todayIstanbul()}.db`, () => fs.rmSync(tmp, { force: true }));
+  });
 
   // Rezervasyonlar
   admin.get("/reservations", (req, res) => {
@@ -373,7 +456,7 @@ function createApp(opts = {}) {
     res.status(500).json({ error: "Beklenmeyen bir hata oluştu." });
   });
 
-  return { app, db, repo, auth, site, config, mailer };
+  return { app, db, repo, auth, site, config, mailer, purgeOldReservations };
 }
 
 module.exports = { createApp };
