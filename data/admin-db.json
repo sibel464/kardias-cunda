@@ -4382,6 +4382,8 @@
  "settings": {
   "phone": "+902663271965",
   "phoneDisplay": "0266 327 19 65",
+  "phone2": "+905324112938",
+  "phone2Display": "0532 411 29 38",
   "whatsapp": "905324112938",
   "email": "",
   "addressStreet": "Mithatpaşa Mah., 20082 Sokak No:4",
@@ -4397,6 +4399,7 @@
   "typeStreet": true,
   "typeTerrace": true,
   "typeStay": true,
+  "showRoomPrices": true,
   "sendWhatsapp": true,
   "instagram": "https://www.instagram.com/cundakardiasrestoran/",
   "facebook": "",
@@ -4408,9 +4411,11 @@
   "ratingScore": 4.5,
   "showRating": true,
   "showSampleNote": false,
+  "logo": "",
   "heroImage": "img/cunda/liman-1920.jpg",
   "storyImage": "img/kardias/sef-omur-pizzalar.jpg",
   "storyInset": "img/kardias/pizza-ravioli-kokteyl.jpg",
+  "storyThird": "img/kardias/oda-k-yastik.jpg",
   "stayImage": "img/kardias/oda-genel.jpg",
   "stayInset": "img/kardias/oda-yatak.jpg",
   "ribbonA": [
@@ -4468,11 +4473,7 @@
   "siteTitle": "Kardias Cunda | Limana Bakan Teras Restoran & Butik Otel – Ayvalık",
   "siteDescription": "Kardias Cunda: Cunda Adası'nın tepesinde, limana bakan taş terasta gün batımı sofrası. Taş fırın pizza, ev yapımı makarna, Ege mezeleri, rakı ve şarap. Ayvalık'ta butik otel.",
   "siteUrl": "https://www.kardiascunda.com/",
-  "noindex": true,
-  "storyThird": "img/kardias/oda-k-yastik.jpg",
-  "phone2": "+905324112938",
-  "phone2Display": "0532 411 29 38",
-  "showRoomPrices": true
+  "noindex": true
  },
  "texts": [
   {
@@ -4586,6 +4587,16 @@
    "en": "Your reservation is confirmed once our team replies."
   },
   {
+   "key": "f.kvkkLink",
+   "tr": "KVKK Aydınlatma Metni",
+   "en": "Privacy notice (KVKK)"
+  },
+  {
+   "key": "f.kvkkNote",
+   "tr": "Bilgileriniz yalnızca talebinizi yanıtlamak için işlenir.",
+   "en": "Your details are processed only to answer your request."
+  },
+  {
    "key": "f.name",
    "tr": "Ad Soyad",
    "en": "Full name"
@@ -4597,8 +4608,8 @@
   },
   {
    "key": "f.noteph",
-   "tr": "Doğum günü, alerjiler, bebek sandalyesi…",
-   "en": "Birthday, allergies, high chair…"
+   "tr": "Doğum günü, bebek sandalyesi, masa tercihi…",
+   "en": "Birthday, high chair, table preference…"
   },
   {
    "key": "f.phone",
@@ -4932,8 +4943,8 @@
   },
   {
    "key": "sf.noteph",
-   "tr": "Geç giriş, bebek yatağı, alerjiler…",
-   "en": "Late arrival, baby cot, allergies…"
+   "tr": "Geç giriş, bebek yatağı, ek yatak…",
+   "en": "Late arrival, baby cot, extra bed…"
   },
   {
    "key": "sf.title",
