@@ -73,6 +73,16 @@ function createApp(opts = {}) {
   app.disable("x-powered-by");
   app.set("trust proxy", config.trustProxy === "true" ? true : /^\d+$/.test(String(config.trustProxy)) ? Number(config.trustProxy) : config.trustProxy === true);
 
+  // Proxy arkasında TRUST_PROXY verilmezse tüm ziyaretçiler tek IP görünür: deneme sınırları herkesi birden kilitler
+  let proxyWarned = false;
+  app.use((req, res, next) => {
+    if (!proxyWarned && !app.get("trust proxy") && req.get("x-forwarded-for")) {
+      proxyWarned = true;
+      console.warn("⚠  İstekler bir proxy üzerinden geliyor ama TRUST_PROXY ayarlı değil. Giriş ve rezervasyon sınırlarının doğru çalışması için TRUST_PROXY=1 verin.");
+    }
+    next();
+  });
+
   app.use((req, res, next) => {
     res.setHeader("X-Content-Type-Options", "nosniff");
     res.setHeader("Referrer-Policy", "strict-origin-when-cross-origin");
@@ -105,14 +115,15 @@ function createApp(opts = {}) {
 
   /* ---------- Herkese açık API ---------- */
   const api = express.Router();
-  api.use(express.json({ limit: "1mb" }));
+  // Herkese açık uçlar (rezervasyon, giriş, şifremi unuttum) küçük gövde kabul eder; panelin büyük istekleri girişten sonra
+  const smallJson = express.json({ limit: "16kb" }), largeJson = express.json({ limit: "1mb" });
 
   api.get("/site", (req, res) => {
     res.setHeader("Cache-Control", "no-cache");
     res.json(site.data());
   });
 
-  api.post("/reservations", (req, res) => {
+  api.post("/reservations", smallJson, (req, res) => {
     const ipKey = "res:" + req.ip;
     const wait = reservationLimiter.blocked(ipKey);
     if (wait) return res.status(429).json({ error: "Çok fazla talep gönderildi. Lütfen biraz sonra tekrar deneyin ya da bizi arayın." });
@@ -124,7 +135,7 @@ function createApp(opts = {}) {
     const errors = {};
     const str = (v, max) => (typeof v === "string" ? v.trim() : "").slice(0, max + 1);
     const type = str(b.type, 20);
-    if (!enabled[type]) errors.type = "Bu rezervasyon türü şu an kapalı.";
+    if (!Object.hasOwn(enabled, type) || !enabled[type]) errors.type = "Bu rezervasyon türü şu an kapalı.";
     const name = str(b.name, 80);
     if (name.length < 2 || name.length > 80) errors.name = "Ad soyad 2–80 karakter olmalı.";
     const phone = str(b.phone, 25);
@@ -167,11 +178,12 @@ function createApp(opts = {}) {
 
   /* ---------- Yönetim API'si ---------- */
   const admin = express.Router();
-  admin.post("/login", auth.login);
+  admin.post("/login", smallJson, auth.login);
   admin.post("/logout", auth.logout);
-  admin.post("/forgot", auth.forgot);
-  admin.post("/reset", auth.reset);
+  admin.post("/forgot", smallJson, auth.forgot);
+  admin.post("/reset", smallJson, auth.reset);
   admin.use(auth.requireAuth);
+  admin.use(largeJson);
 
   // Başarılı her değişiklikten sonra sitenin önbelleği temizlenir ve işlem kayda geçer
   admin.use((req, res, next) => {

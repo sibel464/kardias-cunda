@@ -1,0 +1,7 @@
+# İmaja girmeyenler: bağımlılıklar imajda yeniden kurulur, veritabanı kalıcı diskte durur
+node_modules/
+storage/
+tests/
+*.log
+.env
+.git/

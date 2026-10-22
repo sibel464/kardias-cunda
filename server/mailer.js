@@ -52,7 +52,8 @@ function makeMailer(db, dataDir) {
       return { outbox: true };
     }
     const transport = nodemailer.createTransport({
-      host: c.host, port: c.port, secure: c.port === 465, auth: { user: c.user, pass: c.pass },
+      // 465 dışındaki portlarda STARTTLS zorunlu: parola ve kodlar asla şifresiz bağlantıdan gitmez
+      host: c.host, port: c.port, secure: c.port === 465, requireTLS: c.port !== 465, auth: { user: c.user, pass: c.pass },
       connectionTimeout: 10_000, greetingTimeout: 10_000, socketTimeout: 20_000
     });
     await transport.sendMail({ from: `"Kardias Yönetim Paneli" <${c.from || c.user}>`, to, subject, text });
